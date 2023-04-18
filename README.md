@@ -1,5 +1,5 @@
 # padaflix
 software de assinatura para delivery de produtos de padaria
-<br> Meljael
-<br> 
-Arthur Medeiros
+<br> André Alves
+<br> Arthur Medeiros
+<br> Meljael Daniel

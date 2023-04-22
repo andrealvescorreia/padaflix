@@ -8,14 +8,20 @@ import axiosInstance from './axios'
 
 function App() {
   
-  const [name, setName] = useState('')
+  type User = {
+    id: number,
+    name: string,
+    email: string,
+  }
+
+  const [user, setUser] = useState<User>()
 
   useEffect(() => {
   (
     async () => {
       axiosInstance.get('/user')
       .then((response) => {
-        setName(response.data.name);
+        setUser(response.data);
       })
       .catch(() => {
         console.log('não autorizado...')
@@ -27,11 +33,11 @@ function App() {
 
   return (
     <div>
-      <NavBar name={name} setName={setName}/>
+      <NavBar user={user} setUser={setUser}/>
      
       <Routes>
-        <Route path="/" Component={() => <Home name={name}/>} />
-        <Route path="/login" Component={() => <Login setName={setName}/>} />
+        <Route path="/" Component={() => <Home user={user}/>} />
+        <Route path="/login" Component={() => <Login setUser={setUser}/>} />
         <Route path="/register" Component={() => <Register />} />
       </Routes>
     </div>

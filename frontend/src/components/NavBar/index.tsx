@@ -1,34 +1,31 @@
 import { Link } from "react-router-dom";
 import axiosInstance from '../../axios'
 
-const NavBar = ( props : { name : string, setName: (name: string) => void } ) => {
+interface User {
+  id: number,
+  name: string,
+  email: string,
+}
 
+interface NavBarProps {
+  user: User | undefined,
+  setUser: (user: User | undefined) => void
+}
+
+const NavBar = ( {user, setUser}: NavBarProps ) => {
   const logout = async () => {
     axiosInstance.post('/logout')
     .then(()=>{
-      props.setName('');
+      setUser(undefined)
     }).catch((err)=>{
       console.log(err.data)
     })
   }
 
-  let menu;
+  let navOptions;
 
-  if(props.name === ''){// Caso não autenticado...
-    menu = (
-      <ul className="navbar-nav me-auto mb-2 mb-md-0">
-        <li className="nav-item">
-          <Link to="/login" className="nav-link active" >Login</Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/register" className="nav-link active" >Register</Link>
-        </li>
-        
-      </ul>
-    )
-  } 
-  else { // Caso autenticado...
-    menu = (
+  if (user) { // Caso autenticado
+    navOptions = (
       <ul className="navbar-nav me-auto mb-2 mb-md-0">
         <li className="nav-item">
           <Link to="/login" className="nav-link active" onClick={logout} >Logout</Link>
@@ -36,6 +33,18 @@ const NavBar = ( props : { name : string, setName: (name: string) => void } ) =>
       </ul>
     )
   }
+  else {// Caso não autenticado...
+    navOptions = (
+      <ul className="navbar-nav me-auto mb-2 mb-md-0">
+        <li className="nav-item">
+          <Link to="/login" className="nav-link active" >Login</Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/register" className="nav-link active" >Register</Link>
+        </li>
+      </ul>
+    )
+  } 
 
   
 
@@ -46,7 +55,7 @@ const NavBar = ( props : { name : string, setName: (name: string) => void } ) =>
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className="collapse navbar-collapse" id="navbarCollapse">
-        {menu}
+        {navOptions}
       </div>
     </div>
   </nav>

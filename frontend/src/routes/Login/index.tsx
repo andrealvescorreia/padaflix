@@ -2,7 +2,17 @@ import { SyntheticEvent, useState } from "react";
 import axiosInstance from '../../axios'
 import { useNavigate } from "react-router-dom";
 
-const Login = (props : {setName: (name: string) => void }) => {
+interface User {
+    id: number,
+    name: string,
+    email: string,
+}
+
+interface LoginProps {
+    setUser: (user: User | undefined) => void
+}
+
+const Login = ( {setUser}: LoginProps) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,8 +26,8 @@ const Login = (props : {setName: (name: string) => void }) => {
             password
         })
         .then((response) => {
-            props.setName(response.data.name)
-            navigate('/')
+            setUser(response.data)
+            navigate('/') // redireciona para a homepage
         })
         .catch((err) => {
             alert(err)

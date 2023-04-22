@@ -1,8 +1,24 @@
-const Home = (props : {name : string}) => {
+interface User {
+  id: number,
+  name: string,
+  email: string,
+}
 
-  return ( 
+interface HomeProps {
+  user: User | undefined
+}
+
+const Home = ({user} : HomeProps) => {
+
+  return (
     <div>
-      {props.name ? 'Bem vindo ' + props.name : 'Voce não está logado...' }
+      {
+        user 
+        ? 
+        'Bem vindo ' + user.name 
+        : 
+        'Voce não está logado...'
+      }
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState } from "react";
+import './styles.scss'
 
 const Login = () => {
 

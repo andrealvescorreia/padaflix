@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState } from "react";
+import axiosInstance from '../../axios'
 
 const Login = () => {
 
@@ -8,17 +9,16 @@ const Login = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:8000/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({email, password})
+        axiosInstance.post('/login', {
+            email, 
+            password
         })
-        const content = await response.json();
-
-        alert(JSON.stringify(content))
+        .then((response) => {
+            alert(JSON.stringify(response.data))
+        })
+        .catch((err) => {
+            alert(err)
+        })
     }
 
 

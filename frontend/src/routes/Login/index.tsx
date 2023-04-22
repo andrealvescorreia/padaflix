@@ -1,10 +1,12 @@
 import { SyntheticEvent, useState } from "react";
 import axiosInstance from '../../axios'
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = (props : {setName: (name: string) => void }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate()
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -14,7 +16,8 @@ const Login = () => {
             password
         })
         .then((response) => {
-            alert(JSON.stringify(response.data))
+            props.setName(response.data.name)
+            navigate('/')
         })
         .catch((err) => {
             alert(err)

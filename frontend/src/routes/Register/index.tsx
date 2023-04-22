@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState } from "react";
+import { redirect } from "react-router-dom";
 
 const Register = () => {
 
@@ -7,7 +8,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
 
     const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
+        e.preventDefault();//previne de recarregar a pagina ao clicar em submit
       
         const response = await fetch('http://localhost:8000/api/register', {
             method: 'POST',
@@ -18,8 +19,9 @@ const Register = () => {
         })
 
         const content = await response.json();
+        
+        return redirect("/login");
 
-        alert(JSON.stringify(content))
     }
 
     return ( 

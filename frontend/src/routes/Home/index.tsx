@@ -20,9 +20,9 @@ const Home = () => {
     })
 
     return ( 
-        <div>
-            {name ? 'Bem vindo ' + name : 'Voce não está logado...' }
-        </div>
+      <div>
+        {name ? 'Bem vindo ' + name : 'Voce não está logado...' }
+      </div>
     );
 }
  

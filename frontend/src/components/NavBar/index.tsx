@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
 import axiosInstance from '../../axios'
+import { User } from "../../types/User";
 
-interface User {
-  id: number,
-  name: string,
-  email: string,
-}
 
 interface NavBarProps {
   user: User | undefined,

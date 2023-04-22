@@ -5,14 +5,9 @@ import Register from './routes/Register';
 import Login from './routes/Login';
 import {useEffect, useState} from "react";
 import axiosInstance from './axios'
+import { User } from "./types/User";
 
 function App() {
-  
-  type User = {
-    id: number,
-    name: string,
-    email: string,
-  }
 
   const [user, setUser] = useState<User>()
 
@@ -34,11 +29,10 @@ function App() {
   return (
     <div>
       <NavBar user={user} setUser={setUser}/>
-     
       <Routes>
-        <Route path="/" Component={() => <Home user={user}/>} />
-        <Route path="/login" Component={() => <Login setUser={setUser}/>} />
-        <Route path="/register" Component={() => <Register />} />
+        <Route path="/" element={<Home user={user}/>} />
+        <Route path="/login" element={<Login setUser={setUser}/>} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
   )

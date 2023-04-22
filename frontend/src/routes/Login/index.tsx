@@ -1,12 +1,7 @@
 import { SyntheticEvent, useState } from "react";
-import axiosInstance from '../../axios'
 import { useNavigate } from "react-router-dom";
-
-interface User {
-    id: number,
-    name: string,
-    email: string,
-}
+import axiosInstance from '../../axios'
+import { User } from "../../types/User";
 
 interface LoginProps {
     setUser: (user: User | undefined) => void

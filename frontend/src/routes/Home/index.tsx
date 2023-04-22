@@ -1,15 +1,10 @@
-interface User {
-  id: number,
-  name: string,
-  email: string,
-}
+import { User } from "../../types/User";
 
 interface HomeProps {
   user: User | undefined
 }
 
 const Home = ({user} : HomeProps) => {
-
   return (
     <div>
       {

@@ -1,13 +1,13 @@
-name: Django CI
+name: Execução de Testes de Regressão
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop", "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop", "main" ]
 
 jobs:
-  build:
+  unit-tests:
 
     runs-on: ubuntu-latest
     strategy:

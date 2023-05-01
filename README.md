@@ -15,7 +15,7 @@ npm install
 cd frontend 
 npm run dev 
 ```
-## Configurar Backend(API)
+## Configurar Backend(API) <br>
 
 Abra a pasta padaflix no terminal e execute os seguintes comandos: <br>
 ```

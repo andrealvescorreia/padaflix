@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function InputAdornments() {
+export default function InputAdornments({onChange}) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -25,8 +25,9 @@ export default function InputAdornments() {
           <OutlinedInput
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
+            onChange={onChange}
             endAdornment={
-              <InputAdornment position="end" id="pass">
+              <InputAdornment position="end" id="pass"  >
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}

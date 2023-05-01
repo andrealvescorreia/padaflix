@@ -1,29 +1,35 @@
 import { SyntheticEvent, useState } from "react";
 import InputAdornments from "../../components/InputPass";
 import { Button, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from '../../axios'
+import { User } from "../../types/User";
 import "./Login.scss";
-import logo from ".\img\logo1.png";
-// CRIANDO TEMA PARA OS BOTÕES
 
-const Login = () => {
+interface LoginProps {
+    setUser: (user: User | undefined) => void
+}
+
+const Login = ( {setUser}: LoginProps) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate()
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:8000/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({email, password})
+        axiosInstance.post('/login', {
+            email, 
+            password
         })
-        const content = await response.json();
-
-        alert(JSON.stringify(content))
+        .then((response) => {
+            setUser(response.data)
+            navigate('/') // redireciona para a homepage
+        })
+        .catch((err) => {
+            alert(err)
+        })
     }
 
 
@@ -34,14 +40,14 @@ const Login = () => {
                 <img src = 'src\routes\Login\img\logo1.png'  alt="logo" />
 
                 <label htmlFor="">E-mail
-                    <TextField/>
+                    <TextField onChange={e => setEmail(e.target.value)}/>
                 </label>
 
                 <label htmlFor="">Senha
-                    <InputAdornments/>
+                    <InputAdornments onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull">Login</Button>
+                    <Button variant="contained" className="buttonFull" type="submit">Login</Button>
                     <Button variant="outlined" className="buttonEmpty">Cadastrar-se</Button>
                     <Button variant="text" className="buttonText">Esqueci a senha!</Button>
                 </div>

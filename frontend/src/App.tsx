@@ -6,6 +6,7 @@ import Login from './routes/Login';
 import {useEffect, useState} from "react";
 import axiosInstance from './axios'
 import { User } from "./types/User";
+import PadariasList from './routes/PadariasList';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/" element={<Home user={user}/>} />
         <Route path="/login" element={<Login setUser={setUser}/>} />
         <Route path="/register" element={<Register />} />
+        <Route path="/padarias" element={<PadariasList />} />
       </Routes>
     </div>
   )

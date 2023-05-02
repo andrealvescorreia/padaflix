@@ -1,7 +1,10 @@
 import { SyntheticEvent, useState } from "react";
+import InputAdornments from "../../components/InputPass";
+import { Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from '../../axios'
 import { User } from "../../types/User";
+import "./Login.scss";
 
 interface LoginProps {
     setUser: (user: User | undefined) => void
@@ -31,24 +34,24 @@ const Login = ( {setUser}: LoginProps) => {
 
 
     return (
-        <main className="form-signin w-100 m-auto">
+        <main id = "mainContainer">
         
-        <form  onSubmit={submit} >
-            <h1 className="h3 mb-3 fw-normal">Por favor, realize o Login</h1>
-            <div className="form-floating">
-                <input type="email" className="form-control" placeholder="name@example.com"
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <label htmlFor="floatingInput">Email</label>
-            </div>
-            <div className="form-floating">
-                <input type="password" className="form-control" placeholder="Password"
-                    onChange={e => setPassword(e.target.value)}
-                />
-                <label htmlFor="floatingPassword">Senha</label>
-            </div>
-            <button className="w-100 btn btn-lg btn-primary" type="submit">Login</button>
-        </form>
+            <form  onSubmit={submit} id = "secondaryContainer">
+
+                <label htmlFor="">E-mail
+                    <TextField onChange={e => setEmail(e.target.value)}/>
+                </label>
+
+                <label htmlFor="">Senha
+                    <InputAdornments onChange={e => setPassword(e.target.value)} />
+                </label>
+                <div id="buttonsOfLogin">
+                    <Button variant="contained" className="buttonFull" type="submit">Login</Button>
+                    <Button variant="outlined" className="buttonEmpty">Cadastrar-se</Button>
+                    <Button variant="text" className="buttonText">Esqueci a senha!</Button>
+                </div>
+                
+            </form>
         </main>
     );
 }

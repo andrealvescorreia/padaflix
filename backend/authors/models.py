@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class User(AbstractUser):
     name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     username = None
 
@@ -13,11 +13,10 @@ class User(AbstractUser):
 
 
 class Padaria(AbstractUser):
-    fantasy_name = models.CharField(max_length=255)
+    nome_fantasia = models.CharField(max_length=255)
     cnpj = models.CharField(max_length=18, unique=True)
     telefone = models.CharField(max_length=20)
-    endereco = models.CharField(max_length=255)
-    email = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     username = None
     groups = models.ManyToManyField(Group, related_name='padaria_groups', blank=True)  # noqa: E501

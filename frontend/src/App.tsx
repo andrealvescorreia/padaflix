@@ -6,7 +6,7 @@ import Login from './routes/Login';
 import {useEffect, useState} from "react";
 import axiosInstance from './axios'
 import { User } from "./types/User";
-import RegisterBekery from './routes/RegisterBekery';
+import RegisterBekery from './routes/RegisterBakery';
 
 function App() {
 
@@ -34,7 +34,7 @@ function App() {
         <Route path="/" element={<Home user={user}/>} />
         <Route path="/login" element={<Login setUser={setUser}/>} />
         <Route path="/register" element={<Register />} />
-        <Route path= "/registerBekery" element={<RegisterBekery />} />
+        <Route path= "/registerBakery" element={<RegisterBekery />} />
       </Routes>
     </div>
   )

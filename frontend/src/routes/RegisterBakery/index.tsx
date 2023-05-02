@@ -7,8 +7,9 @@ import InputAdornments from "../../components/InputPass";
 
 const RegisterBekery = () => {
 
-    const [name, setName] = useState('');
+    const [name_fantasia, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [cnpj, setCnpj] = useState('');
     const [telefone, setTelefone] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -16,15 +17,16 @@ const RegisterBekery = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
 
-        axiosInstance.post('/register', {
-            name,
-            email,
+        axiosInstance.post('/register_padaria', {
+            name_fantasia,
+            cnpj,
             telefone, 
+            email,
             password
         })
         .then((response) => {
             alert(JSON.stringify(response.data))
-            // navigate('/login')
+            navigate('/login')
         })
         .catch((err) => {
             alert(err)
@@ -35,8 +37,12 @@ const RegisterBekery = () => {
         <main id = "mainContainer">
         
         <form onSubmit={submit} id = "secondaryContainer">
-                <label htmlFor="">Nome completo
+                <label htmlFor="">Nome fantasia
                     <TextField onChange={e => setName(e.target.value)}/>
+                </label>
+
+                <label htmlFor="">CNPJ
+                    <TextField onChange={e => setCnpj(e.target.value)}/>
                 </label>
 
                 <label htmlFor="">E-mail
@@ -51,7 +57,7 @@ const RegisterBekery = () => {
                     <InputAdornments onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull" type="submit">Login</Button>
+                    <Button variant="contained" className="buttonFull" type="submit">Registro</Button>
                 </div>
         </form>
         </main>

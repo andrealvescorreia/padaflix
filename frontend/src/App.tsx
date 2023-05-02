@@ -6,6 +6,8 @@ import Login from './routes/Login';
 import {useEffect, useState} from "react";
 import axiosInstance from './axios'
 import { User } from "./types/User";
+import PadariasList from './routes/PadariasList';
+import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
 
 function App() {
@@ -33,7 +35,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home user={user}/>} />
         <Route path="/login" element={<Login setUser={setUser}/>} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/choose-profile" element={<ChooseProfile />} />
+        <Route path="/register/user" element={<Register />} />
+        <Route path="/padarias" element={<PadariasList />} />
         <Route path= "/registerBakery" element={<RegisterBekery />} />
       </Routes>
     </div>

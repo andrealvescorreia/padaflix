@@ -15,7 +15,7 @@ const Register = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
 
-        axiosInstance.post('/register', {
+        axiosInstance.post('/register_user', {
             name,
             email, 
             password

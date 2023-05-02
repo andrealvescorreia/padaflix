@@ -15,23 +15,22 @@ npm install
 cd frontend 
 npm run dev 
 ```
-## Configurar Backend(API) <br>
-Abra a pasta padaflix no terminal e execute os seguintes comandos:
+
+Abra a pasta padaflix no terminal e execute os seguintes comandos: <br>
 ```
 python -m venv venv 
 venv/Scripts/activate
 pip install -r requirements.txt
 ```
-##Rodar API
-´´´
-venv/Scripts/activate
-cd backend
-python manage.py migrate
+
+
+## Rodar API <br>
+```
+venv/Scripts/activate 
+cd backend 
+python manage.py migrate 
 python manage.py runserver
-´´´
-
-
-
+```
 <br> André Alves
 <br> Arthur Medeiros
 <br> Meljael Daniel

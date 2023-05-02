@@ -35,50 +35,6 @@ class Register_PadariaView(APIView):
         return Response(serializer.data)
 
 
-'''class LoginView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
-
-        # Tenta autenticar um usuário com base no email e senha fornecidos
-        user = authenticate(request, username=email, password=password)
-
-        if user is None:
-            # Se a autenticação do usuário falhar, tenta autenticar uma
-            # padaria com base no email e senha fornecidos
-            padaria = Padaria.objects.filter(email=email).first()
-
-            if padaria is None:
-                raise AuthenticationFailed('Usuario nao encontrado!')
-
-            if not padaria.check_password(password):
-                raise AuthenticationFailed('Senha incorreta!')
-
-            # Autenticação da padaria bem-sucedida, gera o token JWT
-            payload = {
-                'id': padaria.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-                'iat': datetime.datetime.utcnow()
-            }
-        else:
-            # Autenticação do usuário bem-sucedida, gera o token JWT
-            payload = {
-                'id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-                'iat': datetime.datetime.utcnow()
-            }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-
-        response = Response()
-
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            "jwt": token
-        }
-        return response'''
-
-
 class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
@@ -98,14 +54,14 @@ class LoginView(APIView):
 
             payload = {
                 'id': padaria.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
             }
 
         else:
             payload = {
                 'id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
             }
 
@@ -118,35 +74,6 @@ class LoginView(APIView):
             "jwt": token
         }
         return response
-
-
-'''class Login_PadariaView(APIView):
-    def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
-
-        padaria = Padaria.objects.filter(email=email).first()
-
-        if padaria is None:
-            raise AuthenticationFailed('Usuario nao encontrado!')
-
-        if not padaria.check_password(password):
-            raise AuthenticationFailed('Senha incorreta!')
-
-        payload = {
-            'id': padaria.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-
-        response = Response()
-
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.data = {
-            "jwt": token
-        }
-        return response'''
 
 
 class UserView(APIView):

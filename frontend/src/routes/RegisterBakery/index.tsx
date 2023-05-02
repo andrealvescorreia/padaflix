@@ -7,7 +7,7 @@ import InputAdornments from "../../components/InputPass";
 
 const RegisterBekery = () => {
 
-    const [name_fantasia, setName] = useState('');
+    const [nome_fantasia, setName] = useState('');
     const [email, setEmail] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [telefone, setTelefone] = useState('');
@@ -18,7 +18,7 @@ const RegisterBekery = () => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
 
         axiosInstance.post('/register_padaria', {
-            name_fantasia,
+            nome_fantasia,
             cnpj,
             telefone, 
             email,

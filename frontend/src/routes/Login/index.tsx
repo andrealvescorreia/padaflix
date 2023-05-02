@@ -1,32 +1,24 @@
 import { SyntheticEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { User } from "../../types/User";
 
-interface LoginProps {
-    setUser: (user: User | undefined) => void
-}
-
-const Login = ( {setUser}: LoginProps) => {
+const Login = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate()
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        axiosInstance.post('/login', {
-            email, 
-            password
+        const response = await fetch('http://localhost:8000/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({email, password})
         })
-        .then((response) => {
-            setUser(response.data)
-            navigate('/') // redireciona para a homepage
-        })
-        .catch((err) => {
-            alert(err)
-        })
+        const content = await response.json();
+
+        alert(JSON.stringify(content))
     }
 
 

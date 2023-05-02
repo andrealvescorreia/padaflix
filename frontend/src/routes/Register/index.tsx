@@ -1,30 +1,25 @@
 import { SyntheticEvent, useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { Navigate } from "react-router-dom";
 
 const Register = () => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
     const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();//previne de recarregar a pagina ao clicar em submit
+        e.preventDefault();
+      
+        const response = await fetch('http://localhost:8000/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name, email, password})
+        })
 
-        axiosInstance.post('/register', {
-            name,
-            email, 
-            password
-        })
-        .then((response) => {
-            alert(JSON.stringify(response.data))
-            navigate('/login')
-        })
-        .catch((err) => {
-            alert(err)
-        })
+        const content = await response.json();
+
+        alert(JSON.stringify(content))
     }
 
     return ( 

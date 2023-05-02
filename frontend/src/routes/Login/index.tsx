@@ -37,7 +37,6 @@ const Login = ( {setUser}: LoginProps) => {
         <main id = "mainContainer">
         
             <form  onSubmit={submit} id = "secondaryContainer">
-                <img src = 'src\routes\Login\img\logo1.png'  alt="logo" />
 
                 <label htmlFor="">E-mail
                     <TextField onChange={e => setEmail(e.target.value)}/>

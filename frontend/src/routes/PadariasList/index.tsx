@@ -24,7 +24,7 @@ const PadariasList = () => {
         })
         }
     )();
-    })
+    },[])
 
 
     return <div id="padarias-list">

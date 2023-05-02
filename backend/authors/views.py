@@ -4,6 +4,19 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User, Padaria
 import jwt, datetime
+from django.http import JsonResponse
+
+
+def home(request):
+    padarias = Padaria.objects.all()
+    data = {'padarias': []}
+    for padaria in padarias:
+        data['padarias'].append({
+            'nome_fantasia': padaria.nome_fantasia,
+            'cnpj': padaria.cnpj,
+            'telefone': padaria.telefone,
+        })
+    return JsonResponse(data)
 
 
 class Register_UserView(APIView):
@@ -22,7 +35,51 @@ class Register_PadariaView(APIView):
         return Response(serializer.data)
 
 
-class Login_UserView(APIView):
+'''class LoginView(APIView):
+    def post(self, request):
+        email = request.data['email']
+        password = request.data['password']
+
+        # Tenta autenticar um usuário com base no email e senha fornecidos
+        user = authenticate(request, username=email, password=password)
+
+        if user is None:
+            # Se a autenticação do usuário falhar, tenta autenticar uma
+            # padaria com base no email e senha fornecidos
+            padaria = Padaria.objects.filter(email=email).first()
+
+            if padaria is None:
+                raise AuthenticationFailed('Usuario nao encontrado!')
+
+            if not padaria.check_password(password):
+                raise AuthenticationFailed('Senha incorreta!')
+
+            # Autenticação da padaria bem-sucedida, gera o token JWT
+            payload = {
+                'id': padaria.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'iat': datetime.datetime.utcnow()
+            }
+        else:
+            # Autenticação do usuário bem-sucedida, gera o token JWT
+            payload = {
+                'id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'iat': datetime.datetime.utcnow()
+            }
+
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+
+        response = Response()
+
+        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.data = {
+            "jwt": token
+        }
+        return response'''
+
+
+class LoginView(APIView):
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
@@ -30,16 +87,28 @@ class Login_UserView(APIView):
         user = User.objects.filter(email=email).first()
 
         if user is None:
-            raise AuthenticationFailed('Usuario nao encontrado!')
 
-        if not user.check_password(password):
-            raise AuthenticationFailed('Senha incorreta!')
+            padaria = Padaria.objects.filter(email=email).first()
 
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
+            if padaria is None:
+                raise AuthenticationFailed('Usuario nao encontrado!')
+
+            if not padaria.check_password(password):
+                raise AuthenticationFailed('Senha incorreta!')
+
+            payload = {
+                'id': padaria.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'iat': datetime.datetime.utcnow()
+            }
+
+        else:
+            payload = {
+                'id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+                'iat': datetime.datetime.utcnow()
+            }
+
         token = jwt.encode(payload, 'secret', algorithm='HS256')
 
         response = Response()
@@ -51,7 +120,7 @@ class Login_UserView(APIView):
         return response
 
 
-class Login_PadariaView(APIView):
+'''class Login_PadariaView(APIView):
     def post(self, request):
         email = request.data['email']
         password = request.data['password']
@@ -77,7 +146,7 @@ class Login_PadariaView(APIView):
         response.data = {
             "jwt": token
         }
-        return response
+        return response'''
 
 
 class UserView(APIView):

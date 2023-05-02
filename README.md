@@ -17,6 +17,7 @@ npm run dev
 ```
 ## Configurar Backend (API) <br>
 - Pré-requisitos: Python instalado E atualizado <br>
+
 Abra a pasta padaflix no terminal e execute os seguintes comandos:
 ```
 python -m venv venv 

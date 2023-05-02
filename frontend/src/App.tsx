@@ -38,7 +38,7 @@ function App() {
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/register/user" element={<Register />} />
         <Route path="/padarias" element={<PadariasList />} />
-        <Route path= "/registerBakery" element={<RegisterBekery />} />
+        <Route path= "/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>
   )

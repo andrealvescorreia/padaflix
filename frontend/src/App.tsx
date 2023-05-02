@@ -8,6 +8,7 @@ import axiosInstance from './axios'
 import { User } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
+import RegisterBekery from './routes/RegisterBakery';
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
       })
     }
   )();
-  })
+  },[])
 
 
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/register/user" element={<Register />} />
         <Route path="/padarias" element={<PadariasList />} />
+        <Route path= "/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>
   )

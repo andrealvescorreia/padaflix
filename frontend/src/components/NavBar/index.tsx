@@ -40,7 +40,7 @@ const NavBar = ( {user, setUser}: NavBarProps ) => {
           Login
         </Link>
         
-        <Link to="/register" id={styles.start_now_btn} className={styles.btn} >
+        <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
           Começe Agora
         </Link>
         

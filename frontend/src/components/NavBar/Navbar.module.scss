@@ -21,15 +21,21 @@
   border-radius: 10px;
 }
 
+.logoContainer{
+  @include mixins.flex-center;
+  width: 40%;
+}
+
 .logo{
+  
   width: 13rem;
-  margin-left: auto;
   min-width: 8rem;
 }
 
 #login_btn{
   border: solid 0.1rem #C78A61;
   color: #C78A61;
+  margin-left: auto;
 }
 
 #login_btn:hover{
@@ -37,25 +43,33 @@
   color: #e9b28d;;
 }
 
-
 #start_now_btn{
   background-color: #C78A61;
   color: white;
+  
 }
 
 #start_now_btn:hover {
   background-color: #C78A61;
 }
 
-#logout-btn{
-    border: solid 0.1rem #0CBBC7;
-    color: #0CBBC7;
+#logout_btn{
+  margin-left: auto;
+  color: black;
+  margin-right: 1rem;
+  text-decoration: none;
+}
+
+.defaultNavOptions{
+  width: 30%;
 }
 
 .navOptions{
-    display: flex;
-    margin-left: auto;
+  display: flex;
+  width: 30%;
 }
+
+
 
 .option{
     color: variables.$text-color;

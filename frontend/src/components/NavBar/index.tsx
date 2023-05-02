@@ -19,21 +19,21 @@ const NavBar = ( {user, setUser}: NavBarProps ) => {
     })
   }
 
-  let navOptions;
+  let userNavOption;
 
   if (user) { // Caso autenticado
-    navOptions = (
+    userNavOption = (
       <div className={styles.navOptions}>
         
         <Link to="/login" id={styles.logout_btn} onClick={logout} >
-          Logout
+          Sair
         </Link>
         
       </div>
     )
   }
   else {// Caso não autenticado...
-    navOptions = (
+    userNavOption = (
       <div className={styles.navOptions}>
         
         <Link to="/login"  id={styles.login_btn} className={styles.btn} >
@@ -51,18 +51,22 @@ const NavBar = ( {user, setUser}: NavBarProps ) => {
 
   
   return <nav id={styles.navbar}>
-    <Link to="/"   className={styles.option} >
-      Início
-    </Link>
-        
-    <Link to="/padarias" className={styles.option} >
-      Padarias
-    </Link>
+    <div className={styles.defaultNavOptions}>
+      <Link to="/"   className={styles.option} >
+        Início
+      </Link>
+          
+      <Link to="/padarias" className={styles.option} >
+        Padarias
+      </Link>
+    </div>
 
+    <div className={styles.logoContainer}>
+      <img src={Logo} className={styles.logo} alt="logo padaflix"/>
+    </div>
 
-    <img src={Logo} className={styles.logo} alt="logo padaflix"/>
     
-    {navOptions}
+    {userNavOption}
   </nav>;
   
 }

@@ -1,67 +1,30 @@
 import PadariaCard from "../../components/PadariaCard";
 import "./styles.scss"
+import axiosInstance from '../../axios';
+import { useEffect, useState } from "react";
 
 interface Padaria {
     id: number,
-    name: string,
-    rating: number,
+    nome_fantasia: string
 }
 
 const PadariasList = () => {
 
-    const padarias : Padaria[] = [
-        {
-            id: 1,
-            name: "Padaria Pão Bom",
-            rating: 4.2
-        },
-        {
-            id: 2,
-            name: "Padaria da Dona Mariazinha",
-            rating: 4.2
-        },
-        {
-            id: 3,
-            name: "Já pão",
-            rating: 5
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
-        {
-            id: 4,
-            name: "Cacetinho do Zé",
-            rating: 4
-        },
+    const [padarias, setPadarias] = useState<Padaria[]> ([]);
 
-    ]; 
+    useEffect(() => {
+    (
+        async () => {
+        axiosInstance.get('/')
+        .then((response) => {
+            setPadarias(response.data.padarias);
+        })
+        .catch(() => {
+            alert("Ih Serjão, sujou!")
+        })
+        }
+    )();
+    })
 
 
     return <div id="padarias-list">
@@ -70,7 +33,7 @@ const PadariasList = () => {
 
         <div className="grid">
             {
-                padarias.map(padaria => 
+                padarias?.map(padaria => 
                     <PadariaCard 
                         {...padaria} 
                         key={padaria.id} 

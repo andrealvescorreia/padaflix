@@ -55,10 +55,11 @@ class LoginView(APIView):
             padaria = Padaria.objects.filter(email=email).first()
 
             if padaria is None:
-                raise AuthenticationFailed('Usuario nao encontrado!')
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                # raise AuthenticationFailed('Usuario nao encontrado!')
 
             if not padaria.check_password(password):
-                raise AuthenticationFailed('Senha incorreta!')
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
 
             payload = {
                 'id': padaria.id,
@@ -66,11 +67,9 @@ class LoginView(APIView):
                 'iat': datetime.datetime.utcnow()
             }
 
-            return Response(data, status=status.HTTP_200_OK)
-
         else:
             if not user.check_password(password):
-                raise AuthenticationFailed('Senha incorreta!')
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
 
             payload = {
                 'id': user.id,

@@ -3,7 +3,8 @@ from .serializers import UserSerializer, PadariaSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from .models import User, Padaria
-import jwt, datetime
+import jwt
+import datetime
 from django.http import JsonResponse
 
 
@@ -53,13 +54,18 @@ class LoginView(APIView):
                 raise AuthenticationFailed('Senha incorreta!')
 
             payload = {
+                'user-type': 'padaria-user',
                 'id': padaria.id,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
             }
 
         else:
+            if not user.check_password(password):
+                raise AuthenticationFailed('Senha incorreta!')
+
             payload = {
+                'user-type': 'client-user',
                 'id': user.id,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
@@ -85,11 +91,16 @@ class UserView(APIView):
 
         try:
             payload = jwt.decode(token, 'secret', algorithms='HS256')
+            print(payload)
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Não Autenticado!')
 
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        if payload['user-type'] == 'client-user':
+            user = User.objects.filter(id=payload['id']).first()
+            serializer = UserSerializer(user)
+        else:
+            padaria = Padaria.objects.filter(id=payload['id']).first()
+            serializer = PadariaSerializer(padaria)
 
         return Response(serializer.data)
 

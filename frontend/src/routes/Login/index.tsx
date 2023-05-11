@@ -1,42 +1,28 @@
 import { SyntheticEvent, useState } from "react";
 import InputAdornments from "../../components/InputPass";
 import { Button, TextField } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { User } from "../../types/User";
 import "./Login.scss";
 
 interface LoginProps {
-    setUser: (user: User | undefined) => void
+    onSubmit: (email: string, password: string) => void;
 }
 
-const Login = ( {setUser}: LoginProps) => {
+const Login = ( props:LoginProps ) => {
+
+    const { onSubmit } = props
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate()
 
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
-
-        axiosInstance.post('/login', {
-            email, 
-            password
-        })
-        .then((response) => {
-            setUser(response.data)
-            navigate('/') // redireciona para a homepage
-        })
-        .catch((err) => {
-            alert(err)
-        })
+    const handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
+        onSubmit(email, password);
     }
-
 
     return (
         <main id = "mainContainer">
         
-            <form  onSubmit={submit} id = "secondaryContainer">
+            <form  onSubmit={handleSubmit} id = "secondaryContainer">
 
                 <label htmlFor="">E-mail
                     <TextField onChange={e => setEmail(e.target.value)}/>

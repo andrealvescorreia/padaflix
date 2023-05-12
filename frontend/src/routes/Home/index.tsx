@@ -1,21 +1,33 @@
-import { User } from "../../types/User";
+import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+
+function NotLoggedInHome(){
+  return <div>
+    Não logado...
+  </div>;
+}
+function UserHome(user: User) {
+  return <div>
+    Olá {user.name}
+  </div>;
+}
+function PadariaUserHome(padariaUser: PadariaUser) {
+  return <div>
+    Olá {padariaUser.nome_fantasia}
+  </div>;
+}
+
 
 interface HomeProps {
-  user: User | undefined
+  user: User | undefined | PadariaUser
 }
 
 const Home = ({user} : HomeProps) => {
-  return (
-    <div>
-      {
-        user 
-        ? 
-        'Bem vindo ' + user.name 
-        : 
-        'Voce não está logado...'
-      }
-    </div>
-  );
+  if (user) {
+    if (isUser(user)) return UserHome(user)
+    if (isPadariaUser(user)) return PadariaUserHome(user)
+  }
+  
+  return NotLoggedInHome()
 }
  
 export default Home;

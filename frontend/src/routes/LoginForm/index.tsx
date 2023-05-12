@@ -7,7 +7,7 @@ interface LoginProps {
     onSubmit: (email: string, password: string) => void;
 }
 
-const Login = ( props:LoginProps ) => {
+const LoginForm = ( props:LoginProps ) => {
 
     const { onSubmit } = props
 
@@ -42,4 +42,4 @@ const Login = ( props:LoginProps ) => {
     );
 }
  
-export default Login;
+export default LoginForm;

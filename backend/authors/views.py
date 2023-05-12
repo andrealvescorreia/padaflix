@@ -57,7 +57,6 @@ class LoginView(APIView):
 
             if padaria is None:
                 return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
-                # raise AuthenticationFailed('Usuario nao encontrado!')
 
             if not padaria.check_password(password):
                 return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
@@ -100,7 +99,6 @@ class UserView(APIView):
 
         try:
             payload = jwt.decode(token, 'secret', algorithms='HS256')
-            print(payload)
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Não Autenticado!')
 

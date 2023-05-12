@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, PadariaSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import status
 from .models import User, Padaria
 import jwt, datetime
 from django.http import JsonResponse
@@ -22,23 +23,30 @@ def home(request):
 class Register_UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        if serializer.is_valid():
+            # serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Register_PadariaView(APIView):
     def post(self, request):
         serializer = PadariaSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        if serializer.is_valid():
+            # serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
     def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+        data = request.data
+        email = data['email']
+        password = data['password']
 
         user = User.objects.filter(email=email).first()
 
@@ -47,21 +55,25 @@ class LoginView(APIView):
             padaria = Padaria.objects.filter(email=email).first()
 
             if padaria is None:
-                raise AuthenticationFailed('Usuario nao encontrado!')
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                # raise AuthenticationFailed('Usuario nao encontrado!')
 
             if not padaria.check_password(password):
-                raise AuthenticationFailed('Senha incorreta!')
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
 
             payload = {
                 'id': padaria.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
             }
 
         else:
+            if not user.check_password(password):
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+
             payload = {
                 'id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),  # noqa: E501
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
             }
 

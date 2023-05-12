@@ -4,7 +4,7 @@ from .views import home, Register_UserView, Register_PadariaView, LoginView, Use
 urlpatterns = [
   path('', home, name='home'),
   path('register_user', Register_UserView.as_view(), name='register_user'),
-  path('register_padaria', Register_PadariaView.as_view(), name='register_padaria'),
+  path('register_padaria', Register_PadariaView.as_view(), name='register_padaria'),  # noqa: E501
   path('login', LoginView.as_view(), name='login'),
   path('user', UserView.as_view(), name='user'),
   path('padaria', PadariaView.as_view(), name='padaria'),

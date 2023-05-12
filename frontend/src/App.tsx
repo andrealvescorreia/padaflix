@@ -2,18 +2,19 @@ import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
 import Register from './routes/Register';
-import Login from './routes/Login';
+import LoginForm from './routes/LoginForm';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
-import { User } from "./types/User";
+import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
 
 function App() {
 
-  const [user, setUser] = useState<User>()
+
+  const [user, setUser] = useState<User | PadariaUser | undefined>()
   
   const fetchUser = async () => {
     axiosInstance.get('/user')
@@ -31,7 +32,7 @@ function App() {
 
   const navigate = useNavigate()
 
-  const submit = async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     axiosInstance.post('/login', {
       email, 
       password
@@ -45,16 +46,26 @@ function App() {
     })
   }
 
+  const logout = async () => {
+    axiosInstance.post('/logout')
+    .then(() => {
+      setUser(undefined)
+    })
+    .catch((err)=>{
+      console.log(err.data)
+    })
+  }
+
   return (
     <div>
-      <NavBar user={user} setUser={setUser}/>
+      <NavBar isAuthenticated = { user ? true : false } logout={logout} />
       <Routes>
         <Route path="/" element={<Home user={user}/>} />
-        <Route path="/login" element={<Login onSubmit={submit}/>} />
+        <Route path="/login" element={<LoginForm onSubmit={login}/>} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
-        <Route path="/register/user" element={<Register />} />
         <Route path="/padarias" element={<PadariasList />} />
-        <Route path= "/register/user-padaria" element={<RegisterBekery />} />
+        <Route path="/register/user" element={<Register />} />
+        <Route path="/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>
   )

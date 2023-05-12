@@ -1,27 +1,17 @@
 import { Link } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { User } from "../../types/User";
 import styles from './Navbar.module.scss';
 import Logo from '../../assets/logo.png';
 
 interface NavBarProps {
-  user: User | undefined,
-  setUser: (user: User | undefined) => void
+  isAuthenticated: boolean,
+  logout: () => void;
 }
 
-const NavBar = ( {user, setUser}: NavBarProps ) => {
-  const logout = async () => {
-    axiosInstance.post('/logout')
-    .then(()=>{
-      setUser(undefined)
-    }).catch((err)=>{
-      console.log(err.data)
-    })
-  }
+const NavBar = ( { isAuthenticated , logout } : NavBarProps ) => {
 
   let userNavOption;
 
-  if (user) { // Caso autenticado
+  if (isAuthenticated) { // Caso autenticado
     userNavOption = (
       <div className={styles.navOptions}>
         

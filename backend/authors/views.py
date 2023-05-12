@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
 from .models import User, Padaria
-import jwt, datetime
+import jwt
+import datetime
 from django.http import JsonResponse
 
 
@@ -56,12 +57,12 @@ class LoginView(APIView):
 
             if padaria is None:
                 return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
-                # raise AuthenticationFailed('Usuario nao encontrado!')
 
             if not padaria.check_password(password):
                 return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
 
             payload = {
+                'user-type': 'padaria-user',
                 'id': padaria.id,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
@@ -72,6 +73,7 @@ class LoginView(APIView):
                 return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
 
             payload = {
+                'user-type': 'client-user',
                 'id': user.id,
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
                 'iat': datetime.datetime.utcnow()
@@ -100,8 +102,12 @@ class UserView(APIView):
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Não Autenticado!')
 
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        if payload['user-type'] == 'client-user':
+            user = User.objects.filter(id=payload['id']).first()
+            serializer = UserSerializer(user)
+        else:
+            padaria = Padaria.objects.filter(id=payload['id']).first()
+            serializer = PadariaSerializer(padaria)
 
         return Response(serializer.data)
 

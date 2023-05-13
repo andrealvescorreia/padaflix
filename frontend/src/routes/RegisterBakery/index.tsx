@@ -5,19 +5,23 @@ import { Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import InputAdornments from "../../components/InputPass";
 
-const Register = () => {
+const RegisterBekery = () => {
 
-    const [name, setName] = useState('');
+    const [nome_fantasia, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [telefone, setTelefone] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
 
-        axiosInstance.post('/register', {
-            name,
-            email, 
+        axiosInstance.post('/register_padaria', {
+            nome_fantasia,
+            cnpj,
+            telefone, 
+            email,
             password
         })
         .then((response) => {
@@ -30,28 +34,34 @@ const Register = () => {
     }
 
     return ( 
-        <main  id="mainContainer">
-        <form  onSubmit={submit} id = "secondaryContainer">
+        <main id = "mainContainer">
+        
+        <form onSubmit={submit} id = "secondaryContainer">
+                <label htmlFor="">Nome fantasia
+                    <TextField onChange={e => setName(e.target.value)}/>
+                </label>
 
-                <label htmlFor="name">Nome
-                    <TextField id="name"onChange={e => setName(e.target.value)}/>
+                <label htmlFor="">CNPJ
+                    <TextField onChange={e => setCnpj(e.target.value)}/>
                 </label>
 
                 <label htmlFor="">E-mail
                     <TextField onChange={e => setEmail(e.target.value)}/>
                 </label>
 
+                <label htmlFor="">Telefone
+                    <TextField onChange={e => setTelefone(e.target.value)} />
+                </label>
+
                 <label htmlFor="">Senha
                     <InputAdornments onChange={e => setPassword(e.target.value)} />
                 </label>
-
                 <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull" type="submit">Criar conta</Button>
+                    <Button variant="contained" className="buttonFull" type="submit">Registro</Button>
                 </div>
-                
-            </form>
+        </form>
         </main>
     );
 }
  
-export default Register;
+export default RegisterBekery;

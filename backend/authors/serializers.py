@@ -30,8 +30,41 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def validate(self, data):
+        endereco = data.get('endereco', {})
+
+        '''queryset = User.objects.filter(
+            endereco__cep=endereco.get('cep', ''),
+            endereco__rua=endereco.get('rua', ''),
+            endereco__numero=endereco.get('numero', ''),
+            endereco__bairro=endereco.get('bairro', ''),
+            endereco__complemento=endereco.get('complemento', ''),
+            endereco__uf=endereco.get('uf', ''),
+        )
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Já existe um usuário cadastrado com o mesmo endereço."
+            )'''
+
+        queryset = Padaria.objects.filter(
+            endereco__cep=endereco.get('cep', ''),
+            endereco__rua=endereco.get('rua', ''),
+            endereco__numero=endereco.get('numero', ''),
+            endereco__bairro=endereco.get('bairro', ''),
+            endereco__complemento=endereco.get('complemento', ''),
+            endereco__uf=endereco.get('uf', ''),
+        )
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Já existe uma padaria cadastrada com o mesmo endereço."
+            )
+
+        return data
+
 
 class PadariaSerializer(serializers.ModelSerializer):
+    endereco = EnderecoSerializer()
+
     class Meta:
         model = Padaria
         fields = ['id', 'nome_fantasia', 'endereco',
@@ -51,3 +84,34 @@ class PadariaSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    def validate(self, data):
+        endereco = data.get('endereco', {})
+
+        queryset = Padaria.objects.filter(
+            endereco__cep=endereco.get('cep', ''),
+            endereco__rua=endereco.get('rua', ''),
+            endereco__numero=endereco.get('numero', ''),
+            endereco__bairro=endereco.get('bairro', ''),
+            endereco__complemento=endereco.get('complemento', ''),
+            endereco__uf=endereco.get('uf', ''),
+        )
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Já existe uma padaria cadastrada com o mesmo endereço."
+            )
+
+        queryset = User.objects.filter(
+            endereco__cep=endereco.get('cep', ''),
+            endereco__rua=endereco.get('rua', ''),
+            endereco__numero=endereco.get('numero', ''),
+            endereco__bairro=endereco.get('bairro', ''),
+            endereco__complemento=endereco.get('complemento', ''),
+            endereco__uf=endereco.get('uf', ''),
+        )
+        if queryset.exists():
+            raise serializers.ValidationError(
+                "Já existe um usuário cadastrado com o mesmo endereço."
+            )
+
+        return data

@@ -1,12 +1,16 @@
-from rest_framework.views import APIView
-from .serializers import UserSerializer, PadariaSerializer
-from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework import status
-from .models import User, Padaria
+import requests
 import jwt
 import datetime
+
+from .serializers import UserSerializer, PadariaSerializer
+from .models import User, Padaria
+from django.db.models import Value, CharField
+from django.db.models.functions import Concat
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.views import APIView
+from rest_framework import status
 
 
 def home(request):
@@ -15,6 +19,14 @@ def home(request):
     for padaria in padarias:
         data['padarias'].append({
             'nome_fantasia': padaria.nome_fantasia,
+            'endereco': {
+                'cep': padaria.endereco.cep,
+                'rua': padaria.endereco.rua,
+                'numero': padaria.endereco.numero,
+                'bairro': padaria.endereco.bairro,
+                'complemento': padaria.endereco.complemento,
+                'uf': padaria.endereco.uf,
+            },
             'cnpj': padaria.cnpj,
             'telefone': padaria.telefone,
         })
@@ -128,6 +140,27 @@ class PadariaView(APIView):
         serializer = PadariaSerializer(padaria)
 
         return Response(serializer.data)
+
+
+class PadariaPorCidadeView(APIView):
+    def get(self, request, cep):
+        response = requests.get(f'https://viacep.com.br/ws/{cep}/json/')
+        if response.status_code != status.HTTP_200_OK:
+            return JsonResponse(
+                {'message': 'CEP inválido.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+            )
+
+        cidade = response.json().get('localidade', '').upper()
+        padarias = (
+            Padaria.objects
+            .filter(endereco__cep__startswith=cep[:4])
+            .annotate(cidade=Value(cidade, output_field=CharField()))
+            .annotate(nome_com_cidade=Concat('nome_fantasia', Value(' - '), 'cidade'))  # noqa: E501
+            .filter(cidade=cidade)
+        )
+
+        serializer = PadariaSerializer(padarias, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 class LogoutView(APIView):

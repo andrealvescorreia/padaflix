@@ -102,7 +102,7 @@ class LoginView(APIView):
         return response
 
 
-class UserView(APIView):
+class UserAndPadariaView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -120,24 +120,6 @@ class UserView(APIView):
         else:
             padaria = Padaria.objects.filter(id=payload['id']).first()
             serializer = PadariaSerializer(padaria)
-
-        return Response(serializer.data)
-
-
-class PadariaView(APIView):
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            raise AuthenticationFailed('Não Autenticado!')
-
-        try:
-            payload = jwt.decode(token, 'secret', algorithms='HS256')
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Não Autenticado!')
-
-        padaria = Padaria.objects.filter(id=payload['id']).first()
-        serializer = PadariaSerializer(padaria)
 
         return Response(serializer.data)
 

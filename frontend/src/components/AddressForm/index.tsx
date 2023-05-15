@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { SyntheticEvent, useState } from "react";
-import { Button, Container, TextField, Typography } from "@mui/material";
+import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
-import Input from '@mui/material/Input';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -11,32 +10,22 @@ import "./styles.scss";
 
 import { MdLocationOn } from "react-icons/md";
 import axios from 'axios';
+import { Endereco } from '../../types/Endereco';
 
-interface Address {
-    cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string
-}
+
 
 interface AddressProps {
-    onSubmit: (cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string) => void;
+    onSubmit: (endereco: Endereco) => void;
+    onGoBack: () => void;
 }
 
 
-const AddressForm = (/* props:AddressProps */) => {
-    //const { onSubmit } = props
-    let emptyAddres : Address = {
-        cep: '',
-        logradouro: '',
-        numero: 0,
-        complemento: '', 
-        bairro: '', 
-        cidade: '', 
-        uf: ''
-    }
-
+const AddressForm = ( props: AddressProps ) => {
+    const { onSubmit, onGoBack } = props
    
 
     const [cep, setCep] = useState('');
-    const [logradouro, setLogradouro] = useState('');
+    const [rua, setRua] = useState('');
     const [numero, setNumero] = useState<number>();
     const [complemento, setComplemento] = useState('');
     const [bairro, setBairro] = useState('');
@@ -49,8 +38,10 @@ const AddressForm = (/* props:AddressProps */) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        alert(cep+ logradouro+ numero+ complemento+ bairro+cidade+uf)
-        //onSubmit(cep, logradouro, numero, complemento, bairro, cidade, uf);
+        const endereco: Endereco = {
+            cep, rua, numero: (numero ?? 0), complemento, bairro, cidade, uf
+        }
+        onSubmit(endereco);
     }
 
     interface ViaCepResponseBody{
@@ -63,16 +54,15 @@ const AddressForm = (/* props:AddressProps */) => {
     }
 
     function updateValuesAfterApiRequest(apiResponse: ViaCepResponseBody){
-        setCidade(apiResponse.localidade)
-        setUf(apiResponse.uf)
-
-
         setLogradouroWasAutocompletedByApiRequest(false)
         setBairroWasAutocompletedByApiRequest(false)
-
-        setLogradouro(apiResponse.logradouro)
+        
+        setCidade(apiResponse.localidade)
+        setUf(apiResponse.uf)
+        setRua(apiResponse.logradouro)
         setBairro(apiResponse.bairro)
         setComplemento(apiResponse.complemento)
+
         if(apiResponse.logradouro != ""){
             setLogradouroWasAutocompletedByApiRequest(true)
         }
@@ -82,13 +72,25 @@ const AddressForm = (/* props:AddressProps */) => {
         
     }
 
+    function clearForm(){
+        setLogradouroWasAutocompletedByApiRequest(false)
+        setBairroWasAutocompletedByApiRequest(false)
+        setCidade('')
+        setUf('')
+        setRua('')
+        setComplemento('')
+        setBairro('')
+        setNumero(undefined)
+    }
+
     function pegarDadosCep(){
         axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
         .then(function (response) {
             updateValuesAfterApiRequest(response.data)
         })
         .catch(function (error) {
-            alert(error);
+            clearForm()
+            alert('cep invalido');
         })
     }
 
@@ -120,8 +122,8 @@ const AddressForm = (/* props:AddressProps */) => {
                     label="Logradouro" 
                     required
                     margin='dense'
-                    value={logradouro}
-                    onChange={e => setLogradouro(e.target.value)}
+                    value={rua}
+                    onChange={e => setRua(e.target.value)}
                 />
                 <Box
                     sx={{
@@ -176,6 +178,7 @@ const AddressForm = (/* props:AddressProps */) => {
                     <Button 
                         variant="contained" 
                         className='back bttn'
+                        onClick={onGoBack}
                     >Voltar
                     </Button>
 

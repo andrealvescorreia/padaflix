@@ -10,6 +10,8 @@ import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
+import AddressForm from './components/AddressForm';
+import { Endereco } from './types/Endereco';
 
 function App() {
 
@@ -55,6 +57,22 @@ function App() {
       console.log(err.data)
     })
   }
+
+  /*
+  // descomente aqui para testar o formulario de endereco
+
+  function onSubmit(endereco: Endereco){
+    alert(JSON.stringify(endereco))
+  }
+
+  function onGoBack(){
+    alert('voltar')
+  }
+
+  return (
+    <AddressForm onSubmit={onSubmit} onGoBack={onGoBack}/>
+  )
+  */
 
   return (
     <div>

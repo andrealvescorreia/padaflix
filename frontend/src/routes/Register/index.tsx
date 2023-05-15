@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import InputAdornments from "../../components/InputPass";
 import EmailInput from "../../components/EmailInput";
+import InputPassRegister from "../../components/InputPassRegister";
 
 const Register = () => {
 
@@ -43,7 +44,7 @@ const Register = () => {
                 </label>
 
                 <label htmlFor="">Senha
-                    <InputAdornments onChange={e => setPassword(e.target.value)} />
+                    <InputPassRegister onChange={e => setPassword(e.target.value)} />
                 </label>
 
                 <div id="buttonsOfLogin">

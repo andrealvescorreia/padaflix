@@ -2,6 +2,7 @@ import { SyntheticEvent, useState } from "react";
 import InputAdornments from "../../components/InputPass";
 import { Button, TextField } from "@mui/material";
 import "./Login.scss";
+import InputPass from "../../components/InputPass";
 
 interface LoginProps {
     onSubmit: (email: string, password: string) => void;
@@ -29,7 +30,7 @@ const LoginForm = ( props:LoginProps ) => {
                 </label>
 
                 <label htmlFor="">Senha
-                    <InputAdornments onChange={e => setPassword(e.target.value)} />
+                    <InputPass onChange={e => setPassword(e.target.value)} />
                 </label>
                 <div id="buttonsOfLogin">
                     <Button variant="contained" className="buttonFull" type="submit">Login</Button>

@@ -11,6 +11,10 @@ import "./styles.scss";
 
 import { MdLocationOn } from "react-icons/md";
 
+interface Address {
+    cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string
+}
+
 interface AddressProps {
     onSubmit: (cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string) => void;
 }
@@ -18,6 +22,24 @@ interface AddressProps {
 
 const AddressForm = (/* props:AddressProps */) => {
     //const { onSubmit } = props
+    let emptyAddres : Address = {
+        cep: '',
+        logradouro: '',
+        numero: 0,
+        complemento: '', 
+        bairro: '', 
+        cidade: '', 
+        uf: ''
+    }
+
+    const [endereco, setEndereco] = useState<Address>(emptyAddres)
+    /*//setEndereco([...endereco])
+    setEndereco((previousState) => (
+        {   ...previousState, 
+            cep:'aaaaa'
+        }
+    ))*/
+    //alert(endereco)
 
     const [cep, setCep] = useState('');
     const [logradouro, setLogradouro] = useState('');
@@ -29,6 +51,7 @@ const AddressForm = (/* props:AddressProps */) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
+        alert(cep+ logradouro+ numero+ complemento+ bairro+cidade+uf)
         //onSubmit(cep, logradouro, numero, complemento, bairro, cidade, uf);
     }
 

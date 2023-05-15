@@ -7,9 +7,10 @@ interface Props {
   onChange: (value: string, isValid: boolean) => void;
 }
 
-const EmailInput: React.FC<Props> = ({onChange }) => {
+const EmailInput: React.FC<Props> = ({ onChange }) => {
   const [email, setEmail] = useState('');
   const [isValid, setIsValid] = useState(false);
+  const [touched, setTouched] = useState(false);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
@@ -19,14 +20,20 @@ const EmailInput: React.FC<Props> = ({onChange }) => {
     onChange(newEmail, isEmailValid);
   };
 
+  const handleBlur = () => {
+    setTouched(true);
+  };
+
   return (
     <TextField
       value={email}
       onChange={handleEmailChange}
-      error={email==""?false:!isValid}
-      helperText={email==""?false:!isValid ? 'Email inválido' : ''}
+      onBlur={handleBlur}
+      error={touched && !isValid}
+      helperText={touched && !isValid ? 'Email inválido' : ''}
     />
   );
 };
+
 
 export default EmailInput;

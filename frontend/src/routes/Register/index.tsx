@@ -4,6 +4,7 @@ import axiosInstance from '../../axios'
 import { Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import InputAdornments from "../../components/InputPass";
+import EmailInput from "../../components/EmailInput";
 
 const Register = () => {
 
@@ -38,7 +39,7 @@ const Register = () => {
                 </label>
 
                 <label htmlFor="">E-mail
-                    <TextField onChange={e => setEmail(e.target.value)}/>
+                    <EmailInput onChange={e => setEmail(e.target.value)}/>
                 </label>
 
                 <label htmlFor="">Senha

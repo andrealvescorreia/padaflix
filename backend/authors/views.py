@@ -134,7 +134,7 @@ class PadariaPorCidadeView(APIView):
 
         if "erro" in response.json() and response.json()["erro"]:
             return JsonResponse(
-                {'message': 'CEP não encontrado.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+                {'message': 'CEP não encontrado.'}, status=status.HTTP_404_NOT_FOUND  # noqa: E501
             )
 
         cidade = response.json().get('localidade', '').upper()

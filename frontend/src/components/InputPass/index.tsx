@@ -6,23 +6,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl, { useFormControl } from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import FormHelperText from '@mui/material/FormHelperText';
 
-function MyFormHelperText() {
-  const { focused } = useFormControl() || {};
-
-  const helperText = React.useMemo(() => {
-    if (focused) {
-      return 'A senha deve conter no minimo 6 digitos, letras e números';
-    }
-
-    return '';
-  }, [focused]);
-
-  return <FormHelperText >{helperText}</FormHelperText>;
-}
-
-export default function InputAdornments({onChange}) {
+export default function InputPass({onChange}) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -52,8 +37,6 @@ export default function InputAdornments({onChange}) {
               </InputAdornment>
             }
           />
-          <MyFormHelperText/>
-
         </FormControl>
         
       

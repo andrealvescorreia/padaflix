@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { SyntheticEvent, useState } from "react";
-import { Button, Container, TextField } from "@mui/material";
+import { Button, Container, TextField, Typography } from "@mui/material";
 import Box from '@mui/material/Box';
 import Input from '@mui/material/Input';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { IMaskInput } from 'react-imask';
+import "./styles.scss";
 
+import { MdLocationOn } from "react-icons/md";
 
 interface AddressProps {
     onSubmit: (cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string) => void;
@@ -18,7 +21,7 @@ const AddressForm = (/* props:AddressProps */) => {
 
     const [cep, setCep] = useState('');
     const [logradouro, setLogradouro] = useState('');
-    const [numero, setNumero] = useState(0);
+    const [numero, setNumero] = useState<number>();
     const [complemento, setComplemento] = useState('');
     const [bairro, setBairro] = useState('');
     const [cidade, setCidade] = useState('');
@@ -26,43 +29,104 @@ const AddressForm = (/* props:AddressProps */) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        
         //onSubmit(cep, logradouro, numero, complemento, bairro, cidade, uf);
     }
 
     return (
-        <Container maxWidth="sm">
-            <form onSubmit={handleSubmit} >
-                <FormControl variant="standard" 
+        <Container id="address-form-container" maxWidth="sm" >
+            <header className='form-header'>
+                <MdLocationOn/>
+                <h1>
+                    Endereço
+                </h1>
+            </header>
+
+            <FormControl variant="standard"  onSubmit={handleSubmit} 
+                sx={{
+                    width: '100%',
+                    maxWidth: '100%',
+                }}
+                component="form"
+                noValidate
+                autoComplete="off"
+            > 
+                <CepInput 
+                    cep={cep} 
+                    setCep={setCep}
+                />
+                <TextField 
+                    label="Logradouro" 
+                    required
+                    margin='dense'
+                    value={logradouro}
+                    onChange={e => setLogradouro(e.target.value)}
+                />
+                <Box
                     sx={{
-                        width: '100%',
-                        maxWidth: '100%',
+                        display: 'grid',
+                        gridTemplateColumns: { sm: '1fr 3fr' },
+                        gap: 2,
                     }}
-                    component="form"
-                    noValidate
-                    autoComplete="off"
-                > 
-                    <CepInput cep={cep} setCep={setCep}/>
-                    <TextField label="Logradouro*"  />
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            gridTemplateColumns: { sm: '1fr 2fr' },
-                            gap: 2,
-                        }}
                     >
-                        <TextField label="Número*" type="number" />
-                        <TextField label="Complemento" />
-                    </Box>
-                    <TextField label="Bairro*"  />
-                    <TextField label="Cidade*" disabled />
-                    <TextField label="UF*" disabled />
+                    <TextField 
+                        label="Número" 
+                        required
+                        type="number" 
+                        margin='dense'
+                        value={numero}
+                        onChange={e => setNumero(parseInt(e.target.value))} 
+                    />
+                    <TextField 
+                        label="Complemento" 
+                        margin='dense'
+                        value={complemento}
+                        onChange={e => setComplemento(e.target.value)} 
+                    />
+                </Box>
+                <TextField 
+                    label="Bairro" 
+                    required
+                    margin='dense'
+                    value={bairro}
+                    onChange={e => setBairro(e.target.value)}
+                />
+                <TextField 
+                    label="Cidade" 
+                    required
+                    margin='dense' 
+                    disabled
+                    value={cidade}
+                    onChange={e => setCidade(e.target.value)}
+                />
+
+                <TextField 
+                    label="UF" 
+                    required
+                    margin='dense' 
+                    disabled 
+                    value={uf}
+                    onChange={e => setUf(e.target.value)} 
                     
+                />
 
-                    <Button variant="contained"  type="submit">Receba</Button>
+                <div className="bttns-box">
+                    <Button 
+                        variant="contained" 
+                        className='back bttn'
+                    >Voltar
+                    </Button>
 
-                </FormControl>
-            </form>
+                    <Button 
+                        variant="contained" 
+                        type="submit"
+                        className='submit bttn'
+                    >Criar conta
+                    </Button>
+                </div>
+            
+            </FormControl>
+
+            
         </Container>
 
     )
@@ -78,18 +142,19 @@ interface CustomProps {
   
 const CepMask = React.forwardRef<HTMLElement, CustomProps>(
     function CepMask(props, ref) {
-      const { onChange, ...other } = props;
-      return (
-        <IMaskInput
-          {...other}
-          mask="00000-000"
-          definitions={{
-            '#': /[1-9]/,
-          }}
-          inputRef={ref}
-          onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
-          overwrite
-        />
+        const { onChange, ...other } = props;
+        return (
+            <IMaskInput
+                {...other}
+                mask="00000-000"
+                definitions={{
+                    '#': /[1-9]/,
+                }}
+                inputRef={ref}
+                onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+                overwrite
+            
+            />
       );
     },
 );
@@ -107,14 +172,14 @@ function CepInput({cep, setCep}: CepInputProps) {
     return (
         <div>
             <InputLabel htmlFor="formatted-text-mask-input">CEP*</InputLabel>
-            <Input
+            <OutlinedInput
                 value={cep}
+                onBlur={()=>{alert('a')}}
                 onChange={handleChange}
                 name="textmask"
                 id="formatted-text-mask-input"
                 inputComponent={CepMask as any}
                 fullWidth
-                
             />
         </div>
     );

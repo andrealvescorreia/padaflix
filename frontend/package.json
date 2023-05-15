@@ -20,6 +20,8 @@
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.10.0",
     "validator": "^13.9.0"
+    "react-imask": "^6.6.1",
+    "react-router-dom": "^6.10.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

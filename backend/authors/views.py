@@ -3,13 +3,16 @@ import jwt
 import datetime
 
 from .serializers import UserSerializer, PadariaSerializer
-from .models import User, Padaria
+from .serializers import PlanoAssinaturaSerializer, AssinaturaSerializer
+from .models import User, Padaria, PlanoAssinatura, Assinatura
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 from rest_framework import status
 
 
@@ -148,6 +151,43 @@ class PadariaPorCidadeView(APIView):
 
         serializer = PadariaSerializer(padarias, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+class PlanoAssinaturaView(APIView):
+    @permission_classes([IsAuthenticated])
+    def post(self, request):
+        padaria = request.user
+
+        if not isinstance(padaria, Padaria):
+            return Response(
+                {'error': 'Acesso não autorizado.'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        serializer = PlanoAssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        planos = PlanoAssinatura.objects.all()
+        serializer = PlanoAssinaturaSerializer(planos, many=True)
+        return Response(serializer.data)
+
+
+'''class AssinaturaView(APIView):
+    def post(self, request):
+        serializer = AssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        assinaturas = Assinatura.objects.all()
+        serializer = AssinaturaSerializer(assinaturas, many=True)
+        return Response(serializer.data)'''
 
 
 class LogoutView(APIView):

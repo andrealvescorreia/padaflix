@@ -1,11 +1,28 @@
 from rest_framework import serializers
-from .models import User, Padaria, Endereco
+from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 
 
 class EnderecoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Endereco
         fields = ['cep', 'rua', 'numero', 'bairro', 'complemento', 'uf']
+
+
+class PlanoAssinaturaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanoAssinatura
+        fields = '__all__'
+
+
+class AssinaturaSerializer(serializers.ModelSerializer):
+    cliente = serializers.PrimaryKeyRelatedField(read_only=True)
+    cliente_nome = serializers.CharField(source='cliente.name', read_only=True)
+    plano = PlanoAssinaturaSerializer()
+
+    class Meta:
+        model = Assinatura
+        fields = ['id', 'cliente', 'cliente_nome',
+                  'plano', 'data_inicio', 'data_fim']
 
 
 class UserSerializer(serializers.ModelSerializer):

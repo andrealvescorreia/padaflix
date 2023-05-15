@@ -132,6 +132,11 @@ class PadariaPorCidadeView(APIView):
                 {'message': 'CEP inválido.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
             )
 
+        if "erro" in response.json() and response.json()["erro"]:
+            return JsonResponse(
+                {'message': 'CEP não encontrado.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+            )
+
         cidade = response.json().get('localidade', '').upper()
         padarias = (
             Padaria.objects

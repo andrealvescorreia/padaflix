@@ -2,11 +2,25 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
+import FormControl, { useFormControl } from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormHelperText from '@mui/material/FormHelperText';
+
+function MyFormHelperText() {
+  const { focused } = useFormControl() || {};
+
+  const helperText = React.useMemo(() => {
+    if (focused) {
+      return 'A senha deve conter no minimo 6 digitos, letras e números';
+    }
+
+    return '';
+  }, [focused]);
+
+  return <FormHelperText >{helperText}</FormHelperText>;
+}
 
 export default function InputAdornments({onChange}) {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -19,15 +33,14 @@ export default function InputAdornments({onChange}) {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      <div>
-        
-          <InputLabel htmlFor="outlined-adornment-password"></InputLabel>
+        <FormControl>
           <OutlinedInput
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
             endAdornment={
-              <InputAdornment position="end" id="pass"  >
+              <InputAdornment position="end" id="pass"	>
+                
                 <IconButton
                   aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
@@ -39,8 +52,10 @@ export default function InputAdornments({onChange}) {
               </InputAdornment>
             }
           />
+          <MyFormHelperText/>
+
+        </FormControl>
         
-      </div>
       
       
     </Box>

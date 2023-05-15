@@ -12,6 +12,7 @@ class TestViews(TestSetUp):
             self.register_user_url, self.user_data, format="json"
         )
         self.assertEqual(res.data['name'], self.user_data['name'])
+        self.assertEqual(res.data['endereco'], self.user_data['endereco'])
         self.assertEqual(res.data['email'], self.user_data['email'])
         self.assertEqual(res.status_code, 201)
 
@@ -46,6 +47,7 @@ class TestViews(TestSetUp):
             self.register_padaria_url, self.padaria_data, format="json"
         )
         self.assertEqual(res.data['nome_fantasia'], self.padaria_data['nome_fantasia'])  # noqa: E501
+        self.assertEqual(res.data['endereco'], self.padaria_data['endereco'])
         self.assertEqual(res.data['cnpj'], self.padaria_data['cnpj'])
         self.assertEqual(res.data['telefone'], self.padaria_data['telefone'])
         self.assertEqual(res.data['email'], self.padaria_data['email'])
@@ -55,7 +57,7 @@ class TestViews(TestSetUp):
         self.client.post(self.register_padaria_url, self.padaria_data, format="json")  # noqa: E501
         wrong_email = {
             'email': 'emailquenaofoiregistrado@gmail.com',
-            'password': 'Abc12345',
+            'password': 'Padaria12345',
         }
         res = self.client.post(self.login_url, wrong_email, format="json")  # noqa: E501
 

@@ -10,6 +10,8 @@ import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
+import AddressForm from './components/AddressForm';
+import { Endereco } from './types/Endereco';
 
 function App() {
 
@@ -56,6 +58,45 @@ function App() {
     })
   }
 
+  const registerUser = async (name: string, email: string, password: string) => {
+    axiosInstance.post('/register_user', {
+        name,
+        endereco: {
+          cep: "58701750",
+          rua: "Dom Pedro II",
+          numero: "02",
+          bairro: "Centro",
+          complemento: "",
+          uf: "PB"
+        },
+        email, 
+        password,
+    })
+    .then(() => {
+      alert('Registrado com sucesso!')
+      navigate('/login')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  /*
+  // descomente aqui para testar o formulario de endereco
+
+  function onSubmit(endereco: Endereco){
+    alert(JSON.stringify(endereco))
+  }
+
+  function onGoBack(){
+    alert('voltar')
+  }
+
+  return (
+    <AddressForm onSubmit={onSubmit} onGoBack={onGoBack}/>
+  )
+  */
+
   return (
     <div>
       <NavBar isAuthenticated = { user ? true : false } logout={logout} />
@@ -64,7 +105,7 @@ function App() {
         <Route path="/login" element={<LoginForm onSubmit={login}/>} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/padarias" element={<PadariasList />} />
-        <Route path="/register/user" element={<Register />} />
+        <Route path="/register/user" element={<Register onSubmit={registerUser}/>} />
         <Route path="/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>

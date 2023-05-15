@@ -10,6 +10,7 @@ import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
+import NewSubscriptionPlan from './routes/NewSubscriptionPlan';
 
 function App() {
 
@@ -58,7 +59,7 @@ function App() {
 
   return (
     <div>
-      <NavBar isAuthenticated = { user ? true : false } logout={logout} />
+      <NavBar user={user} logout={logout} />
       <Routes>
         <Route path="/" element={<Home user={user}/>} />
         <Route path="/login" element={<LoginForm onSubmit={login}/>} />
@@ -66,6 +67,7 @@ function App() {
         <Route path="/padarias" element={<PadariasList />} />
         <Route path="/register/user" element={<Register />} />
         <Route path="/register/user-padaria" element={<RegisterBekery />} />
+        <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />
       </Routes>
     </div>
   )

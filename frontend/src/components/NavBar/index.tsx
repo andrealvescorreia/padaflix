@@ -1,28 +1,44 @@
 import { Link } from "react-router-dom";
 import styles from './Navbar.module.scss';
 import Logo from '../../assets/logo.png';
+import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
 
 interface NavBarProps {
-  isAuthenticated: boolean,
+  user: User | undefined | PadariaUser
+
   logout: () => void;
 }
 
-const NavBar = ( { isAuthenticated , logout } : NavBarProps ) => {
+const NavBar = ( {user, logout} : NavBarProps ) => {
 
   let userNavOption;
 
-  if (isAuthenticated) { // Caso autenticado
-    userNavOption = (
-      <div className={styles.navOptions}>
-        
-        <Link to="/login" id={styles.logout_btn} onClick={logout} >
-          Sair
-        </Link>
-        
-      </div>
-    )
+  if (user) {
+    if (isUser(user)) {
+      userNavOption = (
+        <div className={styles.navOptions}>
+          <Link to="/login" id={styles.logout_btn} onClick={logout} >
+            Sair
+          </Link>
+          
+        </div>
+      )
+    }
+    if (isPadariaUser(user)) {
+      userNavOption = (
+        <div className={styles.navOptions}>
+          <Link to="/new-subscription-plan" id={styles.logout_btn}  >
+            Nova Plano
+          </Link>
+          <Link to="/login" id={styles.logout_btn} onClick={logout} >
+            Sair
+          </Link>
+          
+        </div>
+      )
+    }
   }
-  else {// Caso não autenticado...
+  else{
     userNavOption = (
       <div className={styles.navOptions}>
         
@@ -35,9 +51,9 @@ const NavBar = ( { isAuthenticated , logout } : NavBarProps ) => {
         </Link>
         
       </div>
-
     )
-  } 
+  }
+
 
   
   return <nav id={styles.navbar}>

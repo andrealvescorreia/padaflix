@@ -3,7 +3,6 @@ import validator from 'validator';
 import { TextField } from '@mui/material';
 
 interface Props {
-  label: string;
   onChange: (value: string, isValid: boolean) => void;
 }
 

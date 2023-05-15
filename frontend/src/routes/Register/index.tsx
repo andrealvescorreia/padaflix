@@ -3,7 +3,6 @@ import { redirect, useNavigate } from "react-router-dom";
 import axiosInstance from '../../axios'
 import { Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
-import InputAdornments from "../../components/InputPass";
 import EmailInput from "../../components/EmailInput";
 import InputPassRegister from "../../components/InputPassRegister";
 
@@ -13,6 +12,14 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+
+    const [emailValue, setEmailValue] = useState('');
+    const [isEmailValid, setIsEmailValid] = useState(false);
+
+    const handleEmailChange = (value: string, isValid: boolean) => {
+    setEmailValue(value);
+    setIsEmailValid(isValid);
+    };
 
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
@@ -40,7 +47,7 @@ const Register = () => {
                 </label>
 
                 <label htmlFor="">E-mail
-                    <EmailInput onChange={e => setEmail(e.target.value)}/>
+                    <EmailInput onChange={handleEmailChange}/>
                 </label>
 
                 <label htmlFor="">Senha

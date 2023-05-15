@@ -10,6 +10,7 @@ import { IMaskInput } from 'react-imask';
 import "./styles.scss";
 
 import { MdLocationOn } from "react-icons/md";
+import axios from 'axios';
 
 interface Address {
     cep: string, logradouro: string, numero: number, complemento: string, bairro: string, cidade: string, uf: string
@@ -32,14 +33,7 @@ const AddressForm = (/* props:AddressProps */) => {
         uf: ''
     }
 
-    const [endereco, setEndereco] = useState<Address>(emptyAddres)
-    /*//setEndereco([...endereco])
-    setEndereco((previousState) => (
-        {   ...previousState, 
-            cep:'aaaaa'
-        }
-    ))*/
-    //alert(endereco)
+   
 
     const [cep, setCep] = useState('');
     const [logradouro, setLogradouro] = useState('');
@@ -49,10 +43,53 @@ const AddressForm = (/* props:AddressProps */) => {
     const [cidade, setCidade] = useState('');
     const [uf, setUf] = useState('');
 
+    const [logradouroWasAutocompletedByApiRequest, setLogradouroWasAutocompletedByApiRequest] = useState(false)
+    const [bairroWasAutocompletedByApiRequest, setBairroWasAutocompletedByApiRequest] = useState(false)
+
+
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         alert(cep+ logradouro+ numero+ complemento+ bairro+cidade+uf)
         //onSubmit(cep, logradouro, numero, complemento, bairro, cidade, uf);
+    }
+
+    interface ViaCepResponseBody{
+        cep: string,
+        logradouro: string,
+        complemento: string,
+        bairro: string,
+        localidade: string,
+        uf: string,
+    }
+
+    function updateValuesAfterApiRequest(apiResponse: ViaCepResponseBody){
+        setCidade(apiResponse.localidade)
+        setUf(apiResponse.uf)
+
+
+        setLogradouroWasAutocompletedByApiRequest(false)
+        setBairroWasAutocompletedByApiRequest(false)
+
+        setLogradouro(apiResponse.logradouro)
+        setBairro(apiResponse.bairro)
+        setComplemento(apiResponse.complemento)
+        if(apiResponse.logradouro != ""){
+            setLogradouroWasAutocompletedByApiRequest(true)
+        }
+        if(apiResponse.bairro != ""){
+            setBairroWasAutocompletedByApiRequest(true)
+        }
+        
+    }
+
+    function pegarDadosCep(){
+        axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
+        .then(function (response) {
+            updateValuesAfterApiRequest(response.data)
+        })
+        .catch(function (error) {
+            alert(error);
+        })
     }
 
     return (
@@ -76,8 +113,10 @@ const AddressForm = (/* props:AddressProps */) => {
                 <CepInput 
                     cep={cep} 
                     setCep={setCep}
+                    onBlur={pegarDadosCep}
                 />
-                <TextField 
+                <TextField
+                    disabled={logradouroWasAutocompletedByApiRequest}
                     label="Logradouro" 
                     required
                     margin='dense'
@@ -106,7 +145,8 @@ const AddressForm = (/* props:AddressProps */) => {
                         onChange={e => setComplemento(e.target.value)} 
                     />
                 </Box>
-                <TextField 
+                <TextField
+                    disabled={bairroWasAutocompletedByApiRequest}
                     label="Bairro" 
                     required
                     margin='dense'
@@ -184,9 +224,10 @@ const CepMask = React.forwardRef<HTMLElement, CustomProps>(
 interface CepInputProps {
     cep: string,
     setCep: (cep: string) => void
+    onBlur: () => void
 }
   
-function CepInput({cep, setCep}: CepInputProps) {
+function CepInput({cep, setCep, onBlur}: CepInputProps) {
   
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCep(event.target.value);
@@ -197,7 +238,7 @@ function CepInput({cep, setCep}: CepInputProps) {
             <InputLabel htmlFor="formatted-text-mask-input">CEP*</InputLabel>
             <OutlinedInput
                 value={cep}
-                onBlur={()=>{alert('a')}}
+                onBlur={onBlur}
                 onChange={handleChange}
                 name="textmask"
                 id="formatted-text-mask-input"

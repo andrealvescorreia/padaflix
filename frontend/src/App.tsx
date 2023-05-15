@@ -58,6 +58,29 @@ function App() {
     })
   }
 
+  const registerUser = async (name: string, email: string, password: string) => {
+    axiosInstance.post('/register_user', {
+        name,
+        endereco: {
+          cep: "58701750",
+          rua: "Dom Pedro II",
+          numero: "02",
+          bairro: "Centro",
+          complemento: "",
+          uf: "PB"
+        },
+        email, 
+        password,
+    })
+    .then(() => {
+      alert('Registrado com sucesso!')
+      navigate('/login')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+
   /*
   // descomente aqui para testar o formulario de endereco
 
@@ -82,7 +105,7 @@ function App() {
         <Route path="/login" element={<LoginForm onSubmit={login}/>} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/padarias" element={<PadariasList />} />
-        <Route path="/register/user" element={<Register />} />
+        <Route path="/register/user" element={<Register onSubmit={registerUser}/>} />
         <Route path="/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>

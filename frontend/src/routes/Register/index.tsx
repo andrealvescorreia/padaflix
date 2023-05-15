@@ -1,46 +1,35 @@
 import { SyntheticEvent, useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import InputAdornments from "../../components/InputPass";
 import EmailInput from "../../components/EmailInput";
 import InputPassRegister from "../../components/InputPassRegister";
 
-const Register = () => {
+interface RegisterProps {
+    onSubmit: (name: string, email: string, password: string) => void;
+}
 
+
+const Register = (props:RegisterProps) => {
+    const { onSubmit } = props
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();//previne de recarregar a pagina ao clicar em submit
-
-        axiosInstance.post('/register_user', {
-            name,
-            email, 
-            password
-        })
-        .then((response) => {
-            alert(JSON.stringify(response.data))
-            navigate('/login')
-        })
-        .catch((err) => {
-            alert(err)
-        })
+    const handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
+        onSubmit(name, email, password);
     }
 
     return ( 
         <main  id="mainContainer">
-        <form  onSubmit={submit} id = "secondaryContainer">
+        <form  onSubmit={handleSubmit} id = "secondaryContainer">
 
                 <label htmlFor="name">Nome
                     <TextField id="name"onChange={e => setName(e.target.value)}/>
                 </label>
 
                 <label htmlFor="">E-mail
-                    <EmailInput onChange={e => setEmail(e.target.value)}/>
+                    <EmailInput onChange={e => setEmail(e.target.value)} setEmail={setEmail}/>
                 </label>
 
                 <label htmlFor="">Senha

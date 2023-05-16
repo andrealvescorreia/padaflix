@@ -57,23 +57,6 @@ function App() {
       })
   }
 
-  
-
-  /*
-  // descomente aqui para testar o formulario de endereco
-
-  function onSubmit(endereco: Endereco){
-    alert(JSON.stringify(endereco))
-  }
-
-  function onGoBack(){
-    alert('voltar')
-  }
-
-  return (
-    <AddressForm onSubmit={onSubmit} onGoBack={onGoBack}/>
-  )
-  */
 
   return (
     <div>

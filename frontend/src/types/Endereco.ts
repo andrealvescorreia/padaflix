@@ -1,7 +1,7 @@
 export interface Endereco {
     cep: string, 
     rua: string, 
-    numero: number, 
+    numero: string, 
     complemento: string, 
     bairro: string, 
     cidade: string, 

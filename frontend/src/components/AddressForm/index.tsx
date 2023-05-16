@@ -26,7 +26,7 @@ const AddressForm = ( props: AddressProps ) => {
 
     const [cep, setCep] = useState('');
     const [rua, setRua] = useState('');
-    const [numero, setNumero] = useState<number>();
+    const [numero, setNumero] = useState('');
     const [complemento, setComplemento] = useState('');
     const [bairro, setBairro] = useState('');
     const [cidade, setCidade] = useState('');
@@ -39,7 +39,7 @@ const AddressForm = ( props: AddressProps ) => {
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         const endereco: Endereco = {
-            cep, rua, numero: (numero ?? 0), complemento, bairro, cidade, uf
+            cep, rua, numero, complemento, bairro, cidade, uf
         }
         onSubmit(endereco);
     }
@@ -80,7 +80,7 @@ const AddressForm = ( props: AddressProps ) => {
         setRua('')
         setComplemento('')
         setBairro('')
-        setNumero(undefined)
+        setNumero('')
     }
 
     function pegarDadosCep(){
@@ -138,7 +138,7 @@ const AddressForm = ( props: AddressProps ) => {
                         type="number" 
                         margin='dense'
                         value={numero}
-                        onChange={e => setNumero(parseInt(e.target.value))} 
+                        onChange={e => setNumero(e.target.value)} 
                     />
                     <TextField 
                         label="Complemento" 

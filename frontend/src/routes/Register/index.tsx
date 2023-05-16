@@ -2,8 +2,6 @@ import { SyntheticEvent, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import EmailInput from "../../components/EmailInput";
 import InputPassRegister from "../../components/InputPassRegister";
-import axiosInstance from "../../axios";
-import { useNavigate } from "react-router-dom";
 
 interface RegisterProps {
     onSubmit: (name: string, email: string, password: string) => void;
@@ -16,36 +14,18 @@ const Register = (props: RegisterProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [emailValue, setEmailValue] = useState('');
     const [isEmailValid, setIsEmailValid] = useState(false);
 
     const handleEmailChange = (value: string, isValid: boolean) => {
-        setEmailValue(value);
+        setEmail(value);
         setIsEmailValid(isValid);
     };
-    const navigate = useNavigate();
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         onSubmit(name, email, password);
     }
     
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();//previne de recarregar a pagina ao clicar em submit
-
-        axiosInstance.post('/register_user', {
-            name,
-            email,
-            password
-        })
-            .then((response) => {
-                alert(JSON.stringify(response.data))
-                navigate('/login')
-            })
-            .catch((err) => {
-                alert(err)
-            })
-    }
 
         return (<main id="mainContainer">
                 <form onSubmit={handleSubmit} id="secondaryContainer">

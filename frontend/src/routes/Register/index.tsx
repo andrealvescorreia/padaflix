@@ -24,6 +24,12 @@ const Register = (props: RegisterProps) => {
         setIsEmailValid(isValid);
     };
     const navigate = useNavigate();
+
+    const handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
+        onSubmit(name, email, password);
+    }
+    
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();//previne de recarregar a pagina ao clicar em submit
 
@@ -39,13 +45,9 @@ const Register = (props: RegisterProps) => {
             .catch((err) => {
                 alert(err)
             })
-        const handleSubmit = (e: SyntheticEvent) => {
-            e.preventDefault()
-            onSubmit(name, email, password);
-        }
+    }
 
-        return (
-            <main id="mainContainer">
+        return (<main id="mainContainer">
                 <form onSubmit={handleSubmit} id="secondaryContainer">
 
                     <label htmlFor="name">Nome
@@ -68,6 +70,6 @@ const Register = (props: RegisterProps) => {
             </main>
         );
     }
-}
+
 
 export default Register;

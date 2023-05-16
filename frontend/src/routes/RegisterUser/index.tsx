@@ -27,7 +27,7 @@ const RegisterUser = () => {
         })
         .catch((err) => {
             alert('deu ruim, dê uma olhada no console pra tentar se salvar')
-            console.log(err)
+            console.log(err.response.data)
         })
     }
     

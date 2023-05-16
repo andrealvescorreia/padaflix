@@ -1,68 +1,66 @@
-import { SyntheticEvent, useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { Navigate } from "react-router-dom";
-import { Button, TextField } from "@mui/material";
-import InputAdornments from "../../components/InputPass";
-import InputPassRegister from "../../components/InputPassRegister";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../axios";
+import RegisterBakeryForm from "../../components/RegisterBakeryForm";
+import { Endereco } from "../../types/Endereco";
+import { useState } from "react";
+import AddressForm from "../../components/AddressForm";
 
-const RegisterBekery = () => {
 
-    const [nome_fantasia, setName] = useState('');
+
+const RegisterBakery = () => {
+
+    const [currentRegisterStep, setCurrentRegisterStep] = useState(1)
+    const [nome_fantasia, setNome_fantasia] = useState('');
     const [email, setEmail] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [telefone, setTelefone] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate();
-
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();//previne de recarregar a pagina ao clicar em submit
-
+    
+    const navigate = useNavigate()
+    const registerBakery = async (nome_fantasia: string, email: string, password: string, cnpj: string, telefone: string, padariaEndereco: Endereco) => {
         axiosInstance.post('/register_padaria', {
             nome_fantasia,
             cnpj,
             telefone, 
+            endereco: padariaEndereco,
             email,
             password
         })
-        .then((response) => {
-            alert(JSON.stringify(response.data))
+        .then(() => {
+            alert('Registrado com sucesso!')
             navigate('/login')
         })
         .catch((err) => {
-            alert(err)
+            alert(err.response.data)
         })
     }
+    
+    function goToNextRegisterStep(padariaNomeFantasia: string, padariaEmail: string, padariaPassword: string, padariaCnpj: string, padariaTelefone: string){
+        setNome_fantasia(padariaNomeFantasia)
+        setEmail(padariaEmail)
+        setPassword(padariaPassword)
+        setCnpj(padariaCnpj)
+        setTelefone(padariaTelefone)
+    
+        setCurrentRegisterStep(2)
+    }
+    
+    function goToPreviousRegisterStep(){
+        setCurrentRegisterStep(1)
+    }
+    
+    function finishRegister(padariaEndereco: Endereco){
+        registerBakery(nome_fantasia, email, password, cnpj, telefone, padariaEndereco)
+    }
 
-    return ( 
-        <main id = "mainContainer">
-        
-        <form onSubmit={submit} id = "secondaryContainer">
-                <label htmlFor="">Nome fantasia
-                    <TextField onChange={e => setName(e.target.value)}/>
-                </label>
 
-                <label htmlFor="">CNPJ
-                    <TextField onChange={e => setCnpj(e.target.value)}/>
-                </label>
 
-                <label htmlFor="">E-mail
-                    <TextField onChange={e => setEmail(e.target.value)}/>
-                </label>
-
-                <label htmlFor="">Telefone
-                    <TextField onChange={e => setTelefone(e.target.value)} />
-                </label>
-
-                <label htmlFor="">Senha
-                    <InputPassRegister onChange={e => setPassword(e.target.value)} />
-                </label>
-                <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull" type="submit">Registro</Button>
-                </div>
-        </form>
-        </main>
-    );
+    if(currentRegisterStep == 1){
+        return <RegisterBakeryForm onSubmit={goToNextRegisterStep}/>
+    }
+    else {
+        return <AddressForm onSubmit={finishRegister} onGoBack={goToPreviousRegisterStep}/>
+    }
 }
  
-export default RegisterBekery;
+export default RegisterBakery;

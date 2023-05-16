@@ -9,10 +9,11 @@ import axiosInstance from './axios'
 import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
-import RegisterBekery from './routes/RegisterBakery';
+import RegisterBekery from './components/RegisterBakeryForm';
 import AddressForm from './components/AddressForm';
 import { Endereco } from './types/Endereco';
 import RegisterUser from './routes/RegisterUser';
+import RegisterBakery from './routes/RegisterBakery';
 
 function App() {
 
@@ -86,7 +87,7 @@ function App() {
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/padarias" element={<PadariasList />} />
         <Route path="/register/user" element={<RegisterUser/>} />
-        <Route path="/register/user-padaria" element={<RegisterBekery />} />
+        <Route path="/register/user-padaria" element={<RegisterBakery />} />
       </Routes>
     </div>
   )

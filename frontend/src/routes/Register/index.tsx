@@ -43,7 +43,7 @@ const Register = (props: RegisterProps) => {
                     </label>
 
                     <div id="buttonsOfLogin">
-                        <Button variant="contained" className="buttonFull" type="submit">Criar conta</Button>
+                        <Button variant="contained" className="buttonFull" type="submit">Continuar</Button>
                     </div>
 
                 </form>

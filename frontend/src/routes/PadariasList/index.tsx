@@ -1,30 +1,36 @@
+import axiosInstance from "../../axios";
 import PadariaCard from "../../components/PadariaCard";
+import { PadariaUser, User } from "../../types/User";
 import "./styles.scss"
-import axiosInstance from '../../axios';
+import { usePadarias } from './usePadarias'
 import { useEffect, useState } from "react";
 
+interface Props {
+    user: User | PadariaUser | undefined
+}
 interface Padaria {
     id: number,
     nome_fantasia: string
 }
 
-const PadariasList = () => {
+const PadariasList = ({user} : Props) => {
+   //const { padarias } = usePadarias(userCep);
 
-    const [padarias, setPadarias] = useState<Padaria[]> ([]);
+   const [padarias, setPadarias] = useState<Padaria[]> ([]);
 
-    useEffect(() => {
-    (
-        async () => {
-        axiosInstance.get('/')
-        .then((response) => {
-            setPadarias(response.data.padarias);
-        })
-        .catch(() => {
-            alert("Ih Serjão, sujou!")
-        })
-        }
-    )();
-    },[])
+   const fetchPadarias = async () => {
+       axiosInstance.get('/padarias/'+user?.endereco.cep)
+       .then((response) => {
+           setPadarias(response.data);
+       })
+       .catch(() => {
+           alert("Ih Serjão, sujou!")
+       })
+   }
+
+   useEffect(() => {
+       fetchPadarias()
+    }, [])
 
 
     return <div id="padarias-list">
@@ -45,3 +51,6 @@ const PadariasList = () => {
 }
  
 export default PadariasList;
+
+
+

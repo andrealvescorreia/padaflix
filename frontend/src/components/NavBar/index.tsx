@@ -1,39 +1,64 @@
 import { Link } from "react-router-dom";
-import axiosInstance from '../../axios'
-import { User } from "../../types/User";
 import styles from './Navbar.module.scss';
 import Logo from '../../assets/logo.png';
+import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
 
 interface NavBarProps {
-  user: User | undefined,
-  setUser: (user: User | undefined) => void
+  user: User | undefined | PadariaUser
+  logout: () => void;
 }
 
-const NavBar = ( {user, setUser}: NavBarProps ) => {
-  const logout = async () => {
-    axiosInstance.post('/logout')
-    .then(()=>{
-      setUser(undefined)
-    }).catch((err)=>{
-      console.log(err.data)
-    })
+const NavBar = ( {user, logout} : NavBarProps ) => {
+
+  let leftSideNavOptions;
+  let rigthSideNavOptions;
+
+  if (user) {
+    if (isUser(user)) {
+      leftSideNavOptions = (
+        <div className={styles.defaultNavOptions}>
+          <Link to="/"   className={styles.option} >
+            Início
+          </Link>
+              
+          <Link to="/padarias" className={styles.option} >
+            Padarias
+          </Link>
+        </div>
+      )
+      rigthSideNavOptions = (
+        <div className={styles.navOptions}>
+          <Link to="/login" id={styles.logout_btn} onClick={logout} >
+            Sair
+          </Link>
+          
+        </div>
+      )
+    }
+    if (isPadariaUser(user)) {
+
+      rigthSideNavOptions = (
+        <div className={styles.navOptions}>
+          <Link to="/new-subscription-plan" id={styles.logout_btn}  >
+            Nova Plano
+          </Link>
+          <Link to="/login" id={styles.logout_btn} onClick={logout} >
+            Sair
+          </Link>
+          
+        </div>
+      )
+    }
   }
-
-  let userNavOption;
-
-  if (user) { // Caso autenticado
-    userNavOption = (
-      <div className={styles.navOptions}>
-        
-        <Link to="/login" id={styles.logout_btn} onClick={logout} >
-          Sair
+  else{
+    leftSideNavOptions = (
+      <div className={styles.defaultNavOptions}>
+        <Link to="/"   className={styles.option} >
+          Início
         </Link>
-        
       </div>
     )
-  }
-  else {// Caso não autenticado...
-    userNavOption = (
+    rigthSideNavOptions = (
       <div className={styles.navOptions}>
         
         <Link to="/login"  id={styles.login_btn} className={styles.btn} >
@@ -45,28 +70,20 @@ const NavBar = ( {user, setUser}: NavBarProps ) => {
         </Link>
         
       </div>
-
     )
-  } 
+  }
+
 
   
   return <nav id={styles.navbar}>
-    <div className={styles.defaultNavOptions}>
-      <Link to="/"   className={styles.option} >
-        Início
-      </Link>
-          
-      <Link to="/padarias" className={styles.option} >
-        Padarias
-      </Link>
-    </div>
+    {leftSideNavOptions}
 
     <div className={styles.logoContainer}>
       <img src={Logo} className={styles.logo} alt="logo padaflix"/>
     </div>
 
     
-    {userNavOption}
+    {rigthSideNavOptions}
   </nav>;
   
 }

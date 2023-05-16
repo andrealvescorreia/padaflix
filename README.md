@@ -15,6 +15,7 @@ npm install
 cd frontend 
 npm run dev 
 ```
+
 ## Configurar Backend (API) <br>
 - Pré-requisitos: Python instalado E atualizado <br>
 

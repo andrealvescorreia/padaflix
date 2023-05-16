@@ -1,44 +1,75 @@
 import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
-import Register from './routes/Register';
-import Login from './routes/Login';
-import {useEffect, useState} from "react";
+import LoginForm from './routes/LoginForm';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
-import { User } from "./types/User";
+import { User, PadariaUser } from "./types/User";
 import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
-import RegisterBekery from './routes/RegisterBakery';
+import RegisterUser from './routes/RegisterUser';
+import RegisterBakery from './routes/RegisterBakery';
+import NewSubscriptionPlan from './routes/NewSubscriptionPlan';
 
 function App() {
 
-  const [user, setUser] = useState<User>()
 
-  useEffect(() => {
-  (
-    async () => {
-      axiosInstance.get('/user')
+  const [user, setUser] = useState<User | PadariaUser | undefined>()
+
+  const fetchUser = async () => {
+    axiosInstance.get('/user')
       .then((response) => {
         setUser(response.data);
       })
       .catch(() => {
         console.log('não autorizado...')
       })
-    }
-  )();
-  },[])
+  }
+
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
+  const navigate = useNavigate()
+
+  const login = async (email: string, password: string) => {
+    axiosInstance.post('/login', {
+      email,
+      password
+    })
+      .then(async () => {
+        fetchUser()
+        navigate('/')// redireciona para a homepage
+      })
+      .catch((err) => {
+        alert(err)
+      })
+  }
+
+  const logout = async () => {
+    axiosInstance.post('/logout')
+      .then(() => {
+        setUser(undefined)
+        
+      })
+      .catch((err) => {
+        console.log(err.data)
+      })
+  }
 
 
   return (
     <div>
-      <NavBar user={user} setUser={setUser}/>
+      <NavBar user={user} logout={logout} />
       <Routes>
-        <Route path="/" element={<Home user={user}/>} />
-        <Route path="/login" element={<Login setUser={setUser}/>} />
+        <Route path="/" element={<Home user={user} />} />
+        <Route path="/login" element={<LoginForm onSubmit={login} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
-        <Route path="/register/user" element={<Register />} />
-        <Route path="/padarias" element={<PadariasList />} />
-        <Route path= "/register/user-padaria" element={<RegisterBekery />} />
+        <Route path="/padarias" element={<PadariasList user={user} />} />
+        <Route path="/register/user" element={<RegisterUser/>} />
+        <Route path="/register/user-padaria" element={<RegisterBakery />} />
+        <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />
       </Routes>
     </div>
   )

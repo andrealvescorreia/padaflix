@@ -10,16 +10,32 @@ class TestSetUp(APITestCase):
 
         self.user_data = {
             'name': "Arthur",
+            'endereco': {
+                "cep": "58701750",
+                "rua": "Nestor Pereira",
+                "numero": "01",
+                "bairro": "Bivar Olinto",
+                "complemento": "",
+                "uf": "PB"
+            },
             'email': 'arthur@gmail.com',
             'password': 'Abc12345',
         }
 
         self.padaria_data = {
-            'nome_fantasia': "Arthur",
+            'nome_fantasia': "Padaria",
+            'endereco': {
+                "cep": "58705750",
+                "rua": "Dom Pedro II",
+                "numero": "02",
+                "bairro": "Centro",
+                "complemento": "",
+                "uf": "PB"
+            },
             'cnpj': "11.444.777/0001-22",
             'telefone': "(83) 9 1236-5478",
-            'email': 'arthur@gmail.com',
-            'password': 'Abc12345',
+            'email': 'padaria@gmail.com',
+            'password': 'Padaria12345',
         }
 
         return super().setUp()

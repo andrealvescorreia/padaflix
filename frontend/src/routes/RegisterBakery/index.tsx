@@ -31,7 +31,8 @@ const RegisterBakery = () => {
             navigate('/login')
         })
         .catch((err) => {
-            alert(err.response.data)
+            alert('deu ruim, olhe o console')
+            console.log(err.response.data)
         })
     }
     

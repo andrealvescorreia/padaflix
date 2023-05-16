@@ -5,17 +5,28 @@ import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
 
 interface NavBarProps {
   user: User | undefined | PadariaUser
-
   logout: () => void;
 }
 
 const NavBar = ( {user, logout} : NavBarProps ) => {
 
-  let userNavOption;
+  let leftSideNavOptions;
+  let rigthSideNavOptions;
 
   if (user) {
     if (isUser(user)) {
-      userNavOption = (
+      leftSideNavOptions = (
+        <div className={styles.defaultNavOptions}>
+          <Link to="/"   className={styles.option} >
+            Início
+          </Link>
+              
+          <Link to="/padarias" className={styles.option} >
+            Padarias
+          </Link>
+        </div>
+      )
+      rigthSideNavOptions = (
         <div className={styles.navOptions}>
           <Link to="/login" id={styles.logout_btn} onClick={logout} >
             Sair
@@ -25,7 +36,8 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
       )
     }
     if (isPadariaUser(user)) {
-      userNavOption = (
+
+      rigthSideNavOptions = (
         <div className={styles.navOptions}>
           <Link to="/new-subscription-plan" id={styles.logout_btn}  >
             Nova Plano
@@ -39,7 +51,14 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     }
   }
   else{
-    userNavOption = (
+    leftSideNavOptions = (
+      <div className={styles.defaultNavOptions}>
+        <Link to="/"   className={styles.option} >
+          Início
+        </Link>
+      </div>
+    )
+    rigthSideNavOptions = (
       <div className={styles.navOptions}>
         
         <Link to="/login"  id={styles.login_btn} className={styles.btn} >
@@ -57,22 +76,14 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
 
   
   return <nav id={styles.navbar}>
-    <div className={styles.defaultNavOptions}>
-      <Link to="/"   className={styles.option} >
-        Início
-      </Link>
-          
-      <Link to="/padarias" className={styles.option} >
-        Padarias
-      </Link>
-    </div>
+    {leftSideNavOptions}
 
     <div className={styles.logoContainer}>
       <img src={Logo} className={styles.logo} alt="logo padaflix"/>
     </div>
 
     
-    {userNavOption}
+    {rigthSideNavOptions}
   </nav>;
   
 }

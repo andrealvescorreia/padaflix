@@ -130,3 +130,5 @@ AUTH_USER_MODEL = 'authors.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+#TEST_DISCOVER_PATTERN = './tests/test_views.py'

@@ -1,7 +1,7 @@
 import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
-import Register from './routes/Register';
+import Register from './components/RegisterUserForm';
 import LoginForm from './routes/LoginForm';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,20 +12,21 @@ import ChooseProfile from './routes/ChooseProfile';
 import RegisterBekery from './routes/RegisterBakery';
 import AddressForm from './components/AddressForm';
 import { Endereco } from './types/Endereco';
+import RegisterUser from './routes/RegisterUser';
 
 function App() {
 
 
   const [user, setUser] = useState<User | PadariaUser | undefined>()
-  
+
   const fetchUser = async () => {
     axiosInstance.get('/user')
-    .then((response) => {
-      setUser(response.data);
-    })
-    .catch(() => {
-      console.log('não autorizado...')
-    })
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch(() => {
+        console.log('não autorizado...')
+      })
   }
 
   useEffect(() => {
@@ -36,50 +37,29 @@ function App() {
 
   const login = async (email: string, password: string) => {
     axiosInstance.post('/login', {
-      email, 
+      email,
       password
     })
-    .then(() => {
-      fetchUser()
-      navigate('/')// redireciona para a homepage
-    })
-    .catch((err) => {
-      alert(err)
-    })
+      .then(() => {
+        fetchUser()
+        navigate('/')// redireciona para a homepage
+      })
+      .catch((err) => {
+        alert(err)
+      })
   }
 
   const logout = async () => {
     axiosInstance.post('/logout')
-    .then(() => {
-      setUser(undefined)
-    })
-    .catch((err)=>{
-      console.log(err.data)
-    })
+      .then(() => {
+        setUser(undefined)
+      })
+      .catch((err) => {
+        console.log(err.data)
+      })
   }
 
-  const registerUser = async (name: string, email: string, password: string) => {
-    axiosInstance.post('/register_user', {
-        name,
-        endereco: {
-          cep: "58701750",
-          rua: "Dom Pedro II",
-          numero: "02",
-          bairro: "Centro",
-          complemento: "",
-          uf: "PB"
-        },
-        email, 
-        password,
-    })
-    .then(() => {
-      alert('Registrado com sucesso!')
-      navigate('/login')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }
+  
 
   /*
   // descomente aqui para testar o formulario de endereco
@@ -99,13 +79,13 @@ function App() {
 
   return (
     <div>
-      <NavBar isAuthenticated = { user ? true : false } logout={logout} />
+      <NavBar isAuthenticated={user ? true : false} logout={logout} />
       <Routes>
-        <Route path="/" element={<Home user={user}/>} />
-        <Route path="/login" element={<LoginForm onSubmit={login}/>} />
+        <Route path="/" element={<Home user={user} />} />
+        <Route path="/login" element={<LoginForm onSubmit={login} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/padarias" element={<PadariasList />} />
-        <Route path="/register/user" element={<Register onSubmit={registerUser}/>} />
+        <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBekery />} />
       </Routes>
     </div>

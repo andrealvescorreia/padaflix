@@ -15,7 +15,7 @@ class PlanoAssinatura(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
-    servings_unit = models.CharField(max_length=65)
+    servings_unit = models.IntegerField()
 
     def __str__(self):
         return self.nome
@@ -23,7 +23,7 @@ class PlanoAssinatura(models.Model):
 
 class Assinatura(models.Model):
     cliente = models.ForeignKey(
-        'User', on_delete=models.CASCADE, 
+        'User', on_delete=models.CASCADE,
         related_name='assinaturas'
     )
     plano = models.ForeignKey(PlanoAssinatura, on_delete=models.CASCADE)
@@ -46,7 +46,7 @@ class User(AbstractUser):
     username = None
 
     assinatura = models.ForeignKey(
-        Assinatura, on_delete=models.SET_NULL, 
+        Assinatura, on_delete=models.SET_NULL,
         null=True, blank=True
     )
 
@@ -74,7 +74,7 @@ class Padaria(AbstractUser):
     )
 
     plano_assinatura = models.ForeignKey(
-        PlanoAssinatura, on_delete=models.SET_NULL, 
+        PlanoAssinatura, on_delete=models.SET_NULL,
         null=True, blank=True
     )
 

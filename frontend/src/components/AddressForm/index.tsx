@@ -213,7 +213,7 @@ const CepMask = React.forwardRef<HTMLElement, CustomProps>(
         return (
             <IMaskInput
                 {...other}
-                mask="00000-000"
+                mask="00000000"
                 definitions={{
                     '#': /[1-9]/,
                 }}

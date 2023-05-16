@@ -3,7 +3,8 @@ import jwt
 import datetime
 
 from .serializers import UserSerializer, PadariaSerializer
-from .models import User, Padaria
+from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
+from .models import User, Padaria, PlanoAssinatura  # , Assinatura
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
@@ -103,6 +104,14 @@ class LoginView(APIView):
 
 
 class UserAndPadariaView(APIView):
+    '''class IsAuthenticated(BasePermission):
+        message = 'Authentication credentials were not provided.'
+
+        def has_permission(self, request, view):
+            return request.user.is_authenticated
+
+    permission_classes = [IsAuthenticated]'''
+
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -113,13 +122,17 @@ class UserAndPadariaView(APIView):
             payload = jwt.decode(token, 'secret', algorithms='HS256')
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Não Autenticado!')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Token inválido!')
 
         if payload['user-type'] == 'client-user':
             user = User.objects.filter(id=payload['id']).first()
             serializer = UserSerializer(user)
-        else:
+        elif payload['user-type'] == 'padaria-user':
             padaria = Padaria.objects.filter(id=payload['id']).first()
             serializer = PadariaSerializer(padaria)
+        else:
+            raise AuthenticationFailed('Tipo de usuário inválido!')
 
         return Response(serializer.data)
 
@@ -148,6 +161,54 @@ class PadariaPorCidadeView(APIView):
 
         serializer = PadariaSerializer(padarias, many=True)
         return JsonResponse(serializer.data, safe=False)
+
+
+class PlanoAssinaturaView(UserAndPadariaView):
+    def post(self, request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            return Response(
+                {'error': 'Acesso negado.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms='HS256')
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Não Autenticado!')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Token inválido!')
+
+        if payload['user-type'] != 'padaria-user':
+            return Response(
+                {'error': 'Acesso negado.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = PlanoAssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        planos = PlanoAssinatura.objects.all()
+        serializer = PlanoAssinaturaSerializer(planos, many=True)
+        return Response(serializer.data)
+
+
+'''class AssinaturaView(APIView):
+    def post(self, request):
+        serializer = AssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        assinaturas = Assinatura.objects.all()
+        serializer = AssinaturaSerializer(assinaturas, many=True)
+        return Response(serializer.data)'''
 
 
 class LogoutView(APIView):

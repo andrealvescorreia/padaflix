@@ -7,12 +7,12 @@ interface Padaria {
     nome_fantasia: string
 }
 
-export const usePadarias = () => {
+export const usePadarias = (cep: string) => {
     
     const [padarias, setPadarias] = useState<Padaria[]> ([]);
 
     const fetchPadarias = async () => {
-        axiosInstance.get('/')
+        axiosInstance.get('/padarias/'+cep)
         .then((response) => {
             setPadarias(response.data.padarias);
         })

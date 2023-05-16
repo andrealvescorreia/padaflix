@@ -38,7 +38,7 @@ function App() {
       email,
       password
     })
-      .then(() => {
+      .then(async () => {
         fetchUser()
         navigate('/')// redireciona para a homepage
       })
@@ -51,6 +51,7 @@ function App() {
     axiosInstance.post('/logout')
       .then(() => {
         setUser(undefined)
+        
       })
       .catch((err) => {
         console.log(err.data)
@@ -65,7 +66,7 @@ function App() {
         <Route path="/" element={<Home user={user} />} />
         <Route path="/login" element={<LoginForm onSubmit={login} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
-        <Route path="/padarias" element={<PadariasList />} />
+        <Route path="/padarias" element={<PadariasList user={user} />} />
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
         <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />

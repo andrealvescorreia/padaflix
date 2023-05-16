@@ -1,0 +1,50 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+#address-form-container{
+    background-color:  #FFF8E4;
+    border-radius: 15px;
+    padding-bottom: 1rem;
+
+    .form-header{
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        
+        svg{
+            margin-left: -1.2rem;
+            width: 1.7rem;
+            height: 1.7rem;
+            fill: #C78A61;
+        }
+        display: flex;
+        align-items: center;
+        
+        h1{
+            font-size: 1.6rem;
+            color: #2D2D2D;
+            font-weight: bold;
+            margin: 0;
+        }
+    }
+
+    .bttn{
+        margin-top: 1rem;
+    }
+
+    .submit{
+        width: 10rem;
+        border-radius: 20px;
+        background-color: #C78A61;
+    }
+    .back{
+        width: 10rem;
+        border-radius: 20px;
+        background-color: #cccccc;
+        color: black;
+    }
+    .bttns-box{
+        @include mixins.flex-center;
+        gap: 4rem;
+    }
+    
+}

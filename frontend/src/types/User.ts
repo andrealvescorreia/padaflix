@@ -1,7 +1,10 @@
+import { Endereco } from "./Endereco";
+
 export interface User {
   id: number,
   name: string,
   email: string,
+  endereco: Endereco
 }
 
 export interface PadariaUser {
@@ -10,6 +13,7 @@ export interface PadariaUser {
   email: string,
   cnpj: string,
   telefone: string,
+  endereco: Endereco
 }
 
 export function isPadariaUser(object: any): object is PadariaUser {

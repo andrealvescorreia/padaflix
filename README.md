@@ -36,3 +36,4 @@ python manage.py runserver
 <br> André Alves
 <br> Arthur Medeiros
 <br> Meljael Daniel
+<br>Trello: https://trello.com/b/Du7M4neD/padaflix-kanban

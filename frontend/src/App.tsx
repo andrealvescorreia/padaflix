@@ -58,7 +58,6 @@ function App() {
         <Route path="/" element={<Home user={user} />} />
         <Route path="/login" element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
-        <Route path="/padarias" element={<PadariasList user={user} />} />
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
         <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />

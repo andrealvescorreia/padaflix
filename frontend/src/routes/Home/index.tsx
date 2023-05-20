@@ -1,5 +1,6 @@
 import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
 import HomeNotLoggedIn from "../HomeNotLoggedIn";
+import PadariasList from "../PadariasList";
 
 function NotLoggedInHome(){
   return <HomeNotLoggedIn/>
@@ -7,6 +8,7 @@ function NotLoggedInHome(){
 function UserHome(user: User) {
   return <div>
     Olá {user.name}
+    <PadariasList user={user}/>
   </div>;
 }
 function PadariaUserHome(padariaUser: PadariaUser) {

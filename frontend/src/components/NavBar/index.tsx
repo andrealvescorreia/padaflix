@@ -1,64 +1,59 @@
 import { Link } from "react-router-dom";
-import styles from './Navbar.module.scss';
-import Logo from '../../assets/logo.png';
+import {useEffect, useState} from "react";
 
-interface NavBarProps {
-  isAuthenticated: boolean,
-  logout: () => void;
-}
+ 
 
-const NavBar = ( { isAuthenticated , logout } : NavBarProps ) => {
 
-  let userNavOption;
+const NavBar = () => {
 
-  if (isAuthenticated) { // Caso autenticado
-    userNavOption = (
-      <div className={styles.navOptions}>
-        
-        <Link to="/login" id={styles.logout_btn} onClick={logout} >
-          Sair
-        </Link>
-        
-      </div>
-    )
+  const [name, setName] = useState('')
+  const logout = async () => {
+    await fetch('http://localhost:8000/api/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+    })
   }
-  else {// Caso não autenticado...
-    userNavOption = (
-      <div className={styles.navOptions}>
-        
-        <Link to="/login"  id={styles.login_btn} className={styles.btn} >
-          Login
-        </Link>
-        
-        <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
-          Começe Agora
-        </Link>
-        
-      </div>
 
-    )
-  } 
+  useEffect(() => {
+  (
+    async () => {
+      const response = await fetch('http://localhost:8000/api/user', {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+      })
+      const content = await response.json();
+      setName(content.name);
+    }
+  )();
+  })
 
-  
-  return <nav id={styles.navbar}>
-    <div className={styles.defaultNavOptions}>
-      <Link to="/"   className={styles.option} >
-        Início
-      </Link>
-          
-      <Link to="/padarias" className={styles.option} >
-        Padarias
-      </Link>
-    </div>
 
-    <div className={styles.logoContainer}>
-      <img src={Logo} className={styles.logo} alt="logo padaflix"/>
-    </div>
-
-    
-    {userNavOption}
-  </nav>;
-  
+  return <nav className="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div className="container-fluid">
+          <Link to="/" className="navbar-brand">Home</Link>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarCollapse">
+            <ul className="navbar-nav me-auto mb-2 mb-md-0">
+              <li className="nav-item">
+                <Link to="/login" className="nav-link active" aria-current="page" >Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/register" className="nav-link active" aria-current="page" >Register</Link>
+              </li>
+              <li className="nav-item">
+          <Link to="/login" className="nav-link active" aria-current="page" onClick={logout} >Logout</Link>
+        </li>
+            </ul>
+          </div>
+        </div>
+  </nav>
 }
  
 export default NavBar;

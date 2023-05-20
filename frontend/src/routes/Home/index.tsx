@@ -1,33 +1,29 @@
-import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+import {useEffect, useState} from "react";
 
-function NotLoggedInHome(){
-  return <div>
-    Não logado...
-  </div>;
-}
-function UserHome(user: User) {
-  return <div>
-    Olá {user.name}
-  </div>;
-}
-function PadariaUserHome(padariaUser: PadariaUser) {
-  return <div>
-    Olá {padariaUser.nome_fantasia}
-  </div>;
-}
+const Home = () => {
 
+    const [name, setName] = useState('')
 
-interface HomeProps {
-  user: User | undefined | PadariaUser
-}
+    useEffect(() => {
+    (
+      async () => {
+        const response = await fetch('http://localhost:8000/api/user', {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+        })
+        const content = await response.json();
+        setName(content.name);
+      }
+    )();
+    })
 
-const Home = ({user} : HomeProps) => {
-  if (user) {
-    if (isUser(user)) return UserHome(user)
-    if (isPadariaUser(user)) return PadariaUserHome(user)
-  }
-  
-  return NotLoggedInHome()
+    return ( 
+        <div>
+            {name ? 'Bem vindo ' + name : 'Voce não está logado...' }
+        </div>
+    );
 }
  
 export default Home;

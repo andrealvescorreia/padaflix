@@ -2,9 +2,15 @@
 @use '../../styles/mixins';
 
 #address-form-container{
+    margin-top: .4rem;
     background-color:  #FFF8E4;
     border-radius: 15px;
     padding-bottom: 1rem;
+
+    .form{
+
+        gap:1.2rem;
+    }
 
     .form-header{
         padding-top: 0.6rem;
@@ -28,7 +34,7 @@
     }
 
     .bttn{
-        margin-top: 1rem;
+        margin-top: .6rem;
     }
 
     .submit{

@@ -1,37 +1,97 @@
-from rest_framework.views import APIView
-from .serializers import UserSerializer
+import requests
+import jwt
+import datetime
+
+from .serializers import UserSerializer, PadariaSerializer
+from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
+from .models import User, Padaria, PlanoAssinatura  # , Assinatura
+from django.db.models import Value, CharField
+from django.db.models.functions import Concat
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .models import User
-import jwt, datetime
+from rest_framework.views import APIView
+from rest_framework import status
 
 
-class RegisterView(APIView):
+def home(request):
+    padarias = Padaria.objects.all()
+    data = {'padarias': []}
+    for padaria in padarias:
+        data['padarias'].append({
+            'nome_fantasia': padaria.nome_fantasia,
+            'endereco': {
+                'cep': padaria.endereco.cep,
+                'rua': padaria.endereco.rua,
+                'numero': padaria.endereco.numero,
+                'bairro': padaria.endereco.bairro,
+                'complemento': padaria.endereco.complemento,
+                'uf': padaria.endereco.uf,
+            },
+            'cnpj': padaria.cnpj,
+            'telefone': padaria.telefone,
+        })
+    return JsonResponse(data)
+
+
+class Register_UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        if serializer.is_valid():
+            # serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Register_PadariaView(APIView):
+    def post(self, request):
+        serializer = PadariaSerializer(data=request.data)
+        if serializer.is_valid():
+            # serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginView(APIView):
     def post(self, request):
-        email = request.data['email']
-        password = request.data['password']
+        data = request.data
+        email = data['email']
+        password = data['password']
 
         user = User.objects.filter(email=email).first()
 
         if user is None:
-            raise AuthenticationFailed('Usuario nao encontrado!')
 
-        if not user.check_password(password):
-            raise AuthenticationFailed('Senha incorreta!')
+            padaria = Padaria.objects.filter(email=email).first()
 
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
+            if padaria is None:
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+
+            if not padaria.check_password(password):
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+
+            payload = {
+                'user-type': 'padaria-user',
+                'id': padaria.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
+                'iat': datetime.datetime.utcnow()
+            }
+
+        else:
+            if not user.check_password(password):
+                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+
+            payload = {
+                'user-type': 'client-user',
+                'id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=360),  # noqa: E501
+                'iat': datetime.datetime.utcnow()
+            }
+
         token = jwt.encode(payload, 'secret', algorithm='HS256')
 
         response = Response()
@@ -43,7 +103,15 @@ class LoginView(APIView):
         return response
 
 
-class UserView(APIView):
+class UserAndPadariaView(APIView):
+    '''class IsAuthenticated(BasePermission):
+        message = 'Authentication credentials were not provided.'
+
+        def has_permission(self, request, view):
+            return request.user.is_authenticated
+
+    permission_classes = [IsAuthenticated]'''
+
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -54,11 +122,93 @@ class UserView(APIView):
             payload = jwt.decode(token, 'secret', algorithms='HS256')
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Não Autenticado!')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Token inválido!')
 
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        if payload['user-type'] == 'client-user':
+            user = User.objects.filter(id=payload['id']).first()
+            serializer = UserSerializer(user)
+        elif payload['user-type'] == 'padaria-user':
+            padaria = Padaria.objects.filter(id=payload['id']).first()
+            serializer = PadariaSerializer(padaria)
+        else:
+            raise AuthenticationFailed('Tipo de usuário inválido!')
 
         return Response(serializer.data)
+
+
+class PadariaPorCidadeView(APIView):
+    def get(self, request, cep):
+        response = requests.get(f'https://viacep.com.br/ws/{cep}/json/')
+        if response.status_code != status.HTTP_200_OK:
+            return JsonResponse(
+                {'message': 'CEP inválido.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+            )
+
+        if "erro" in response.json() and response.json()["erro"]:
+            return JsonResponse(
+                {'message': 'CEP não encontrado.'}, status=status.HTTP_404_NOT_FOUND  # noqa: E501
+            )
+
+        cidade = response.json().get('localidade', '').upper()
+        padarias = (
+            Padaria.objects
+            .filter(endereco__cep__startswith=cep[:4])
+            .annotate(cidade=Value(cidade, output_field=CharField()))
+            .annotate(nome_com_cidade=Concat('nome_fantasia', Value(' - '), 'cidade'))  # noqa: E501
+            .filter(cidade=cidade)
+        )
+
+        serializer = PadariaSerializer(padarias, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+class PlanoAssinaturaView(UserAndPadariaView):
+    def post(self, request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            return Response(
+                {'error': 'Acesso negado.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms='HS256')
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Não Autenticado!')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Token inválido!')
+
+        if payload['user-type'] != 'padaria-user':
+            return Response(
+                {'error': 'Acesso negado.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = PlanoAssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        planos = PlanoAssinatura.objects.all()
+        serializer = PlanoAssinaturaSerializer(planos, many=True)
+        return Response(serializer.data)
+
+
+'''class AssinaturaView(APIView):
+    def post(self, request):
+        serializer = AssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        assinaturas = Assinatura.objects.all()
+        serializer = AssinaturaSerializer(assinaturas, many=True)
+        return Response(serializer.data)'''
 
 
 class LogoutView(APIView):

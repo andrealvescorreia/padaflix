@@ -1,7 +1,7 @@
 import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
-import LoginForm from './routes/LoginForm';
+import Login from './routes/Login';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
@@ -33,19 +33,7 @@ function App() {
 
   const navigate = useNavigate()
 
-  const login = async (email: string, password: string) => {
-    axiosInstance.post('/login', {
-      email,
-      password
-    })
-      .then(async () => {
-        fetchUser()
-        navigate('/')// redireciona para a homepage
-      })
-      .catch((err) => {
-        alert(err)
-      })
-  }
+ 
 
   const logout = async () => {
     axiosInstance.post('/logout')
@@ -58,13 +46,17 @@ function App() {
       })
   }
 
+  function onSuccessfulLogin(){
+    fetchUser()
+    navigate('/')
+  }
 
   return (
     <div>
       <NavBar user={user} logout={logout} />
       <Routes>
         <Route path="/" element={<Home user={user} />} />
-        <Route path="/login" element={<LoginForm onSubmit={login} />} />
+        <Route path="/login" element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/padarias" element={<PadariasList user={user} />} />
         <Route path="/register/user" element={<RegisterUser/>} />

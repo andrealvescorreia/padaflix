@@ -1,9 +1,8 @@
 import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+import HomeNotLoggedIn from "../HomeNotLoggedIn";
 
 function NotLoggedInHome(){
-  return <div>
-    Não logado...
-  </div>;
+  return <HomeNotLoggedIn/>
 }
 function UserHome(user: User) {
   return <div>

@@ -33,6 +33,24 @@ cd backend
 python manage.py migrate 
 python manage.py runserver
 ```
+
+## Rodar Testes
+```
+venv/Scripts/activate 
+cd backend 
+python manage.py migrate 
+python manage.py test
+```
+
+Para mostrar o coverage dos testes:
+```
+coverage run --source "authors" manage.py test -v 2
+coverage report
+// ou 
+coverage html
+```
+-- coverage html vai gerar uma página que mostra em detalhes quais partes do código foram cobertas
+## Integrantes
 <br> André Alves
 <br> Arthur Medeiros
 <br> Meljael Daniel

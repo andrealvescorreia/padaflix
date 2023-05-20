@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-%ufs(t%=k1j6dx@(hzue^%(y8qw(jsz6yv%^+e0sgljn8_6z3p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
+COVERAGE_MODULE_EXCLUDES = [
+    'tests$', 'settings$', 'urls$', 'locale$',
+    'wsgi$', 'asgi$',
+    '__init__', 'manage',
+]
 
 
 # Application definition

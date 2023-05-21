@@ -7,7 +7,11 @@ import FormControl, { useFormControl } from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function InputPass({onChange}) {
+interface InputPassProps {
+  onChange: () => void
+}
+
+export default function InputPass({onChange}: InputPassProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);

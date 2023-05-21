@@ -2,7 +2,6 @@ import axiosInstance from "../../axios";
 import PadariaCard from "../../components/PadariaCard";
 import { PadariaUser, User } from "../../types/User";
 import "./styles.scss"
-import { usePadarias } from './usePadarias'
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -14,8 +13,6 @@ interface Padaria {
 }
 
 const PadariasList = ({user} : Props) => {
-   //const { padarias } = usePadarias(userCep);
-
    const [padarias, setPadarias] = useState<Padaria[]> ([]);
 
    const fetchPadarias = async () => {

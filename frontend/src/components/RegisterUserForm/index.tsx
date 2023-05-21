@@ -31,7 +31,10 @@ const RegisterUserForm = (props: RegisterProps) => {
         <form onSubmit={handleSubmit} id="secondaryContainer">
 
             <label htmlFor="name">Nome
-                <TextField id="name" onChange={e => setName(e.target.value)} />
+                <TextField 
+                id="name" 
+                required
+                onChange={e => setName(e.target.value)} />
             </label>
 
             <label htmlFor="">E-mail

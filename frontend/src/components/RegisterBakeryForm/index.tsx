@@ -30,7 +30,9 @@ const RegisterBekery = (props: RegisterProps) => {
                 
 
                 <label htmlFor="">Nome fantasia
-                    <TextField onChange={e => setName(e.target.value)}/>
+                    <TextField 
+                    required
+                    onChange={e => setName(e.target.value)}/>
                 </label>
 
                 <InputMask 
@@ -44,7 +46,9 @@ const RegisterBekery = (props: RegisterProps) => {
                 </InputMask>
 
                 <label htmlFor="">E-mail
-                    <TextField onChange={e => setEmail(e.target.value)}/>
+                    <TextField
+                    required
+                    onChange={e => setEmail(e.target.value)}/>
                 </label>
 
                 <InputMask 

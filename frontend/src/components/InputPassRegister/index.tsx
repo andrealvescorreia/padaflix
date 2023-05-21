@@ -38,6 +38,7 @@ export default function InputPassRegister({onChange}) {
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
+            required
             endAdornment={
               <InputAdornment position="end" id="pass"	>
                 

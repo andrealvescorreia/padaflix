@@ -28,6 +28,7 @@ const EmailInput: React.FC<Props> = ({ onChange }) => {
       value={email}
       onChange={handleEmailChange}
       onBlur={handleBlur}
+      required
       error={touched && !isValid}
       helperText={touched && !isValid ? 'Email inválido' : ''}
     />

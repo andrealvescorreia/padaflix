@@ -38,7 +38,7 @@ const AddressForm = ( props: AddressProps ) => {
         let newCep = cep.replace('-', '')
         setCep(newCep)
         const endereco: Endereco = {
-            cep, rua, numero, complemento, bairro, cidade, uf
+            cep: newCep, rua, numero, complemento, bairro, cidade, uf
         }
         onSubmit(endereco);
     }
@@ -103,7 +103,7 @@ const AddressForm = ( props: AddressProps ) => {
                 autoComplete="off"
             > 
                 <InputMask 
-                    mask="99999999"  
+                    mask="99999-999"  
                     value={cep}
                     onBlur={queryCepData}
                     onChange={e => setCep(e.target.value)}

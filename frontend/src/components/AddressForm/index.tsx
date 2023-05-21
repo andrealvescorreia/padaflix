@@ -2,12 +2,9 @@ import * as React from 'react';
 import { SyntheticEvent, useState } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import { IMaskInput } from 'react-imask';
+import Stack from '@mui/material/Stack';
 import "./styles.scss";
-
+import InputMask from 'react-input-mask';
 import { MdLocationOn } from "react-icons/md";
 import axios from 'axios';
 import { Endereco } from '../../types/Endereco';
@@ -23,7 +20,6 @@ interface AddressProps {
 const AddressForm = ( props: AddressProps ) => {
     const { onSubmit, onGoBack } = props
    
-
     const [cep, setCep] = useState('');
     const [rua, setRua] = useState('');
     const [numero, setNumero] = useState('');
@@ -32,31 +28,33 @@ const AddressForm = ( props: AddressProps ) => {
     const [cidade, setCidade] = useState('');
     const [uf, setUf] = useState('');
 
-    const [logradouroWasAutocompletedByApiRequest, setLogradouroWasAutocompletedByApiRequest] = useState(false)
-    const [bairroWasAutocompletedByApiRequest, setBairroWasAutocompletedByApiRequest] = useState(false)
+    const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
+    const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
 
+    const [invalidCep, setInvalidCep] = useState(false)
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        setCep(cep.replace('-',''))
+        let newCep = cep.replace('-', '')
+        setCep(newCep)
         const endereco: Endereco = {
-            cep, rua, numero, complemento, bairro, cidade, uf
+            cep: newCep, rua, numero, complemento, bairro, cidade, uf
         }
         onSubmit(endereco);
     }
 
     interface ViaCepResponseBody{
         cep: string,
-        logradouro: string,
+        logradouro: string, // equivale a rua
         complemento: string,
         bairro: string,
-        localidade: string,
+        localidade: string, // equivale a cidade
         uf: string,
     }
 
     function updateValuesAfterApiRequest(apiResponse: ViaCepResponseBody){
-        setLogradouroWasAutocompletedByApiRequest(false)
-        setBairroWasAutocompletedByApiRequest(false)
+        setRuaWasAutoFilledByQuery(false)
+        setBairroWasAutoFilledByQuery(false)
         
         setCidade(apiResponse.localidade)
         setUf(apiResponse.uf)
@@ -64,18 +62,15 @@ const AddressForm = ( props: AddressProps ) => {
         setBairro(apiResponse.bairro)
         setComplemento(apiResponse.complemento)
 
-        if(apiResponse.logradouro != ""){
-            setLogradouroWasAutocompletedByApiRequest(true)
-        }
-        if(apiResponse.bairro != ""){
-            setBairroWasAutocompletedByApiRequest(true)
-        }
+        if(apiResponse.logradouro != "") setRuaWasAutoFilledByQuery(true)
+        
+        if(apiResponse.bairro != "") setBairroWasAutoFilledByQuery(true)
         
     }
 
     function clearForm(){
-        setLogradouroWasAutocompletedByApiRequest(false)
-        setBairroWasAutocompletedByApiRequest(false)
+        setRuaWasAutoFilledByQuery(false)
+        setBairroWasAutoFilledByQuery(false)
         setCidade('')
         setUf('')
         setRua('')
@@ -84,14 +79,15 @@ const AddressForm = ( props: AddressProps ) => {
         setNumero('')
     }
 
-    function pegarDadosCep(){
+    function queryCepData(){
         axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
         .then(function (response) {
             updateValuesAfterApiRequest(response.data)
+            setInvalidCep(false)
         })
         .catch(function (error) {
             clearForm()
-            alert('cep invalido');
+            setInvalidCep(true)
         })
     }
 
@@ -99,30 +95,26 @@ const AddressForm = ( props: AddressProps ) => {
         <Container id="address-form-container" maxWidth="sm" >
             <header className='form-header'>
                 <MdLocationOn/>
-                <h1>
-                    Endereço
-                </h1>
+                <h1>Endereço</h1>
             </header>
 
-            <FormControl variant="standard"  onSubmit={handleSubmit} 
-                sx={{
-                    width: '100%',
-                    maxWidth: '100%',
-                }}
+            <Stack onSubmit={handleSubmit} className='form'
                 component="form"
-                noValidate
                 autoComplete="off"
             > 
-                <CepInput 
-                    cep={cep} 
-                    setCep={setCep}
-                    onBlur={pegarDadosCep}
-                />
+                <InputMask 
+                    mask="99999-999"  
+                    value={cep}
+                    onBlur={queryCepData}
+                    onChange={e => setCep(e.target.value)}
+                >
+                    <TextField label="CEP" required fullWidth error={invalidCep} />
+                </InputMask>
+
                 <TextField
-                    disabled={logradouroWasAutocompletedByApiRequest}
+                    disabled={ruaWasAutoFilledByQuery}
                     label="Logradouro" 
                     required
-                    margin='dense'
                     value={rua}
                     onChange={e => setRua(e.target.value)}
                 />
@@ -137,42 +129,36 @@ const AddressForm = ( props: AddressProps ) => {
                         label="Número" 
                         required
                         type="number" 
-                        margin='dense'
                         value={numero}
                         onChange={e => setNumero(e.target.value)} 
                     />
                     <TextField 
                         label="Complemento" 
-                        margin='dense'
                         value={complemento}
                         onChange={e => setComplemento(e.target.value)} 
                     />
                 </Box>
                 <TextField
-                    disabled={bairroWasAutocompletedByApiRequest}
+                    disabled={bairroWasAutoFilledByQuery}
                     label="Bairro" 
                     required
-                    margin='dense'
                     value={bairro}
                     onChange={e => setBairro(e.target.value)}
                 />
                 <TextField 
+                    disabled
                     label="Cidade" 
                     required
-                    margin='dense' 
-                    disabled
                     value={cidade}
                     onChange={e => setCidade(e.target.value)}
                 />
 
                 <TextField 
+                    disabled 
                     label="UF" 
                     required
-                    margin='dense' 
-                    disabled 
                     value={uf}
                     onChange={e => setUf(e.target.value)} 
-                    
                 />
 
                 <div className="bttns-box">
@@ -190,69 +176,9 @@ const AddressForm = ( props: AddressProps ) => {
                     >Criar conta
                     </Button>
                 </div>
-            
-            </FormControl>
-
-            
+            </Stack>
         </Container>
-
     )
 }
- 
-
-// André: daq pra baixo eu não entendo como funciona, só sei que funciona.
-
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-  
-const CepMask = React.forwardRef<HTMLElement, CustomProps>(
-    function CepMask(props, ref) {
-        const { onChange, ...other } = props;
-        return (
-            <IMaskInput
-                {...other}
-                mask="00000000"
-                definitions={{
-                    '#': /[1-9]/,
-                }}
-                inputRef={ref}
-                onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
-                overwrite
-            
-            />
-      );
-    },
-);
-interface CepInputProps {
-    cep: string,
-    setCep: (cep: string) => void
-    onBlur: () => void
-}
-  
-function CepInput({cep, setCep, onBlur}: CepInputProps) {
-  
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCep(event.target.value);
-    };
-  
-    return (
-        <div>
-            <InputLabel htmlFor="formatted-text-mask-input">CEP*</InputLabel>
-            <OutlinedInput
-                value={cep}
-                onBlur={onBlur}
-                onChange={handleChange}
-                name="textmask"
-                id="formatted-text-mask-input"
-                inputComponent={CepMask as any}
-                fullWidth
-            />
-        </div>
-    );
-}
-
-
 
 export default AddressForm;

@@ -1,14 +1,14 @@
 import { SyntheticEvent, useState } from "react";
-import InputAdornments from "../../components/InputPass";
+import InputAdornments from "../InputPass";
 import { Button, TextField } from "@mui/material";
 import "./Login.scss";
-import InputPass from "../../components/InputPass";
+import InputPass from "../InputPass";
 
-interface LoginProps {
+interface LoginFormProps {
     onSubmit: (email: string, password: string) => void;
 }
 
-const LoginForm = ( props:LoginProps ) => {
+const LoginForm = (props: LoginFormProps) => {
 
     const { onSubmit } = props
 
@@ -21,12 +21,12 @@ const LoginForm = ( props:LoginProps ) => {
     }
 
     return (
-        <main id = "mainContainer">
-        
-            <form  onSubmit={handleSubmit} id = "secondaryContainer">
+        <main id="mainContainer">
+
+            <form onSubmit={handleSubmit} id="secondaryContainer">
 
                 <label htmlFor="">E-mail
-                    <TextField onChange={e => setEmail(e.target.value)}/>
+                    <TextField onChange={e => setEmail(e.target.value)} />
                 </label>
 
                 <label htmlFor="">Senha
@@ -37,10 +37,10 @@ const LoginForm = ( props:LoginProps ) => {
                     <Button variant="outlined" className="buttonEmpty">Cadastrar-se</Button>
                     <Button variant="text" className="buttonText">Esqueci a senha!</Button>
                 </div>
-                
+
             </form>
         </main>
     );
 }
- 
+
 export default LoginForm;

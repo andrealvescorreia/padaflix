@@ -31,6 +31,7 @@ const AddressForm = ( props: AddressProps ) => {
     const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
     const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
 
+    const [invalidCep, setInvalidCep] = useState(false)
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
@@ -82,10 +83,11 @@ const AddressForm = ( props: AddressProps ) => {
         axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
         .then(function (response) {
             updateValuesAfterApiRequest(response.data)
+            setInvalidCep(false)
         })
         .catch(function (error) {
             clearForm()
-            alert('cep invalido');
+            setInvalidCep(true)
         })
     }
 
@@ -106,7 +108,7 @@ const AddressForm = ( props: AddressProps ) => {
                     onBlur={queryCepData}
                     onChange={e => setCep(e.target.value)}
                 >
-                    <TextField label="CEP" required fullWidth/>
+                    <TextField label="CEP" required fullWidth error={invalidCep} />
                 </InputMask>
 
                 <TextField

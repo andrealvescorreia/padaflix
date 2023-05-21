@@ -6,46 +6,40 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
 import { User, PadariaUser } from "./types/User";
-import PadariasList from './routes/PadariasList';
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterUser from './routes/RegisterUser';
 import RegisterBakery from './routes/RegisterBakery';
 import NewSubscriptionPlan from './routes/NewSubscriptionPlan';
 
 function App() {
-
-
   const [user, setUser] = useState<User | PadariaUser | undefined>()
 
   const fetchUser = async () => {
     axiosInstance.get('/user')
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch(() => {
-        console.log('não autorizado...')
-      })
+    .then((response) => {
+      setUser(response.data);
+    })
+    .catch(() => {
+      setUser(undefined)
+    })
   }
 
   useEffect(() => {
     fetchUser()
   }, [])
 
-  const navigate = useNavigate()
-
- 
 
   const logout = async () => {
     axiosInstance.post('/logout')
       .then(() => {
         setUser(undefined)
-        
       })
       .catch((err) => {
-        console.log(err.data)
+        console.log(err.response.data)
       })
   }
-
+  
+  const navigate = useNavigate()
   function onSuccessfulLogin(){
     fetchUser()
     navigate('/')

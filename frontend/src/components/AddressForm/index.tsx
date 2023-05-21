@@ -99,7 +99,7 @@ const AddressForm = ( props: AddressProps ) => {
                 autoComplete="off"
             > 
                 <InputMask 
-                    mask="99999999"  
+                    mask="99999-999"  
                     value={cep}
                     onBlur={queryCepData}
                     onChange={e => setCep(e.target.value)}

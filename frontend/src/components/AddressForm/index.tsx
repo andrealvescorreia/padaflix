@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SyntheticEvent, useState } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
+import Stack from '@mui/material/Stack';
 import "./styles.scss";
 import InputMask from 'react-input-mask';
 import { MdLocationOn } from "react-icons/md";
@@ -20,7 +20,6 @@ interface AddressProps {
 const AddressForm = ( props: AddressProps ) => {
     const { onSubmit, onGoBack } = props
    
-
     const [cep, setCep] = useState('');
     const [rua, setRua] = useState('');
     const [numero, setNumero] = useState('');
@@ -29,8 +28,8 @@ const AddressForm = ( props: AddressProps ) => {
     const [cidade, setCidade] = useState('');
     const [uf, setUf] = useState('');
 
-    const [logradouroWasAutocompletedByApiRequest, setLogradouroWasAutocompletedByApiRequest] = useState(false)
-    const [bairroWasAutocompletedByApiRequest, setBairroWasAutocompletedByApiRequest] = useState(false)
+    const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
+    const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
 
 
     const handleSubmit = (e: SyntheticEvent) => {
@@ -43,16 +42,16 @@ const AddressForm = ( props: AddressProps ) => {
 
     interface ViaCepResponseBody{
         cep: string,
-        logradouro: string,
+        logradouro: string, // equivale a rua
         complemento: string,
         bairro: string,
-        localidade: string,
+        localidade: string, // equivale a cidade
         uf: string,
     }
 
     function updateValuesAfterApiRequest(apiResponse: ViaCepResponseBody){
-        setLogradouroWasAutocompletedByApiRequest(false)
-        setBairroWasAutocompletedByApiRequest(false)
+        setRuaWasAutoFilledByQuery(false)
+        setBairroWasAutoFilledByQuery(false)
         
         setCidade(apiResponse.localidade)
         setUf(apiResponse.uf)
@@ -60,17 +59,15 @@ const AddressForm = ( props: AddressProps ) => {
         setBairro(apiResponse.bairro)
         setComplemento(apiResponse.complemento)
 
-        if(apiResponse.logradouro != ""){
-            setLogradouroWasAutocompletedByApiRequest(true)
-        }
-        if(apiResponse.bairro != ""){
-            setBairroWasAutocompletedByApiRequest(true)
-        }
+        if(apiResponse.logradouro != "") setRuaWasAutoFilledByQuery(true)
+        
+        if(apiResponse.bairro != "") setBairroWasAutoFilledByQuery(true)
+        
     }
 
     function clearForm(){
-        setLogradouroWasAutocompletedByApiRequest(false)
-        setBairroWasAutocompletedByApiRequest(false)
+        setRuaWasAutoFilledByQuery(false)
+        setBairroWasAutoFilledByQuery(false)
         setCidade('')
         setUf('')
         setRua('')
@@ -94,26 +91,24 @@ const AddressForm = ( props: AddressProps ) => {
         <Container id="address-form-container" maxWidth="sm" >
             <header className='form-header'>
                 <MdLocationOn/>
-                <h1>
-                    Endereço
-                </h1>
+                <h1>Endereço</h1>
             </header>
 
-            <FormControl variant="standard" onSubmit={handleSubmit} className='form' 
-                sx={{
-                    width: '100%',
-                    maxWidth: '100%',
-                }}
+            <Stack onSubmit={handleSubmit} className='form'
                 component="form"
                 autoComplete="off"
             > 
-                <CepInput 
-                    cep={cep} 
-                    setCep={setCep}
+                <InputMask 
+                    mask="99999999"  
+                    value={cep}
                     onBlur={queryCepData}
-                />
+                    onChange={e => setCep(e.target.value)}
+                >
+                    <TextField label="CEP" required fullWidth/>
+                </InputMask>
+
                 <TextField
-                    disabled={logradouroWasAutocompletedByApiRequest}
+                    disabled={ruaWasAutoFilledByQuery}
                     label="Logradouro" 
                     required
                     value={rua}
@@ -140,24 +135,24 @@ const AddressForm = ( props: AddressProps ) => {
                     />
                 </Box>
                 <TextField
-                    disabled={bairroWasAutocompletedByApiRequest}
+                    disabled={bairroWasAutoFilledByQuery}
                     label="Bairro" 
                     required
                     value={bairro}
                     onChange={e => setBairro(e.target.value)}
                 />
                 <TextField 
+                    disabled
                     label="Cidade" 
                     required
-                    disabled
                     value={cidade}
                     onChange={e => setCidade(e.target.value)}
                 />
 
                 <TextField 
+                    disabled 
                     label="UF" 
                     required
-                    disabled 
                     value={uf}
                     onChange={e => setUf(e.target.value)} 
                 />
@@ -177,35 +172,9 @@ const AddressForm = ( props: AddressProps ) => {
                     >Criar conta
                     </Button>
                 </div>
-            </FormControl>
+            </Stack>
         </Container>
     )
 }
-
-
-interface CepInputProps {
-    cep: string,
-    setCep: (cep: string) => void
-    onBlur: () => void
-}
-
-function CepInput({cep, setCep, onBlur}: CepInputProps) {
-  
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCep(event.target.value);
-    };
-
-    return (
-        <InputMask 
-            mask="99999-999"  
-            value={cep}
-            onBlur={onBlur}
-            onChange={handleChange}
-        >
-            <TextField label="CEP" required fullWidth/>
-        </InputMask>
-    )
-}
-
 
 export default AddressForm;

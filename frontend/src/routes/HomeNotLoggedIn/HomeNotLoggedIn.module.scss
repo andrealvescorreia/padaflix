@@ -1,0 +1,116 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+@mixin container-height {
+  height: 44rem;
+}
+
+#mainContainer {
+  @include mixins.flex-center;
+  flex-direction: column;
+  @include container-height;
+  
+  h1 {
+    font-size: 2.5rem;
+    width: 50rem;
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+  p {
+    margin-top: 1rem;
+    color: variables.$text-color-secondary;
+    font-size: 1.1rem;
+    width: 30rem;
+    text-align: center;
+  }
+  img {
+    width: 58rem;
+  }
+}
+
+.startNowBtn {
+  color: white;
+  border-radius: 1rem;
+  text-decoration: none;
+  height: 3rem;
+  width: 12rem;
+  @include mixins.flex-center;
+  margin: 2.5rem;
+  background-color: #C78A61;
+  font-weight: bold;
+  svg {
+    fill: white;
+    padding-top: 0.1rem;
+    transform: scale(1.5);
+  }
+  transition: .2s;
+}
+
+.startNowBtn:hover {
+  background-color: #d69469;;
+}
+
+#secondaryContainer {
+  @include mixins.flex-center;
+  flex-direction: column;
+  @include container-height;
+
+  h2 {
+    font-size: 2rem;
+    width: 45rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  img {
+    width: 35rem;
+  }
+  .content {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .description {
+      p {
+        width: 34rem;
+        font-size: 1.7rem;
+        margin: 2rem;
+        line-height: 2.3rem;
+        color: variables.$text-color-secondary;
+      }
+    }
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  @include container-height;
+  
+  img {
+    width: 38rem;
+  }
+  p {
+    width: 36rem;
+    font-size: 1.7rem;
+    margin-bottom: 2rem;
+    line-height: 2.3rem;
+    color: variables.$text-color-secondary;
+  }
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+#callToActionContainer {
+  height: 30rem;
+  @include mixins.flex-center;
+  flex-direction: column;
+
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+}

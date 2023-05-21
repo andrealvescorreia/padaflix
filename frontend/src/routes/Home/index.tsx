@@ -2,6 +2,7 @@ import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
 import HomeNotLoggedIn from "../HomeNotLoggedIn";
 import PadariasList from "../PadariasList";
 
+
 function NotLoggedInHome(){
   return <HomeNotLoggedIn/>
 }

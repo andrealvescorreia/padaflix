@@ -34,6 +34,8 @@ const AddressForm = ( props: AddressProps ) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
+        let newCep = cep.replace('-', '')
+        setCep(newCep)
         const endereco: Endereco = {
             cep, rua, numero, complemento, bairro, cidade, uf
         }

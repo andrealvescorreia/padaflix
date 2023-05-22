@@ -21,7 +21,13 @@ urlpatterns = [
   path(
     'plano_de_assinatura',
     PlanoAssinaturaView.as_view(),
-    name='plano_de_assinatura'),
+    name='plano_de_assinatura_post'
+  ),
+  path(
+    'plano_de_assinatura/<int:padaria_id>',
+    PlanoAssinaturaView.as_view(),
+    name='plano_de_assinatura_get'
+  ),
   # path('assinaturas', AssinaturaView.as_view(), name='assinaturas'),
   path('logout', LogoutView.as_view(), name='logout'),
 ]

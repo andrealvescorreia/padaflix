@@ -13,6 +13,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework import status
 
+from django.db import transaction
+
 
 def home(request):
     padarias = Padaria.objects.all()
@@ -104,14 +106,6 @@ class LoginView(APIView):
 
 
 class UserAndPadariaView(APIView):
-    '''class IsAuthenticated(BasePermission):
-        message = 'Authentication credentials were not provided.'
-
-        def has_permission(self, request, view):
-            return request.user.is_authenticated
-
-    permission_classes = [IsAuthenticated]'''
-
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
@@ -185,14 +179,36 @@ class PlanoAssinaturaView(UserAndPadariaView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        serializer = PlanoAssinaturaSerializer(data=request.data)
+        serializer = PlanoAssinaturaSerializer(data=request.data.get('plano_assinatura', []), many=True)
         if serializer.is_valid():
-            serializer.save()
+            padaria = Padaria.objects.get(id=payload['id'])
+            planos_assinatura = serializer.validated_data
+
+            with transaction.atomic():
+                for plano in planos_assinatura:
+                    novo_plano = PlanoAssinatura(**plano)
+                    novo_plano.save()
+                    padaria.plano_assinatura.add(novo_plano)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request):
-        planos = PlanoAssinatura.objects.all()
+    def get(self, request, padaria_id):
+        if not padaria_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID da padaria.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            padaria = Padaria.objects.get(id=padaria_id)
+        except Padaria.DoesNotExist:
+            return Response(
+                {'error': 'Padaria não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        planos = PlanoAssinatura.objects.filter(padaria=padaria)
         serializer = PlanoAssinaturaSerializer(planos, many=True)
         return Response(serializer.data)
 

@@ -73,9 +73,10 @@ class Padaria(AbstractUser):
         Permission, related_name='padaria_permissions', blank=True
     )
 
-    plano_assinatura = models.ForeignKey(
-        PlanoAssinatura, on_delete=models.SET_NULL,
-        null=True, blank=True
+    plano_assinatura = models.ManyToManyField(
+        PlanoAssinatura,
+        blank=True,
+        related_name='padaria'
     )
 
     USERNAME_FIELD = 'email'

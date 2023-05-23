@@ -11,7 +11,7 @@ class EnderecoSerializer(serializers.ModelSerializer):
 class PlanoAssinaturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanoAssinatura
-        fields = '__all__'
+        fields = ['nome', 'descricao', 'preco', 'servings_unit']
 
 
 class AssinaturaSerializer(serializers.ModelSerializer):
@@ -50,11 +50,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PadariaSerializer(serializers.ModelSerializer):
     endereco = EnderecoSerializer()
+    plano_assinatura = PlanoAssinaturaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Padaria
         fields = ['id', 'nome_fantasia', 'endereco',
-                  'cnpj', 'telefone', 'email', 'password']
+                  'cnpj', 'telefone', 'email', 'password', 'plano_assinatura']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -64,7 +65,10 @@ class PadariaSerializer(serializers.ModelSerializer):
         endereco = Endereco.objects.create(**endereco_data)
 
         password = validated_data.get('password', None)
-        instance = self.Meta.model(**validated_data, endereco=endereco)
+        instance = self.Meta.model(
+            **validated_data,
+            endereco=endereco,
+        )
         if password is not None:
             instance.set_password(password)
 

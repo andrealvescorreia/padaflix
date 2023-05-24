@@ -3,8 +3,17 @@ import { Button, TextField } from "@mui/material";
 import InputPassRegister from "../InputPassRegister";
 import InputMask from 'react-input-mask';
 
+interface PadariaRegister {
+    nome_fantasia: string,
+    email: string,
+    password: string,
+    cnpj: string,
+    telefone: string,
+}
+
 interface RegisterProps {
-    onSubmit: (nome_fantasia: string, email: string, password: string, cnpj: string, telefone: string) => void;
+    onSubmit: (padaria: PadariaRegister) => void;
+    defaultData: PadariaRegister
 }
 
 
@@ -19,16 +28,14 @@ const RegisterBekery = (props: RegisterProps) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        onSubmit(nome_fantasia, email, password, cnpj, telefone);
+        onSubmit({nome_fantasia, email, password, cnpj, telefone} as PadariaRegister);
     }
 
     return ( 
         <main id = "mainContainer">
         
         <form onSubmit={handleSubmit} id = "secondaryContainer">
-
-                
-
+            
                 <label htmlFor="">Nome fantasia
                     <TextField 
                     required
@@ -62,7 +69,7 @@ const RegisterBekery = (props: RegisterProps) => {
                 </InputMask>
 
                 <label htmlFor="">Senha
-                    <InputPassRegister onChange={e => setPassword(e.target.value)} />
+                    <InputPassRegister onChange={e => setPassword(e.target.value)} value={password} />
                 </label>
                 <div id="buttonsOfLogin">
                     <Button variant="contained" className="buttonFull" type="submit">Continuar</Button>

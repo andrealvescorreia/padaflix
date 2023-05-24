@@ -16,7 +16,6 @@ interface RegisterProps {
 }
 
 
-
 const RegisterUserForm = (props: RegisterProps) => {
     const { onSubmit, defaultData } = props
     const [name, setName] = useState(defaultData.name);
@@ -36,7 +35,6 @@ const RegisterUserForm = (props: RegisterProps) => {
             email,
             password,
         }
-        console.log(user)
         onSubmit(user);
     }
 

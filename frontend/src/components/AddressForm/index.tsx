@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState, useEffect } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -13,20 +13,16 @@ import { Endereco } from '../../types/Endereco';
 
 interface AddressProps {
     onSubmit: (endereco: Endereco) => void;
-    onGoBack: () => void;
+    onGoBack: (endereco: Endereco) => void;
+    defaultData: Endereco
 }
 
 
 const AddressForm = ( props: AddressProps ) => {
-    const { onSubmit, onGoBack } = props
+    const { onSubmit, onGoBack, defaultData } = props
    
-    const [cep, setCep] = useState('');
-    const [rua, setRua] = useState('');
-    const [numero, setNumero] = useState('');
-    const [complemento, setComplemento] = useState('');
-    const [bairro, setBairro] = useState('');
-    const [cidade, setCidade] = useState('');
-    const [uf, setUf] = useState('');
+    const [endereco, setEndereco] = useState<Endereco>(defaultData)
+
 
     const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
     const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
@@ -35,13 +31,13 @@ const AddressForm = ( props: AddressProps ) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        let newCep = cep.replace('-', '')
-        setCep(newCep)
-        const endereco: Endereco = {
-            cep: newCep, rua, numero, complemento, bairro, cidade, uf
-        }
         onSubmit(endereco);
     }
+    const handleGoBack = (e: SyntheticEvent) => {
+        e.preventDefault()
+        onGoBack(endereco);
+    }
+
 
     interface ViaCepResponseBody{
         cep: string,
@@ -56,11 +52,16 @@ const AddressForm = ( props: AddressProps ) => {
         setRuaWasAutoFilledByQuery(false)
         setBairroWasAutoFilledByQuery(false)
         
-        setCidade(apiResponse.localidade)
-        setUf(apiResponse.uf)
-        setRua(apiResponse.logradouro)
-        setBairro(apiResponse.bairro)
-        setComplemento(apiResponse.complemento)
+        setEndereco(prevEndereco => (
+            {
+                ...prevEndereco, 
+                cidade: apiResponse.localidade,
+                uf: apiResponse.uf,
+                rua: apiResponse.logradouro,
+                bairro: apiResponse.bairro,
+                complemento: apiResponse.complemento
+            }
+        ))
 
         if(apiResponse.logradouro != "") setRuaWasAutoFilledByQuery(true)
         
@@ -71,19 +72,19 @@ const AddressForm = ( props: AddressProps ) => {
     function clearForm(){
         setRuaWasAutoFilledByQuery(false)
         setBairroWasAutoFilledByQuery(false)
-        setCidade('')
-        setUf('')
-        setRua('')
-        setComplemento('')
-        setBairro('')
-        setNumero('')
+        setEndereco({rua: '', numero: '', uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
     }
 
     function queryCepData(){
-        axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
+        axios.get("https://viacep.com.br/ws/"+ endereco.cep +"/json/")
         .then(function (response) {
-            updateValuesAfterApiRequest(response.data)
-            setInvalidCep(false)
+            if(response.data.erro != true){
+                updateValuesAfterApiRequest(response.data)
+                setInvalidCep(false)
+            } else{
+                clearForm()
+                setInvalidCep(true)
+            }
         })
         .catch(function (error) {
             clearForm()
@@ -104,9 +105,15 @@ const AddressForm = ( props: AddressProps ) => {
             > 
                 <InputMask 
                     mask="99999-999"  
-                    value={cep}
+                    value={endereco.cep}
                     onBlur={queryCepData}
-                    onChange={e => setCep(e.target.value)}
+                    onChange={ e => setEndereco(prevEndereco => (
+                        {
+                            ...prevEndereco, 
+                            cep: (e.target.value).replace('-', '')
+                        }
+                    ))
+                } 
                 >
                     <TextField label="CEP" required fullWidth error={invalidCep} />
                 </InputMask>
@@ -115,8 +122,14 @@ const AddressForm = ( props: AddressProps ) => {
                     disabled={ruaWasAutoFilledByQuery}
                     label="Logradouro" 
                     required
-                    value={rua}
-                    onChange={e => setRua(e.target.value)}
+                    value={endereco.rua}
+                    onChange={ e => setEndereco(prevEndereco => (
+                        {
+                            ...prevEndereco, 
+                            rua: e.target.value
+                        }
+                    ))
+                    } 
                 />
                 <Box
                     sx={{
@@ -129,43 +142,73 @@ const AddressForm = ( props: AddressProps ) => {
                         label="Número" 
                         required
                         type="number" 
-                        value={numero}
-                        onChange={e => setNumero(e.target.value)} 
+                        value={endereco.numero}
+                        onChange={ e => setEndereco(prevEndereco => (
+                            {
+                                ...prevEndereco, 
+                                numero: e.target.value
+                            }
+                        ))
+                        } 
                     />
                     <TextField 
                         label="Complemento" 
-                        value={complemento}
-                        onChange={e => setComplemento(e.target.value)} 
+                        value={endereco.complemento}
+                        onChange={ e => setEndereco(prevEndereco => (
+                            {
+                                ...prevEndereco, 
+                                complemento: e.target.value
+                            }
+                        ))
+                        } 
                     />
                 </Box>
                 <TextField
                     disabled={bairroWasAutoFilledByQuery}
                     label="Bairro" 
                     required
-                    value={bairro}
-                    onChange={e => setBairro(e.target.value)}
+                    value={endereco.bairro}
+                    onChange={ e => setEndereco(prevEndereco => (
+                        {
+                            ...prevEndereco, 
+                            bairro: e.target.value
+                        }
+                    ))
+                    } 
                 />
                 <TextField 
                     disabled
                     label="Cidade" 
                     required
-                    value={cidade}
-                    onChange={e => setCidade(e.target.value)}
+                    value={endereco.cidade}
+                    onChange={ e => setEndereco(prevEndereco => (
+                        {
+                            ...prevEndereco, 
+                            cidade: e.target.value
+                        }
+                    ))
+                    } 
                 />
 
                 <TextField 
                     disabled 
                     label="UF" 
                     required
-                    value={uf}
-                    onChange={e => setUf(e.target.value)} 
+                    value={endereco.uf}
+                    onChange={ e => setEndereco(prevEndereco => (
+                            {
+                                ...prevEndereco, 
+                                uf: e.target.value
+                            }
+                        ))
+                    } 
                 />
 
                 <div className="bttns-box">
                     <Button 
                         variant="contained" 
                         className='back bttn'
-                        onClick={onGoBack}
+                        onClick={handleGoBack}
                     >Voltar
                     </Button>
 

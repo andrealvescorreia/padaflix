@@ -8,6 +8,12 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
 
+interface Props {
+  onChange: (value: string, isValid: boolean) => void,
+  value: string
+}
+
+
 function MyFormHelperText() {
   const { focused } = useFormControl() || {};
 
@@ -22,7 +28,7 @@ function MyFormHelperText() {
   return <FormHelperText >{helperText}</FormHelperText>;
 }
 
-export default function InputPassRegister({onChange}) {
+export default function InputPassRegister({onChange, value}: Props) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -38,6 +44,7 @@ export default function InputPassRegister({onChange}) {
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
+            value={value}
             required
             endAdornment={
               <InputAdornment position="end" id="pass"	>

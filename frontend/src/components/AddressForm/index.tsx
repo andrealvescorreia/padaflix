@@ -29,9 +29,9 @@ const AddressForm = ( props : AddressFormProps ) => {
    
     const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
+    const [cepIsValid, setCepIsValid] = useState(true)
     const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
     const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
-    const [cepIsInvalid, setCepIsInvalid] = useState(false)
 
     const handleSubmit = (e : SyntheticEvent) => {
         e.preventDefault()
@@ -42,7 +42,7 @@ const AddressForm = ( props : AddressFormProps ) => {
         onGoBack(endereco);
     }
 
-    function updateValuesAfterApiRequest(viaCepResponse : ViaCepApiResponse){
+    function updateEnderecoAfterViaCepQuery(viaCepResponse : ViaCepApiResponse){
         setEndereco(prevEndereco => (
             {
                 ...prevEndereco, 
@@ -64,21 +64,21 @@ const AddressForm = ( props : AddressFormProps ) => {
         setEndereco({cep: endereco.cep, rua: '', numero: '', uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
     }
 
-    function badViaCepRequest() {
-        setCepIsInvalid(true)
+    function badCepRequest() {
+        setCepIsValid(false)
         clearForm()
     }
 
     function queryCepData(){
         axios.get("https://viacep.com.br/ws/"+ endereco.cep +"/json/")
         .then((response) => {
-            if (response.data.erro) badViaCepRequest
+            if (response.data.erro) badCepRequest
             else {
-                setCepIsInvalid(false)
-                updateValuesAfterApiRequest(response.data)
+                setCepIsValid(true)
+                updateEnderecoAfterViaCepQuery(response.data)
             }
         })
-        .catch(() => badViaCepRequest)
+        .catch(() => badCepRequest)
     }
 
     return (
@@ -105,7 +105,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                     <TextField 
                         label = "CEP" 
                         required 
-                        error = {cepIsInvalid} 
+                        error = {cepIsValid} 
                     />
                 </InputMask>
 

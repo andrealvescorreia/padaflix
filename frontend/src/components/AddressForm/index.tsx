@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState, useEffect } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -31,8 +31,8 @@ const AddressForm = ( props : AddressFormProps ) => {
     const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
     const [cepIsValid, setCepIsValid] = useState(true)
-    const [ruaWasAutoFilled, setRuaWasAutoFilled] = useState(defaultData.rua != "")
-    const [bairroWasAutoFilled, setBairroWasAutoFilled] = useState(defaultData.bairro != "")
+    const [ruaWasAutoFilled, setRuaWasAutoFilled] = useState(false)
+    const [bairroWasAutoFilled, setBairroWasAutoFilled] = useState(false)
 
     const handleSubmit = (e : SyntheticEvent) => {
         e.preventDefault()
@@ -49,14 +49,18 @@ const AddressForm = ( props : AddressFormProps ) => {
                 ...prevEndereco, 
                 cidade: viaCepResponse.localidade,
                 uf: viaCepResponse.uf,
-                rua: viaCepResponse.logradouro,
-                bairro: viaCepResponse.bairro,
-                complemento: viaCepResponse.complemento
             }
         ))
+        
+        if(viaCepResponse.logradouro != ""){
+            setRuaWasAutoFilled(true)
+            setEndereco(prevEndereco => ({...prevEndereco, rua: viaCepResponse.logradouro}))
+        }
 
-        setRuaWasAutoFilled(viaCepResponse.logradouro != "")
-        setBairroWasAutoFilled(viaCepResponse.bairro != "")
+        if(viaCepResponse.bairro != ""){
+            setBairroWasAutoFilled(true)
+            setEndereco(prevEndereco => ({...prevEndereco, bairro: viaCepResponse.bairro}))
+        }
     }
 
     function clearForm(){
@@ -73,17 +77,21 @@ const AddressForm = ( props : AddressFormProps ) => {
     function queryCepData(){
         axios.get("https://viacep.com.br/ws/"+ endereco.cep +"/json/")
         .then((response) => {
-            if (response.data.erro) badCepRequest
+            if (response.data.erro) badCepRequest()
             else {
                 setCepIsValid(true)
                 updateEnderecoAfterViaCepQuery(response.data)
             }
         })
-        .catch(() => badCepRequest)
+        .catch(() => badCepRequest())
     }
 
+    useEffect(() => {
+        if(defaultData.cep != "") queryCepData()
+    }, [])
+
     return (
-        <Container id="address-form-container" maxWidth="sm" >
+        <Container id="address-form-container" maxWidth="sm" > 
             <header className = "form-header">
                 <MdLocationOn/>
                 <h1>Endereço</h1>

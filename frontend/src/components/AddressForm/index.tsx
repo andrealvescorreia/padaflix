@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { SyntheticEvent, useState } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
@@ -30,8 +31,8 @@ const AddressForm = ( props : AddressFormProps ) => {
     const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
     const [cepIsValid, setCepIsValid] = useState(true)
-    const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
-    const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
+    const [ruaWasAutoFilled, setRuaWasAutoFilled] = useState(defaultData.rua != "")
+    const [bairroWasAutoFilled, setBairroWasAutoFilled] = useState(defaultData.bairro != "")
 
     const handleSubmit = (e : SyntheticEvent) => {
         e.preventDefault()
@@ -54,13 +55,13 @@ const AddressForm = ( props : AddressFormProps ) => {
             }
         ))
 
-        setRuaWasAutoFilledByQuery(viaCepResponse.logradouro != "")
-        setBairroWasAutoFilledByQuery(viaCepResponse.bairro != "")
+        setRuaWasAutoFilled(viaCepResponse.logradouro != "")
+        setBairroWasAutoFilled(viaCepResponse.bairro != "")
     }
 
     function clearForm(){
-        setRuaWasAutoFilledByQuery(false)
-        setBairroWasAutoFilledByQuery(false)
+        setRuaWasAutoFilled(false)
+        setBairroWasAutoFilled(false)
         setEndereco({cep: endereco.cep, rua: '', numero: '', uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
     }
 
@@ -105,12 +106,12 @@ const AddressForm = ( props : AddressFormProps ) => {
                     <TextField 
                         label = "CEP" 
                         required 
-                        error = {cepIsValid} 
+                        error = {!cepIsValid} 
                     />
                 </InputMask>
 
                 <TextField
-                    disabled = {ruaWasAutoFilledByQuery}
+                    disabled = {ruaWasAutoFilled}
                     label = "Logradouro" 
                     required
                     value = {endereco.rua}
@@ -143,7 +144,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                     />
                 </Box>
                 <TextField
-                    disabled = {bairroWasAutoFilledByQuery}
+                    disabled = {bairroWasAutoFilled}
                     label = "Bairro" 
                     required
                     value={endereco.bairro}

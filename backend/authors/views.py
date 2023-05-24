@@ -5,6 +5,7 @@ import datetime
 from .serializers import UserSerializer, PadariaSerializer
 from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
 from .models import User, Padaria, PlanoAssinatura  # , Assinatura
+from django.db import transaction
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
@@ -12,8 +13,6 @@ from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework import status
-
-from django.db import transaction
 
 
 def home(request):
@@ -40,7 +39,6 @@ class Register_UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -51,7 +49,6 @@ class Register_PadariaView(APIView):
     def post(self, request):
         serializer = PadariaSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -71,10 +68,16 @@ class LoginView(APIView):
             padaria = Padaria.objects.filter(email=email).first()
 
             if padaria is None:
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
             if not padaria.check_password(password):
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
             payload = {
                 'user-type': 'padaria-user',
@@ -85,7 +88,10 @@ class LoginView(APIView):
 
         else:
             if not user.check_password(password):
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
 
             payload = {
                 'user-type': 'client-user',
@@ -179,7 +185,7 @@ class PlanoAssinaturaView(UserAndPadariaView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        serializer = PlanoAssinaturaSerializer(data=request.data.get('plano_assinatura', []), many=True)
+        serializer = PlanoAssinaturaSerializer(data=request.data.get('plano_assinatura', []), many=True)  # noqa: E501
         if serializer.is_valid():
             padaria = Padaria.objects.get(id=payload['id'])
             planos_assinatura = serializer.validated_data

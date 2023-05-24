@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axios";
 import RegisterUserForm from "../../components/RegisterUserForm";
 import { Endereco } from "../../types/Endereco";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
 
 

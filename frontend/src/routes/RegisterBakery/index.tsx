@@ -14,7 +14,7 @@ const RegisterBakery = () => {
         cnpj: string,
         telefone: string,
         endereco: Endereco
-      }
+    }
       
     interface PadariaRegisterStepOne {
         nome_fantasia: string,
@@ -42,7 +42,7 @@ const RegisterBakery = () => {
         telefone: '',
     }
 
-    const [userRegisterData, setUserRegisterData] = useState<PadariaRegisterData>(defaultPadaria)
+    const [padariaRegisterData, setPadariaRegisterData] = useState<PadariaRegisterData>(defaultPadaria)
     const [currentRegisterStep, setCurrentRegisterStep] = useState(1)
 
 
@@ -63,18 +63,18 @@ const RegisterBakery = () => {
     }
     
     function goToNextRegisterStep(newUserData : PadariaRegisterStepOne){
-        setUserRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, ...newUserData} ));
+        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, ...newUserData} ));
         setCurrentRegisterStep(2)
     }
 
     function goToPreviousRegisterStep(padariaEndereco: Endereco){
-        setUserRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
+        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
         setCurrentRegisterStep(1)
     }
     
     function finishRegister(padariaEndereco: Endereco){
-        setUserRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
-        registerPadaria( {...userRegisterData, endereco: padariaEndereco} as PadariaRegisterData )
+        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
+        registerPadaria( {...padariaRegisterData, endereco: padariaEndereco} as PadariaRegisterData )
     }
 
     switch(currentRegisterStep) {
@@ -82,14 +82,14 @@ const RegisterBakery = () => {
             return(
                 <RegisterBakeryForm 
                 onSubmit={goToNextRegisterStep} 
-                defaultData={userRegisterData}/>
+                defaultData={padariaRegisterData}/>
             )
         case 2:
             return(
                 <AddressForm 
                 onSubmit={finishRegister} 
                 onGoBack={goToPreviousRegisterStep} 
-                defaultData={userRegisterData.endereco}/>
+                defaultData={padariaRegisterData.endereco}/>
             )
     }
 }

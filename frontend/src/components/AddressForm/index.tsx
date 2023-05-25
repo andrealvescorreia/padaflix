@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState, useEffect } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -10,113 +10,122 @@ import axios from 'axios';
 import { Endereco } from '../../types/Endereco';
 
 
-
-interface AddressProps {
-    onSubmit: (endereco: Endereco) => void;
-    onGoBack: () => void;
+interface ViaCepApiResponse {
+    cep: string,
+    logradouro: string, // equivale a rua
+    complemento: string,
+    bairro: string,
+    localidade: string, // equivale a cidade
+    uf: string,
 }
 
+interface AddressFormProps {
+    onSubmit: (endereco: Endereco) => void;
+    onGoBack: (endereco: Endereco) => void;
+    defaultData: Endereco
+}
 
-const AddressForm = ( props: AddressProps ) => {
-    const { onSubmit, onGoBack } = props
+const AddressForm = ( props : AddressFormProps ) => {
+    const { onSubmit, onGoBack, defaultData } = props
    
-    const [cep, setCep] = useState('');
-    const [rua, setRua] = useState('');
-    const [numero, setNumero] = useState('');
-    const [complemento, setComplemento] = useState('');
-    const [bairro, setBairro] = useState('');
-    const [cidade, setCidade] = useState('');
-    const [uf, setUf] = useState('');
+    const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
-    const [ruaWasAutoFilledByQuery, setRuaWasAutoFilledByQuery] = useState(false)
-    const [bairroWasAutoFilledByQuery, setBairroWasAutoFilledByQuery] = useState(false)
+    const [cepIsValid, setCepIsValid] = useState(true)
+    const [ruaWasAutoFilled, setRuaWasAutoFilled] = useState(false)
+    const [bairroWasAutoFilled, setBairroWasAutoFilled] = useState(false)
 
-    const [invalidCep, setInvalidCep] = useState(false)
-
-    const handleSubmit = (e: SyntheticEvent) => {
+    const handleSubmit = (e : SyntheticEvent) => {
         e.preventDefault()
-        let newCep = cep.replace('-', '')
-        setCep(newCep)
-        const endereco: Endereco = {
-            cep: newCep, rua, numero, complemento, bairro, cidade, uf
-        }
         onSubmit(endereco);
     }
-
-    interface ViaCepResponseBody{
-        cep: string,
-        logradouro: string, // equivale a rua
-        complemento: string,
-        bairro: string,
-        localidade: string, // equivale a cidade
-        uf: string,
+    const handleGoBack = (e : SyntheticEvent) => {
+        e.preventDefault()
+        onGoBack(endereco);
     }
 
-    function updateValuesAfterApiRequest(apiResponse: ViaCepResponseBody){
-        setRuaWasAutoFilledByQuery(false)
-        setBairroWasAutoFilledByQuery(false)
+    function updateEnderecoAfterViaCepQuery(viaCepResponse : ViaCepApiResponse){
+        setEndereco(prevEndereco => (
+            {
+                ...prevEndereco, 
+                cidade: viaCepResponse.localidade,
+                uf: viaCepResponse.uf,
+            }
+        ))
         
-        setCidade(apiResponse.localidade)
-        setUf(apiResponse.uf)
-        setRua(apiResponse.logradouro)
-        setBairro(apiResponse.bairro)
-        setComplemento(apiResponse.complemento)
+        if(viaCepResponse.logradouro != ""){
+            setRuaWasAutoFilled(true)
+            setEndereco(prevEndereco => ({...prevEndereco, rua: viaCepResponse.logradouro}))
+        }
 
-        if(apiResponse.logradouro != "") setRuaWasAutoFilledByQuery(true)
-        
-        if(apiResponse.bairro != "") setBairroWasAutoFilledByQuery(true)
-        
+        if(viaCepResponse.bairro != ""){
+            setBairroWasAutoFilled(true)
+            setEndereco(prevEndereco => ({...prevEndereco, bairro: viaCepResponse.bairro}))
+        }
     }
 
     function clearForm(){
-        setRuaWasAutoFilledByQuery(false)
-        setBairroWasAutoFilledByQuery(false)
-        setCidade('')
-        setUf('')
-        setRua('')
-        setComplemento('')
-        setBairro('')
-        setNumero('')
+        setRuaWasAutoFilled(false)
+        setBairroWasAutoFilled(false)
+        setEndereco({cep: endereco.cep, rua: '', numero: '', uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
+    }
+
+    function badCepRequest() {
+        setCepIsValid(false)
+        clearForm()
     }
 
     function queryCepData(){
-        axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
-        .then(function (response) {
-            updateValuesAfterApiRequest(response.data)
-            setInvalidCep(false)
+        axios.get("https://viacep.com.br/ws/"+ endereco.cep +"/json/")
+        .then((response) => {
+            if (response.data.erro) badCepRequest()
+            else {
+                setCepIsValid(true)
+                updateEnderecoAfterViaCepQuery(response.data)
+            }
         })
-        .catch(function (error) {
-            clearForm()
-            setInvalidCep(true)
-        })
+        .catch(() => badCepRequest())
     }
 
+    useEffect(() => {
+        if(defaultData.cep != "") queryCepData()
+    }, [])
+
     return (
-        <Container id="address-form-container" maxWidth="sm" >
-            <header className='form-header'>
+        <Container id="address-form-container" maxWidth="sm" > 
+            <header className = "form-header">
                 <MdLocationOn/>
                 <h1>Endereço</h1>
             </header>
 
-            <Stack onSubmit={handleSubmit} className='form'
-                component="form"
-                autoComplete="off"
+            <Stack 
+                onSubmit = { handleSubmit } 
+                className = "form"
+                component = "form"
+                autoComplete = "off"
             > 
                 <InputMask 
-                    mask="99999-999"  
-                    value={cep}
-                    onBlur={queryCepData}
-                    onChange={e => setCep(e.target.value)}
+                    mask = "99999-999"  
+                    value = {endereco.cep}
+                    onChange = { e => setEndereco( prevEndereco => 
+                        ({ ...prevEndereco, cep: (e.target.value).replace('-', '') })
+                    )}
+                    onBlur = { queryCepData }
                 >
-                    <TextField label="CEP" required fullWidth error={invalidCep} />
+                    <TextField 
+                        label = "CEP" 
+                        required 
+                        error = {!cepIsValid} 
+                    />
                 </InputMask>
 
                 <TextField
-                    disabled={ruaWasAutoFilledByQuery}
-                    label="Logradouro" 
+                    disabled = {ruaWasAutoFilled}
+                    label = "Logradouro" 
                     required
-                    value={rua}
-                    onChange={e => setRua(e.target.value)}
+                    value = {endereco.rua}
+                    onChange = { e => setEndereco( prevEndereco => 
+                        ({ ...prevEndereco, rua: e.target.value })
+                    )}
                 />
                 <Box
                     sx={{
@@ -126,53 +135,63 @@ const AddressForm = ( props: AddressProps ) => {
                     }}
                     >
                     <TextField 
-                        label="Número" 
+                        label = "Número" 
                         required
-                        type="number" 
-                        value={numero}
-                        onChange={e => setNumero(e.target.value)} 
+                        type = "number" 
+                        value = {endereco.numero}
+                        onChange = { e => setEndereco( prevEndereco => 
+                            ({ ...prevEndereco, numero: e.target.value } )
+                        )}
                     />
                     <TextField 
-                        label="Complemento" 
-                        value={complemento}
-                        onChange={e => setComplemento(e.target.value)} 
+                        label = "Complemento" 
+                        value = {endereco.complemento}
+                        onChange = { e => setEndereco( prevEndereco => 
+                            ({ ...prevEndereco, complemento: e.target.value } )
+                        )}
                     />
                 </Box>
                 <TextField
-                    disabled={bairroWasAutoFilledByQuery}
-                    label="Bairro" 
+                    disabled = {bairroWasAutoFilled}
+                    label = "Bairro" 
                     required
-                    value={bairro}
-                    onChange={e => setBairro(e.target.value)}
+                    value={endereco.bairro}
+                    onChange = { e => setEndereco( prevEndereco => 
+                        ({ ...prevEndereco, bairro: e.target.value } )
+                    )}
                 />
                 <TextField 
                     disabled
-                    label="Cidade" 
+                    label = "Cidade" 
                     required
-                    value={cidade}
-                    onChange={e => setCidade(e.target.value)}
+                    value = {endereco.cidade}
+                    onChange = { e => setEndereco( prevEndereco => 
+                        ({ ...prevEndereco, cidade: e.target.value } )
+                    )}
                 />
 
                 <TextField 
                     disabled 
-                    label="UF" 
+                    label = "UF" 
                     required
-                    value={uf}
-                    onChange={e => setUf(e.target.value)} 
+                    value = {endereco.uf}
+                    onChange = { e => setEndereco(prevEndereco => 
+                        ({ ...prevEndereco, uf: e.target.value } )
+                    )}
                 />
 
-                <div className="bttns-box">
+                <div className = "bttns-box">
                     <Button 
-                        variant="contained" 
-                        className='back bttn'
-                        onClick={onGoBack}
+                        variant = "contained" 
+                        className = 'back bttn'
+                        onClick = { handleGoBack } 
                     >Voltar
                     </Button>
 
                     <Button 
-                        variant="contained" 
-                        type="submit"
-                        className='submit bttn'
+                        variant = "contained" 
+                        type = "submit"
+                        className = 'submit bttn'
                     >Criar conta
                     </Button>
                 </div>

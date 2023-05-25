@@ -80,12 +80,12 @@ const RegisterUser = () => {
         registerUser( {...userRegisterData, endereco: userEndereco} as UserRegisterData )
     }
 
-    const [open, setOpen] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('')
     const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success")
 
     function showSnackbar( severity: AlertColor, message: string){
-        setOpen(true)
+        setOpenSnackbar(true)
         setSnackbarMessage(message)
         setSnackbarSeverity(severity)
     }
@@ -108,10 +108,10 @@ const RegisterUser = () => {
                         disabled={isFetching}
                     />
                     <MuiSnackbar 
-                        open={open} 
-                        setOpen={setOpen} 
-                        message={snackbarMessage} 
-                        severity={snackbarSeverity}
+                        open = {openSnackbar} 
+                        setOpen = {setOpenSnackbar} 
+                        message = {snackbarMessage} 
+                        severity = {snackbarSeverity}
                     />
                 </>
             )

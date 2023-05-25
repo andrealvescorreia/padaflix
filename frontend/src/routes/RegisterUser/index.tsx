@@ -5,6 +5,8 @@ import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
 import { useSnackbar } from 'notistack';
+import LinearProgress from '@mui/material/LinearProgress';
+
 
 const RegisterUser = () => {
     
@@ -90,12 +92,16 @@ const RegisterUser = () => {
             )
         case 2:
             return(
-                <AddressForm 
-                    onSubmit={finishRegister} 
-                    onGoBack={goToPreviousRegisterStep} 
-                    defaultData={userRegisterData.endereco}
-                    disabled={isFetching}
-                />
+                <>
+                    { isFetching ? <LinearProgress /> : null}
+                    <AddressForm 
+                        onSubmit={finishRegister} 
+                        onGoBack={goToPreviousRegisterStep} 
+                        defaultData={userRegisterData.endereco}
+                        disabled={isFetching}
+                    />
+                </>
+                
             )
     }
 }

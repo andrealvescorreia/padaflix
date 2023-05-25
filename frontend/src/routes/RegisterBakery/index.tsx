@@ -4,7 +4,9 @@ import RegisterBakeryForm from "../../components/RegisterBakeryForm";
 import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
+import LinearProgress from '@mui/material/LinearProgress';
 import { useSnackbar } from 'notistack';
+
 
 const RegisterBakery = () => {
     interface PadariaRegisterData {
@@ -97,12 +99,15 @@ const RegisterBakery = () => {
             )
         case 2:
             return(
-                <AddressForm 
-                    onSubmit={finishRegister} 
-                    onGoBack={goToPreviousRegisterStep} 
-                    defaultData={padariaRegisterData.endereco}
-                    disabled={isFetching}
-                />
+                <>
+                    { isFetching ? <LinearProgress /> : null}
+                    <AddressForm 
+                        onSubmit={finishRegister} 
+                        onGoBack={goToPreviousRegisterStep} 
+                        defaultData={padariaRegisterData.endereco}
+                        disabled={isFetching}
+                    />
+                </>
             )
     }
 }

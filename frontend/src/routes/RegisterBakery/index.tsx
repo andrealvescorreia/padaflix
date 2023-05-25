@@ -4,7 +4,7 @@ import RegisterBakeryForm from "../../components/RegisterBakeryForm";
 import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
-
+import { useSnackbar } from 'notistack';
 
 const RegisterBakery = () => {
     interface PadariaRegisterData {
@@ -44,21 +44,31 @@ const RegisterBakery = () => {
 
     const [padariaRegisterData, setPadariaRegisterData] = useState<PadariaRegisterData>(defaultPadaria)
     const [currentRegisterStep, setCurrentRegisterStep] = useState(1)
-
+    const [isFetching, setIsFetching] = useState(false)
 
     const navigate = useNavigate()
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const registerPadaria = async (padaria: PadariaRegisterData) => {
+        
+        setIsFetching(true)
+
         axiosInstance.post('/register_padaria', padaria)
         .then(() => {
-            alert('Registrada com sucesso!')
+            enqueueSnackbar("Registrado com sucesso! Realize o login", { variant: 'success'})
             navigate('/login')
         })
         .catch((err) => {
-            if(!err.response) alert('Servidor do padaflix está fora do ar!')
+            if(!err.response) {
+                enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+            }
             else{
-                alert('deu ruim, dê uma olhada no console pra tentar se salvar')
+                enqueueSnackbar("Ocorreu um erro no registro: "+JSON.stringify(err.response.data), { variant: 'error'})
                 console.log(err.response.data)
             }
+        })
+        .finally(()=>{
+            setIsFetching(false)
         })
     }
     
@@ -81,15 +91,18 @@ const RegisterBakery = () => {
         case 1:
             return(
                 <RegisterBakeryForm 
-                onSubmit={goToNextRegisterStep} 
-                defaultData={padariaRegisterData}/>
+                    onSubmit={goToNextRegisterStep} 
+                    defaultData={padariaRegisterData}
+                />
             )
         case 2:
             return(
                 <AddressForm 
-                onSubmit={finishRegister} 
-                onGoBack={goToPreviousRegisterStep} 
-                defaultData={padariaRegisterData.endereco}/>
+                    onSubmit={finishRegister} 
+                    onGoBack={goToPreviousRegisterStep} 
+                    defaultData={padariaRegisterData.endereco}
+                    disabled={isFetching}
+                />
             )
     }
 }

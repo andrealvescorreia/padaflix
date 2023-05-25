@@ -21,7 +21,7 @@ const RegisterUser = () => {
         endereco: Endereco,
     }
 
-    const defaultUser : UserRegisterData = {
+    const templateUser : UserRegisterData = {
         name: '',
         endereco: {
             cep: '', 
@@ -36,12 +36,13 @@ const RegisterUser = () => {
         password: '',
     }
 
-    const [userRegisterData, setUserRegisterData] = useState<UserRegisterData>(defaultUser)
+    const [userRegisterData, setUserRegisterData] = useState<UserRegisterData>(templateUser)
     const [currentRegisterStep, setCurrentRegisterStep] = useState(1)
-
+    const [isFetching, setIsFetching] = useState(false)
 
     const navigate = useNavigate()
     const registerUser = async (user: UserRegisterData) => {
+        setIsFetching(true)
         axiosInstance.post('/register_user', user)
         .then(() => {
             alert('Registrado com sucesso!')
@@ -53,6 +54,9 @@ const RegisterUser = () => {
                 alert('deu ruim, dê uma olhada no console pra tentar se salvar')
                 console.log(err.response.data)
             }
+        })
+        .finally(()=>{
+            setIsFetching(false)
         })
     }
     
@@ -75,15 +79,18 @@ const RegisterUser = () => {
         case 1:
             return(
                 <RegisterUserForm 
-                onSubmit={goToNextRegisterStep} 
-                defaultData={userRegisterData}/>
+                    onSubmit={goToNextRegisterStep} 
+                    defaultData={userRegisterData}
+                />
             )
         case 2:
             return(
                 <AddressForm 
-                onSubmit={finishRegister} 
-                onGoBack={goToPreviousRegisterStep} 
-                defaultData={userRegisterData.endereco}/>
+                    onSubmit={finishRegister} 
+                    onGoBack={goToPreviousRegisterStep} 
+                    defaultData={userRegisterData.endereco}
+                    disabled={isFetching}
+                />
             )
     }
 }

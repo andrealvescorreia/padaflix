@@ -34,3 +34,49 @@ const MuiSnackbar = (props: MuiSnackbarProps) => {
 }
 
 export default MuiSnackbar
+
+
+/*
+
+* COMO USAR ESSA SNACKBAR:
+
+* Importe o "AlertColor" e a muisnackbar:
+
+import { AlertColor } from '@mui/material/Alert';
+import MuiSnackbar from '../../components/MuiSnackBar';
+
+ * Copie e cole o seguinte código para dentro do seu componente:
+
+const [openSnackbar, setOpenSnackbar] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState('')
+const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success")
+
+function showSnackbar( severity: AlertColor, message: string){
+    setOpenSnackbar(true)
+    setSnackbarMessage(message)
+    setSnackbarSeverity(severity)
+}
+
+ * Insira a Snackbar dentro do retorno do seu componente. Ex:
+
+return (
+    <div>
+        ...
+        
+        <MuiSnackbar 
+            open = {openSnackbar} 
+            setOpen = {setOpenSnackbar} 
+            message = {snackbarMessage} 
+            severity = {snackbarSeverity}
+        />
+
+        ...
+    </div>
+)
+
+* Agora, para usar a snackbar é so chamar a função showSnackbar() a qualquer momento. Ex:
+
+showSnackbar("success", "Registrado com sucesso!")
+showSnackbar("error", "Ocorreu um erro no registro")
+
+*/

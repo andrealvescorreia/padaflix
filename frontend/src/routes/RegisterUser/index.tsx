@@ -1,13 +1,10 @@
-import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axios";
 import RegisterUserForm from "../../components/RegisterUserForm";
 import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
-import { AlertColor } from '@mui/material/Alert';
-import MuiSnackbar from '../../components/MuiSnackbar';
-
+import { useSnackbar } from 'notistack';
 
 const RegisterUser = () => {
     
@@ -44,19 +41,21 @@ const RegisterUser = () => {
     const [isFetching, setIsFetching] = useState(false)
 
     const navigate = useNavigate()
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const registerUser = async (user: UserRegisterData) => {
         setIsFetching(true)
         axiosInstance.post('/register_user', user)
         .then(() => {
-            showSnackbar("success", "Registrado com sucesso! Realize o login")
+            enqueueSnackbar("Registrado com sucesso! Realize o login", { variant: 'success'})
             navigate('/login')
         })
         .catch((err) => {
             if(!err.response) {
-                showSnackbar("error", "Servidor do padaflix fora do ar")
+                enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
             }
             else{
-                showSnackbar("error", "Ocorreu um erro no registro")
+                enqueueSnackbar("Ocorreu um erro no registro", { variant: 'error'})
                 console.log(err.response.data)
             }
         })
@@ -80,15 +79,6 @@ const RegisterUser = () => {
         registerUser( {...userRegisterData, endereco: userEndereco} as UserRegisterData )
     }
 
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('')
-    const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success")
-
-    function showSnackbar( severity: AlertColor, message: string){
-        setOpenSnackbar(true)
-        setSnackbarMessage(message)
-        setSnackbarSeverity(severity)
-    }
 
     switch(currentRegisterStep) {
         case 1:
@@ -100,20 +90,12 @@ const RegisterUser = () => {
             )
         case 2:
             return(
-                <>
-                    <AddressForm 
-                        onSubmit={finishRegister} 
-                        onGoBack={goToPreviousRegisterStep} 
-                        defaultData={userRegisterData.endereco}
-                        disabled={isFetching}
-                    />
-                    <MuiSnackbar 
-                        open={openSnackbar} 
-                        setOpen={setOpenSnackbar} 
-                        message={snackbarMessage} 
-                        severity={snackbarSeverity}
-                    />
-                </>
+                <AddressForm 
+                    onSubmit={finishRegister} 
+                    onGoBack={goToPreviousRegisterStep} 
+                    defaultData={userRegisterData.endereco}
+                    disabled={isFetching}
+                />
             )
     }
 }

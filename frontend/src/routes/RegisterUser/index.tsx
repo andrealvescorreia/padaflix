@@ -55,7 +55,7 @@ const RegisterUser = () => {
                 enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
             }
             else{
-                enqueueSnackbar("Ocorreu um erro no registro", { variant: 'error'})
+                enqueueSnackbar("Ocorreu um erro no registro: "+JSON.stringify(err.response.data), { variant: 'error'})
                 console.log(err.response.data)
             }
         })

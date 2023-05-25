@@ -1,9 +1,12 @@
+import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axios";
 import RegisterUserForm from "../../components/RegisterUserForm";
 import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
+import { AlertColor } from '@mui/material/Alert';
+import MuiSnackbar from '../../components/MuiSnackBar';
 
 
 const RegisterUser = () => {
@@ -45,13 +48,15 @@ const RegisterUser = () => {
         setIsFetching(true)
         axiosInstance.post('/register_user', user)
         .then(() => {
-            alert('Registrado com sucesso!')
+            showSnackbar("success", "Registrado com sucesso! Realize o login")
             navigate('/login')
         })
         .catch((err) => {
-            if(!err.response) alert('Servidor do padaflix está fora do ar!')
+            if(!err.response) {
+                showSnackbar("error", "Servidor do padaflix fora do ar")
+            }
             else{
-                alert('deu ruim, dê uma olhada no console pra tentar se salvar')
+                showSnackbar("error", "Ocorreu um erro no registro")
                 console.log(err.response.data)
             }
         })
@@ -75,6 +80,16 @@ const RegisterUser = () => {
         registerUser( {...userRegisterData, endereco: userEndereco} as UserRegisterData )
     }
 
+    const [open, setOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('')
+    const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success")
+
+    function showSnackbar( severity: AlertColor, message: string){
+        setOpen(true)
+        setSnackbarMessage(message)
+        setSnackbarSeverity(severity)
+    }
+
     switch(currentRegisterStep) {
         case 1:
             return(
@@ -85,12 +100,20 @@ const RegisterUser = () => {
             )
         case 2:
             return(
-                <AddressForm 
-                    onSubmit={finishRegister} 
-                    onGoBack={goToPreviousRegisterStep} 
-                    defaultData={userRegisterData.endereco}
-                    disabled={isFetching}
-                />
+                <>
+                    <AddressForm 
+                        onSubmit={finishRegister} 
+                        onGoBack={goToPreviousRegisterStep} 
+                        defaultData={userRegisterData.endereco}
+                        disabled={isFetching}
+                    />
+                    <MuiSnackbar 
+                        open={open} 
+                        setOpen={setOpen} 
+                        message={snackbarMessage} 
+                        severity={snackbarSeverity}
+                    />
+                </>
             )
     }
 }

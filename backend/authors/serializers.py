@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 
 
@@ -11,7 +12,15 @@ class EnderecoSerializer(serializers.ModelSerializer):
 class PlanoAssinaturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanoAssinatura
-        fields = ['nome', 'descricao', 'preco', 'servings_unit']
+        fields = ['nome', 'descricao', 'preco', 'pessoas_servidas']
+
+    def is_valid(self):
+        if not self.initial_data:
+            raise ValidationError(
+                "É necessário fornecer dados válidos para criar um plano de assinatura."  # noqa: E501
+            )
+
+        return super().is_valid()
 
 
 class AssinaturaSerializer(serializers.ModelSerializer):
@@ -30,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'endereco', 'email', 'password']
+        fields = ['id', 'nome', 'endereco', 'email', 'password']
         extra_kwargs = {
             'password': {'write_only': True}
         }

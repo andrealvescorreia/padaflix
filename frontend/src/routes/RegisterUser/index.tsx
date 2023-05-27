@@ -11,20 +11,20 @@ import LinearProgress from '@mui/material/LinearProgress';
 const RegisterUser = () => {
     
     interface UserRegisterStepOne {
-        name: string,
+        nome: string,
         email: string,
         password: string,
     }
     
     interface UserRegisterData {
-        name: string,
+        nome: string,
         email: string,
         password: string,
         endereco: Endereco,
     }
 
     const templateUser : UserRegisterData = {
-        name: '',
+        nome: '',
         endereco: {
             cep: '', 
             rua: '', 

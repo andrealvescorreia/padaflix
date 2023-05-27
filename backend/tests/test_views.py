@@ -11,7 +11,7 @@ class TestViews(TestSetUp):
         res = self.client.post(
             self.register_user_url, self.user_data, format="json"
         )
-        self.assertEqual(res.data['name'], self.user_data['name'])
+        self.assertEqual(res.data['nome'], self.user_data['nome'])
         self.assertEqual(res.data['endereco'], self.user_data['endereco'])
         self.assertEqual(res.data['email'], self.user_data['email'])
         self.assertEqual(res.status_code, 201)

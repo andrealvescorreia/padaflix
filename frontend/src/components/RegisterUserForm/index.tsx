@@ -5,7 +5,7 @@ import InputPassRegister from "../InputPassRegister";
 
 
 interface UserRegister {
-    name: string,
+    nome: string,
     email: string,
     password: string
 }
@@ -18,7 +18,7 @@ interface RegisterProps {
 
 const RegisterUserForm = (props: RegisterProps) => {
     const { onSubmit, defaultData } = props
-    const [name, setName] = useState(defaultData.name);
+    const [nome, setNome] = useState(defaultData.nome);
     const [email, setEmail] = useState(defaultData.email);
     const [password, setPassword] = useState(defaultData.password);
     const [isEmailValid, setIsEmailValid] = useState(false);
@@ -31,7 +31,7 @@ const RegisterUserForm = (props: RegisterProps) => {
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         const user : UserRegister = {
-            name,
+            nome,
             email,
             password,
         }
@@ -44,10 +44,10 @@ const RegisterUserForm = (props: RegisterProps) => {
 
             <label htmlFor="name">Nome
                 <TextField 
-                value={name}
+                value={nome}
                 id="name" 
                 required
-                onChange={e => setName(e.target.value)} />
+                onChange={e => setNome(e.target.value)} />
             </label>
 
             <label htmlFor="">E-mail

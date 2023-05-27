@@ -13,8 +13,6 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework import status
 
-from django.db import transaction
-
 
 def home(request):
     padarias = Padaria.objects.all()
@@ -40,7 +38,6 @@ class Register_UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -51,7 +48,6 @@ class Register_PadariaView(APIView):
     def post(self, request):
         serializer = PadariaSerializer(data=request.data)
         if serializer.is_valid():
-            # serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -71,10 +67,16 @@ class LoginView(APIView):
             padaria = Padaria.objects.filter(email=email).first()
 
             if padaria is None:
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
             if not padaria.check_password(password):
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
 
             payload = {
                 'user-type': 'padaria-user',
@@ -85,7 +87,10 @@ class LoginView(APIView):
 
         else:
             if not user.check_password(password):
-                return Response({'error': 'Email e/ou senha invalidos'}, status=status.HTTP_401_UNAUTHORIZED)  # noqa: E501
+                return Response(
+                    {'error': 'Email e/ou senha invalidos'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
 
             payload = {
                 'user-type': 'client-user',
@@ -158,7 +163,7 @@ class PadariaPorCidadeView(APIView):
 
 
 class PlanoAssinaturaView(UserAndPadariaView):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         token = request.COOKIES.get('jwt')
         if not token:
             return Response(
@@ -179,16 +184,13 @@ class PlanoAssinaturaView(UserAndPadariaView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        serializer = PlanoAssinaturaSerializer(data=request.data.get('plano_assinatura', []), many=True)
-        if serializer.is_valid():
-            padaria = Padaria.objects.get(id=payload['id'])
-            planos_assinatura = serializer.validated_data
+        padaria_id = payload['id']
+        padaria = Padaria.objects.get(id=padaria_id)
 
-            with transaction.atomic():
-                for plano in planos_assinatura:
-                    novo_plano = PlanoAssinatura(**plano)
-                    novo_plano.save()
-                    padaria.plano_assinatura.add(novo_plano)
+        serializer = PlanoAssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            plano_assinatura = serializer.save()
+            padaria.plano_assinatura.add(plano_assinatura)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -232,6 +234,6 @@ class LogoutView(APIView):
         response = Response()
         response.delete_cookie('jwt')
         response.data = {
-            'message': 'success'
+            'message': 'Logout feito com sucesso'
         }
         return response

@@ -12,7 +12,7 @@ class EnderecoSerializer(serializers.ModelSerializer):
 class PlanoAssinaturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanoAssinatura
-        fields = ['nome', 'descricao', 'preco', 'servings_unit']
+        fields = ['nome', 'descricao', 'preco', 'pessoas_servidas']
 
     def is_valid(self, raise_exception=False):
         if not self.initial_data:
@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'endereco', 'email', 'password']
+        fields = ['id', 'nome', 'endereco', 'email', 'password']
         extra_kwargs = {
             'password': {'write_only': True}
         }

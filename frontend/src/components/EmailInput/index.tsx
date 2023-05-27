@@ -3,11 +3,12 @@ import validator from 'validator';
 import { TextField } from '@mui/material';
 
 interface Props {
-  onChange: (value: string, isValid: boolean) => void;
+  onChange: (value: string, isValid: boolean) => void,
+  value: string
 }
 
-const EmailInput: React.FC<Props> = ({ onChange }) => {
-  const [email, setEmail] = useState('');
+const EmailInput: React.FC<Props> = ({ onChange, value }) => {
+  const [email, setEmail] = useState(value);
   const [isValid, setIsValid] = useState(false);
   const [touched, setTouched] = useState(false);
 

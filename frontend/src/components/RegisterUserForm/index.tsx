@@ -3,17 +3,24 @@ import { Button, TextField } from "@mui/material";
 import EmailInput from "../EmailInput";
 import InputPassRegister from "../InputPassRegister";
 
+
+interface UserRegister {
+    name: string,
+    email: string,
+    password: string
+}
+
 interface RegisterProps {
-    onSubmit: (name: string, email: string, password: string) => void;
+    onSubmit: (user: UserRegister) => void,
+    defaultData: UserRegister
 }
 
 
 const RegisterUserForm = (props: RegisterProps) => {
-    const { onSubmit } = props
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+    const { onSubmit, defaultData } = props
+    const [name, setName] = useState(defaultData.name);
+    const [email, setEmail] = useState(defaultData.email);
+    const [password, setPassword] = useState(defaultData.password);
     const [isEmailValid, setIsEmailValid] = useState(false);
 
     const handleEmailChange = (value: string, isValid: boolean) => {
@@ -23,7 +30,12 @@ const RegisterUserForm = (props: RegisterProps) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
-        onSubmit(name, email, password);
+        const user : UserRegister = {
+            name,
+            email,
+            password,
+        }
+        onSubmit(user);
     }
 
 
@@ -32,17 +44,18 @@ const RegisterUserForm = (props: RegisterProps) => {
 
             <label htmlFor="name">Nome
                 <TextField 
+                value={name}
                 id="name" 
                 required
                 onChange={e => setName(e.target.value)} />
             </label>
 
             <label htmlFor="">E-mail
-                <EmailInput onChange={handleEmailChange} />
+                <EmailInput onChange={handleEmailChange} value={email} />
             </label>
 
             <label htmlFor="">Senha
-                <InputPassRegister onChange={e => setPassword(e.target.value)} />
+                <InputPassRegister onChange={e => setPassword(e.target.value)} value={password} />
             </label>
 
             <div id="buttonsOfLogin">

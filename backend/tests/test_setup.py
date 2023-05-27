@@ -9,7 +9,7 @@ class TestSetUp(APITestCase):
         self.login_url = reverse('login')
 
         self.user_data = {
-            'name': "Arthur",
+            'nome': "Arthur",
             'endereco': {
                 "cep": "58701750",
                 "rua": "Nestor Pereira",

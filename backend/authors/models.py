@@ -15,7 +15,7 @@ class PlanoAssinatura(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.CharField(max_length=100)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
-    servings_unit = models.IntegerField()
+    pessoas_servidas = models.IntegerField()
 
     def __str__(self):
         return self.nome
@@ -35,7 +35,7 @@ class Assinatura(models.Model):
 
 
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255)
     endereco = models.OneToOneField(
         Endereco, on_delete=models.CASCADE,
         related_name='user',

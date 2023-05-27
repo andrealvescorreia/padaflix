@@ -20,6 +20,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-input-mask": "^3.0.0-alpha.2",
+    "react-pro-sidebar": "^1.1.0-alpha.1",
     "react-router-dom": "^6.10.0",
     "validator": "^13.9.0"
   },

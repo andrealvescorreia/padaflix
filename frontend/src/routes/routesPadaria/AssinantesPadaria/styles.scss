@@ -1,0 +1,5 @@
+@use '../../../styles/variables';
+
+#usuario-padaria-assinantes {
+  margin-left: variables.$padaria-sidebar-width;// essa margem dá espaço para a sidebar
+}

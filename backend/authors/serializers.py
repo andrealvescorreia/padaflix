@@ -13,6 +13,11 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
         model = PlanoAssinatura
         fields = ['nome', 'descricao', 'preco', 'servings_unit']
 
+    def validate(self, attrs):
+        if not attrs:
+            raise serializers.ValidationError("O escopo está vazio. É necessário fornecer dados válidos para criar um plano de assinatura.")
+        return attrs
+
 
 class AssinaturaSerializer(serializers.ModelSerializer):
     cliente = serializers.PrimaryKeyRelatedField(read_only=True)

@@ -164,7 +164,7 @@ class PadariaPorCidadeView(APIView):
 
 
 class PlanoAssinaturaView(UserAndPadariaView):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         token = request.COOKIES.get('jwt')
         if not token:
             return Response(
@@ -185,16 +185,13 @@ class PlanoAssinaturaView(UserAndPadariaView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        serializer = PlanoAssinaturaSerializer(data=request.data.get('plano_assinatura', []), many=True)  # noqa: E501
-        if serializer.is_valid():
-            padaria = Padaria.objects.get(id=payload['id'])
-            planos_assinatura = serializer.validated_data
+        padaria_id = payload['id']
+        padaria = Padaria.objects.get(id=padaria_id)
 
-            with transaction.atomic():
-                for plano in planos_assinatura:
-                    novo_plano = PlanoAssinatura(**plano)
-                    novo_plano.save()
-                    padaria.plano_assinatura.add(novo_plano)
+        serializer = PlanoAssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            plano_assinatura = serializer.save()
+            padaria.plano_assinatura.add(plano_assinatura)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

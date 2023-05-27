@@ -14,13 +14,13 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
         model = PlanoAssinatura
         fields = ['nome', 'descricao', 'preco', 'pessoas_servidas']
 
-    def is_valid(self, raise_exception=False):
+    def is_valid(self):
         if not self.initial_data:
             raise ValidationError(
                 "É necessário fornecer dados válidos para criar um plano de assinatura."  # noqa: E501
             )
 
-        return super().is_valid(raise_exception)
+        return super().is_valid()
 
 
 class AssinaturaSerializer(serializers.ModelSerializer):

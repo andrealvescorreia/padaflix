@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 
 
@@ -13,10 +14,13 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
         model = PlanoAssinatura
         fields = ['nome', 'descricao', 'preco', 'servings_unit']
 
-    def validate(self, attrs):
-        if not attrs:
-            raise serializers.ValidationError("O escopo está vazio. É necessário fornecer dados válidos para criar um plano de assinatura.")
-        return attrs
+    def is_valid(self, raise_exception=False):
+        if not self.initial_data:
+            raise ValidationError(
+                "É necessário fornecer dados válidos para criar um plano de assinatura."  # noqa: E501
+            )
+
+        return super().is_valid(raise_exception)
 
 
 class AssinaturaSerializer(serializers.ModelSerializer):

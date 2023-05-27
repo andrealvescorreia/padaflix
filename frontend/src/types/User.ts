@@ -2,7 +2,7 @@ import { Endereco } from "./Endereco";
 
 export interface User {
   id: number,
-  name: string,
+  nome: string,
   email: string,
   endereco: Endereco
 }
@@ -21,5 +21,5 @@ export function isPadariaUser(object: any): object is PadariaUser {
 }
 
 export function isUser(object: any): object is User {
-  return 'name' in object;
+  return 'nome' in object;
 }

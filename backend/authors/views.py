@@ -5,7 +5,6 @@ import datetime
 from .serializers import UserSerializer, PadariaSerializer
 from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
 from .models import User, Padaria, PlanoAssinatura  # , Assinatura
-from django.db import transaction
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse

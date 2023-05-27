@@ -20,13 +20,14 @@ interface ViaCepApiResponse {
 }
 
 interface AddressFormProps {
-    onSubmit: (endereco: Endereco) => void;
-    onGoBack: (endereco: Endereco) => void;
-    defaultData: Endereco
+    onSubmit: (endereco: Endereco) => void,
+    onGoBack: (endereco: Endereco) => void,
+    defaultData: Endereco,
+    disabled: boolean,
 }
 
 const AddressForm = ( props : AddressFormProps ) => {
-    const { onSubmit, onGoBack, defaultData } = props
+    const { onSubmit, onGoBack, defaultData, disabled } = props
    
     const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
@@ -96,7 +97,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                 <MdLocationOn/>
                 <h1>Endereço</h1>
             </header>
-
+            
             <Stack 
                 onSubmit = { handleSubmit } 
                 className = "form"
@@ -110,6 +111,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         ({ ...prevEndereco, cep: (e.target.value).replace('-', '') })
                     )}
                     onBlur = { queryCepData }
+                    disabled={disabled}
                 >
                     <TextField 
                         label = "CEP" 
@@ -119,13 +121,14 @@ const AddressForm = ( props : AddressFormProps ) => {
                 </InputMask>
 
                 <TextField
-                    disabled = {ruaWasAutoFilled}
+                    disabled = {ruaWasAutoFilled || disabled}
                     label = "Logradouro" 
                     required
                     value = {endereco.rua}
                     onChange = { e => setEndereco( prevEndereco => 
                         ({ ...prevEndereco, rua: e.target.value })
                     )}
+                    
                 />
                 <Box
                     sx={{
@@ -142,6 +145,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         onChange = { e => setEndereco( prevEndereco => 
                             ({ ...prevEndereco, numero: e.target.value } )
                         )}
+                        disabled={disabled}
                     />
                     <TextField 
                         label = "Complemento" 
@@ -149,10 +153,11 @@ const AddressForm = ( props : AddressFormProps ) => {
                         onChange = { e => setEndereco( prevEndereco => 
                             ({ ...prevEndereco, complemento: e.target.value } )
                         )}
+                        disabled={disabled}
                     />
                 </Box>
                 <TextField
-                    disabled = {bairroWasAutoFilled}
+                    disabled = {bairroWasAutoFilled || disabled}
                     label = "Bairro" 
                     required
                     value={endereco.bairro}
@@ -185,6 +190,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         variant = "contained" 
                         className = 'back bttn'
                         onClick = { handleGoBack } 
+                        disabled={disabled}
                     >Voltar
                     </Button>
 
@@ -192,6 +198,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         variant = "contained" 
                         type = "submit"
                         className = 'submit bttn'
+                        disabled={disabled}
                     >Criar conta
                     </Button>
                 </div>

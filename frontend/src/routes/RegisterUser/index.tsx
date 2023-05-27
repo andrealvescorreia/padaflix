@@ -4,6 +4,8 @@ import RegisterUserForm from "../../components/RegisterUserForm";
 import { Endereco } from "../../types/Endereco";
 import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
+import { useSnackbar } from 'notistack';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 const RegisterUser = () => {
@@ -21,7 +23,7 @@ const RegisterUser = () => {
         endereco: Endereco,
     }
 
-    const defaultUser : UserRegisterData = {
+    const templateUser : UserRegisterData = {
         name: '',
         endereco: {
             cep: '', 
@@ -36,23 +38,31 @@ const RegisterUser = () => {
         password: '',
     }
 
-    const [userRegisterData, setUserRegisterData] = useState<UserRegisterData>(defaultUser)
+    const [userRegisterData, setUserRegisterData] = useState<UserRegisterData>(templateUser)
     const [currentRegisterStep, setCurrentRegisterStep] = useState(1)
-
+    const [isFetching, setIsFetching] = useState(false)
 
     const navigate = useNavigate()
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const registerUser = async (user: UserRegisterData) => {
+        setIsFetching(true)
         axiosInstance.post('/register_user', user)
         .then(() => {
-            alert('Registrado com sucesso!')
+            enqueueSnackbar("Registrado com sucesso! Realize o login", { variant: 'success'})
             navigate('/login')
         })
         .catch((err) => {
-            if(!err.response) alert('Servidor do padaflix está fora do ar!')
+            if(!err.response) {
+                enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+            }
             else{
-                alert('deu ruim, dê uma olhada no console pra tentar se salvar')
+                enqueueSnackbar("Ocorreu um erro no registro: "+JSON.stringify(err.response.data), { variant: 'error'})
                 console.log(err.response.data)
             }
+        })
+        .finally(()=>{
+            setIsFetching(false)
         })
     }
     
@@ -71,19 +81,27 @@ const RegisterUser = () => {
         registerUser( {...userRegisterData, endereco: userEndereco} as UserRegisterData )
     }
 
+
     switch(currentRegisterStep) {
         case 1:
             return(
                 <RegisterUserForm 
-                onSubmit={goToNextRegisterStep} 
-                defaultData={userRegisterData}/>
+                    onSubmit={goToNextRegisterStep} 
+                    defaultData={userRegisterData}
+                />
             )
         case 2:
             return(
-                <AddressForm 
-                onSubmit={finishRegister} 
-                onGoBack={goToPreviousRegisterStep} 
-                defaultData={userRegisterData.endereco}/>
+                <>
+                    { isFetching ? <LinearProgress /> : null}
+                    <AddressForm 
+                        onSubmit={finishRegister} 
+                        onGoBack={goToPreviousRegisterStep} 
+                        defaultData={userRegisterData.endereco}
+                        disabled={isFetching}
+                    />
+                </>
+                
             )
     }
 }

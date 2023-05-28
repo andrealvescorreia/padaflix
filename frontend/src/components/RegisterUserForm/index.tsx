@@ -2,6 +2,7 @@ import { SyntheticEvent, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import EmailInput from "../EmailInput";
 import InputPassRegister from "../InputPassRegister";
+import { useSnackbar } from "notistack";
 
 
 interface UserRegister {
@@ -22,6 +23,7 @@ const RegisterUserForm = (props: RegisterProps) => {
     const [email, setEmail] = useState(defaultData.email);
     const [password, setPassword] = useState(defaultData.password);
     const [isEmailValid, setIsEmailValid] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleEmailChange = (value: string, isValid: boolean) => {
         setEmail(value);
@@ -29,8 +31,12 @@ const RegisterUserForm = (props: RegisterProps) => {
     };
 
     const handleSubmit = (e: SyntheticEvent) => {
-        e.preventDefault()
-        const user : UserRegister = {
+        e.preventDefault();
+        if (!isEmailValid) {
+            enqueueSnackbar("O e-mail inserido é inválido.", { variant: "error" });
+            return;
+        }
+        const user: UserRegister = {
             nome,
             email,
             password,
@@ -43,15 +49,15 @@ const RegisterUserForm = (props: RegisterProps) => {
         <form onSubmit={handleSubmit} id="secondaryContainer">
 
             <label htmlFor="name">Nome
-                <TextField 
-                value={nome}
-                id="name" 
-                required
-                onChange={e => setNome(e.target.value)} />
+                <TextField
+                    value={nome}
+                    id="name"
+                    required
+                    onChange={e => setNome(e.target.value)} />
             </label>
 
             <label htmlFor="">E-mail
-                <EmailInput onChange={handleEmailChange} value={email} />
+                <EmailInput onChange={handleEmailChange} value={email}  />
             </label>
 
             <label htmlFor="">Senha
@@ -61,7 +67,7 @@ const RegisterUserForm = (props: RegisterProps) => {
             <div id="buttonsOfLogin">
                 <Button variant="contained" className="buttonFull" type="submit">Continuar</Button>
             </div>
-
+            {/* {console.log("é vallido",isEmailValid)} */}
         </form>
     </main>
     );

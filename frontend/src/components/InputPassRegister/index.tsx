@@ -19,7 +19,7 @@ function MyFormHelperText() {
 
   const helperText = React.useMemo(() => {
     if (focused) {
-      return 'A senha deve conter no minimo 6 digitos, letras e números';
+      return 'A senha deve conter 6 dígitos, no mínimo!';
     }
 
     return '';

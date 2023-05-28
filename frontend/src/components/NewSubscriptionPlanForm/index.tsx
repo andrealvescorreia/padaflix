@@ -33,7 +33,7 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
                 component = "form"
                 autoComplete = "off"
             >
-                <h2>Novo Plano de Assinatura</h2>
+                <h2 className="form-title">Novo Plano de Assinatura</h2>
 
                 <TextField 
                     label="Nome" 
@@ -91,14 +91,23 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
                     }}
                     disabled={disabled}
                 />
+                <div className = "bttns-box">
+                    <Button 
+                        variant="contained" 
+                        className='cancel bttn'
+                        disabled={disabled}
+                        onClick={onCancel}
+                    >Cancelar
+                    </Button>
 
-                <Button 
-                    variant="contained" 
-                    type="submit"
-                    className='submit bttn'
-                    disabled={disabled}
-                >Criar
-                </Button>
+                    <Button 
+                        variant="contained" 
+                        type="submit"
+                        className='submit bttn'
+                        disabled={disabled}
+                    >Criar
+                    </Button>
+                </div>
             </Stack>
         </Container>
   );

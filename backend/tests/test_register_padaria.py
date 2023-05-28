@@ -134,6 +134,16 @@ class TestRegisterPadaria(TestSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
+    def test_padaria_cannot_register_with_existing_email(self):
+        self.client.post(
+                self.register_padaria_url, self.padaria_data, format="json"
+            )
+        res = self.client.post(
+                self.register_padaria_url, self.padaria_data, format="json"
+            )
+
+        self.assertEqual(res.status_code, 400)
+
     def test_padaria_cannot_register_with_password_less_than_8_digits(self):
         self.padaria_data['password'] = "Abc12"
 

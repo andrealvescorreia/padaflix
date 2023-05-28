@@ -11,7 +11,7 @@ const NewSubscriptionPlan = () => {
 
     const [isFetching, setIsFetching] = useState(false)
 
-    //const navigate = useNavigate()
+    const navigate = useNavigate()
     const { enqueueSnackbar } = useSnackbar();
 
     const createSubscriptionPlan = async (plano: PlanoAssinatura) => {
@@ -34,7 +34,9 @@ const NewSubscriptionPlan = () => {
         })
     }
 
-    function cancel(){}
+    function cancel(){
+        navigate('/padaria-planos')
+    }
     
     return (
         <div id="new-subscription-plan">

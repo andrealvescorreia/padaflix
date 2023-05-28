@@ -70,6 +70,70 @@ class TestRegisterUser(TestSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
+    def test_user_cannot_register_with_invalid_email_v1(self):
+        self.user_data['email'] = "arthurgmailcom"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_invalid_email_v2(self):
+        self.user_data['email'] = "arthur@gmailcom"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_invalid_email_v3(self):
+        self.user_data['email'] = "arthurgmail.com"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_without_email(self):
+        self.user_data['email'] = ""
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_password_less_than_8_digits(self):
+        self.user_data['password'] = "Abc12"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_password_without_numbers(self):
+        self.user_data['password'] = "Abcdefgh"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_non_capitalized_password(self):
+        self.user_data['password'] = "abc12345"
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_without_password(self):
+        self.user_data['password'] = ""
+
+        res = self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        self.assertEqual(res.status_code, 400)
+
     def test_user_can_register_correctly(self):
         res = self.client.post(
             self.register_user_url, self.user_data, format="json"

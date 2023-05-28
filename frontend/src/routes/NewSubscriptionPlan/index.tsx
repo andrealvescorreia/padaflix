@@ -37,8 +37,8 @@ const NewSubscriptionPlan = () => {
     function cancel(){}
     
     return (
-        <div>
-            { isFetching ? <LinearProgress /> : null }
+        <div id="new-subscription-plan">
+            { isFetching ? <LinearProgress className="linear-progress" /> : null }
             <NewSubscriptionPlanForm onSubmit={createSubscriptionPlan} onCancel={cancel} disabled={isFetching}/>
         </div>
     );

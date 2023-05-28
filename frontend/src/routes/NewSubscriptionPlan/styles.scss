@@ -1,0 +1,13 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+#new-subscription-plan {
+  margin-left: variables.$padaria-sidebar-width;
+  margin-top: 3rem;
+
+  .linear-progress {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+  }
+}

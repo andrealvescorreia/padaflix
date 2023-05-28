@@ -109,6 +109,29 @@ class LoginView(APIView):
         }
         return response
 
+    def get(self, request):
+        email = request.GET.get('email')
+        if email:
+            try:
+                User.objects.get(email=email)
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except User.DoesNotExist:
+                pass
+
+            try:
+                Padaria.objects.get(email=email)
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except Padaria.DoesNotExist:
+                pass
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserAndPadariaView(APIView):
     def get(self, request):

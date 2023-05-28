@@ -1,54 +1,107 @@
-import * as React from 'react';
 import { useState, SyntheticEvent } from "react";
-import { Button, Container, TextField } from "@mui/material";
+import { Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
 import "./styles.scss";
-import FormControl from '@mui/material/FormControl';
+import axiosInstance from "../../axios";
+import { useSnackbar } from 'notistack';
+import { useNavigate } from "react-router-dom";
+import LinearProgress from '@mui/material/LinearProgress';
 
 const NewSubscriptionPlan = () => {
-    const [planName, setPlanName] = useState('');
-    const [planDescription, setPlanDescription] = useState('');
-    const [planValue, setPlanValue] = useState(0);
+
+    interface PlanoAssinatura{
+        nome: string,
+        descricao: string,
+        preco: number,
+        pessoas_servidas: number
+    }
+
+    const [isFetching, setIsFetching] = useState(false)
+
+    const navigate = useNavigate()
+    const { enqueueSnackbar } = useSnackbar();
+
+    const createSubscriptionPlan = async (plano: PlanoAssinatura) => {
+        setIsFetching(true)
+        axiosInstance.post('/plano_de_assinatura', plano)
+        .then(() => {
+            enqueueSnackbar("Plano de Assinatura criado", { variant: 'success'})
+        })
+        .catch((err) => {
+            if(!err.response) {
+                enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+            }
+            else{
+                enqueueSnackbar("Ocorreu um erro: "+JSON.stringify(err.response.data), { variant: 'error'})
+                console.log(err.response.data)
+            }
+        })
+        .finally(()=>{
+            setIsFetching(false)
+        })
+    }
+
+    const [nome, setNome] = useState('');
+    const [descricao, setDescricao] = useState('');
+    const [pessoasServidas, setPessoasServidas] = useState(1);
+    const [preco, setPreco] = useState<number>(0);
 
     
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
+        const plano : PlanoAssinatura = {
+            nome, descricao, preco, pessoas_servidas: pessoasServidas
+        }
+        createSubscriptionPlan(plano)
     }
 
     return (
         <Container id="new-subscription-plan" maxWidth="sm" >
-            <FormControl variant="standard"  onSubmit={handleSubmit} 
-                sx={{
-                    width: '100%',
-                    maxWidth: '100%',
-                }}
-                component="form"
-                noValidate
-                
-                autoComplete="off"
+            { isFetching ? <LinearProgress /> : null}
+            <Stack 
+                onSubmit = { handleSubmit } 
+                component = "form"
+                autoComplete = "off"
             >
+                <h2>Novo Plano de Assinatura</h2>
 
                 <TextField 
                     label="Nome" 
-                    value={planName}
-                    onChange={e => setPlanName(e.target.value)} 
-                    autoComplete='off'
+                    value={nome}
+                    onChange={e => setNome(e.target.value)} 
                     margin="dense"
+                    required
                 />
                 <TextField 
                     label="Descricao" 
-                    value={planDescription}
-                    onChange={e => setPlanDescription(e.target.value)} 
-                    autoComplete='off'
+                    value={descricao}
+                    onChange={e => setDescricao(e.target.value)} 
                     multiline
+                    rows={4}
                     margin="dense"
+                    required
                 />
+
                 <TextField 
-                    label="Preço" 
-                    value={planValue}
+                    label="Pessoas servidas" 
+                    value={pessoasServidas}
                     type="number"
-                    onChange={e => setPlanValue(parseInt(e.target.value))} 
-                    autoComplete='off'
+                    onChange={e => setPessoasServidas(parseInt(e.target.value))} 
                     margin="dense"
+                    required
+                    variant="standard"
+                />
+                
+                <TextField 
+                    label="Valor de assinatura" 
+                    value={preco}
+                    type="number"
+                    onChange={e => setPreco(parseFloat(e.target.value))} 
+                    margin="dense"
+                    required
+                    variant="standard"
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                    }}
                 />
 
                 <Button 
@@ -57,7 +110,8 @@ const NewSubscriptionPlan = () => {
                     className='submit bttn'
                 >Criar
                 </Button>
-            </FormControl>
+            </Stack>
+           
 
         </Container>
   );

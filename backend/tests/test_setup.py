@@ -32,8 +32,8 @@ class TestSetUp(APITestCase):
                 "complemento": "",
                 "uf": "PB"
             },
-            'cnpj': "11.444.777/0001-22",
-            'telefone': "(83) 9 1236-5478",
+            'cnpj': "11444777000122",
+            'telefone': "83912365478",
             'email': 'padaria@gmail.com',
             'password': 'Padaria12345',
         }

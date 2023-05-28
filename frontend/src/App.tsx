@@ -66,8 +66,8 @@ function App() {
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
         
-
-        <Route path="/padaria-planos" element={<PlanosPadaria />} />
+     
+        <Route path="/padaria-planos" element={<PlanosPadaria padaria={user} />} />
         <Route path="/padaria-planos/new" element={<NewSubscriptionPlan />} />
         <Route path="/padaria-assinantes" element={<AssinantesPadaria />} />
         <Route path="/padaria-avaliacoes" element={<AvaliacoesPadaria />} />

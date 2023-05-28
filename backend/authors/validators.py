@@ -17,12 +17,12 @@ def validate_password(password):
 
 
 def validate_cnpj(cnpj):
-    cnpj_form = r'^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$'
+    cnpj_form = r'^\d{14}$'
     if not re.match(cnpj_form, cnpj):
         raise ValidationError('CNPJ inválido.')
 
 
 def validate_telefone(telefone):
-    telefone_form = r'^\(\d{2}\) \d{1} \d{4}-\d{4}$'
+    telefone_form = r'^\d{11}$'
     if not re.match(telefone_form, telefone):
         raise ValidationError('Telefone inválido.')

@@ -103,6 +103,8 @@ const RegisterUser = () => {
                 </>
                 
             )
+        default:
+            return(<></>)
     }
 }
  

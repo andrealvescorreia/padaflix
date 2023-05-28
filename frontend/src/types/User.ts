@@ -17,9 +17,11 @@ export interface PadariaUser {
 }
 
 export function isPadariaUser(object: any): object is PadariaUser {
+  if(object == undefined) return false;
   return 'nome_fantasia' in object;
 }
 
 export function isUser(object: any): object is User {
+  if(object == undefined) return false;
   return 'nome' in object;
 }

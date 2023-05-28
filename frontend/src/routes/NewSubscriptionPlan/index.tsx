@@ -44,8 +44,10 @@ const NewSubscriptionPlan = () => {
     const [descricao, setDescricao] = useState('');
     const [pessoasServidas, setPessoasServidas] = useState(1);
     const [preco, setPreco] = useState<number>(0);
+    const nomeMaxCharacters = 80;
+    const descricaoMaxCharacters = 250;
+    const pessoasServidarMin = 1;
 
-    
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         const plano : PlanoAssinatura = {
@@ -70,6 +72,8 @@ const NewSubscriptionPlan = () => {
                     onChange={e => setNome(e.target.value)} 
                     margin="dense"
                     required
+                    inputProps={{ maxLength: nomeMaxCharacters }}
+                    helperText={"Até "+nomeMaxCharacters+" caracteres"}
                 />
                 <TextField 
                     label="Descricao" 
@@ -79,16 +83,27 @@ const NewSubscriptionPlan = () => {
                     rows={4}
                     margin="dense"
                     required
+                    inputProps={{ maxLength: descricaoMaxCharacters }}
+                    helperText={"Até "+descricaoMaxCharacters+" caracteres"}
                 />
 
                 <TextField 
                     label="Pessoas servidas" 
                     value={pessoasServidas}
                     type="number"
-                    onChange={e => setPessoasServidas(parseInt(e.target.value))} 
+                    onChange={e => {
+                        let value = parseInt(e.target.value)
+                        if(value < pessoasServidarMin) value = pessoasServidarMin
+                        setPessoasServidas(value)
+                    }} 
                     margin="dense"
                     required
                     variant="standard"
+                    InputProps={{
+                        inputProps: { 
+                            max: 10, min: 1 
+                        }
+                    }}
                 />
                 
                 <TextField 

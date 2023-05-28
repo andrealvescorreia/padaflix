@@ -27,6 +27,17 @@ class TestViews(TestSetUp):
         res = self.client.post(self.login_url, wrong_email, format="json")
         self.assertEqual(res.status_code, 401)
 
+    def test_user_cannot_login_with_unverified_password(self):
+        self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+        wrong_email = {
+            'email': 'arthur@gmail.com',
+            'password': 'Def67890',
+        }
+        res = self.client.post(self.login_url, wrong_email, format="json")
+        self.assertEqual(res.status_code, 401)
+
     def test_user_can_login_after_verification(self):
         response = self.client.post(
             self.register_user_url, self.user_data, format="json"
@@ -58,6 +69,16 @@ class TestViews(TestSetUp):
         wrong_email = {
             'email': 'emailquenaofoiregistrado@gmail.com',
             'password': 'Padaria12345',
+        }
+        res = self.client.post(self.login_url, wrong_email, format="json")  # noqa: E501
+
+        self.assertEqual(res.status_code, 401)
+
+    def test_padaria_cannot_login_with_unverified_password(self):
+        self.client.post(self.register_padaria_url, self.padaria_data, format="json")  # noqa: E501
+        wrong_email = {
+            'email': 'padaria@gmail.com',
+            'password': 'Padoca123',
         }
         res = self.client.post(self.login_url, wrong_email, format="json")  # noqa: E501
 

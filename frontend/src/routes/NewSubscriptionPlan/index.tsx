@@ -6,14 +6,8 @@ import { useNavigate } from "react-router-dom";
 import LinearProgress from '@mui/material/LinearProgress';
 import NewSubscriptionPlanForm from "../../components/NewSubscriptionPlanForm";
 
-const NewSubscriptionPlan = () => {
 
-    interface PlanoAssinatura{
-        nome: string,
-        descricao: string,
-        preco: number,
-        pessoas_servidas: number
-    }
+const NewSubscriptionPlan = () => {
 
     const [isFetching, setIsFetching] = useState(false)
 

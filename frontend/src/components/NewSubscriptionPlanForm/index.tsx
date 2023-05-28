@@ -2,12 +2,6 @@ import { useState, SyntheticEvent } from "react";
 import { Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
 import "./styles.scss";
 
-interface PlanoAssinatura{
-    nome: string,
-    descricao: string,
-    preco: number,
-    pessoas_servidas: number
-}
 
 interface NewSubscriptionPlanFormProps {
     onSubmit: (plano: PlanoAssinatura) => void,

@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import validator from 'validator';
 import { TextField } from '@mui/material';
 
-interface Props {
+interface EmailInputProps {
   onChange: (value: string, isValid: boolean) => void,
   value: string
 }
 
-const EmailInput: React.FC<Props> = ({ onChange, value }) => {
+const EmailInput = (props: EmailInputProps ) => {
+  const {onChange, value} = props
   const [email, setEmail] = useState(value);
   const [isValid, setIsValid] = useState(false);
   const [touched, setTouched] = useState(false);
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const isEmailValid = validator.isEmail(email);
+    setIsValid(isEmailValid);
+    onChange(email, isEmailValid);
+  }, [email, onChange]);
+
+  const handleEmailChange = (event: React.FocusEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
     setEmail(newEmail);
     const isEmailValid = validator.isEmail(newEmail);
     setIsValid(isEmailValid);
-    onChange(newEmail, isEmailValid);
   };
 
   const handleBlur = () => {
     setTouched(true);
   };
+  const handleFocus = () => {
+    setTouched(false)
+  }
 
   return (
     <TextField
       value={email}
       onChange={handleEmailChange}
       onBlur={handleBlur}
+      onFocus={handleFocus}
       required
-      error={touched && !isValid}
-      helperText={touched && !isValid ? 'Email inválido' : ''}
+      error={touched && !isValid && email != ''}
+      helperText={(touched && !isValid && email != '') ? 'Email inválido' : ''}
     />
   );
 };

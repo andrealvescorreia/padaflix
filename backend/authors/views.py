@@ -159,6 +159,19 @@ class UserAndPadariaView(APIView):
         return Response(serializer.data)
 
 
+class PadariaDetailsView(APIView):
+    def get(self, request, pk):
+        padaria = Padaria.objects.filter(pk=pk).first()
+        if not padaria:
+            return Response(
+                {'error': 'Padaria não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PadariaSerializer(padaria)
+        return Response(serializer.data)
+
+
 class PadariaPorCidadeView(APIView):
     def get(self, request, cep):
         response = requests.get(f'https://viacep.com.br/ws/{cep}/json/')

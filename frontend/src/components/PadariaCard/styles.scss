@@ -9,6 +9,8 @@
     border-radius: 1.2rem;
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: variables.$text-color;
 
     transition: .4s;
     &:hover {

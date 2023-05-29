@@ -13,6 +13,22 @@ class TestViews(TestSetUp):
 
         self.assertEqual(res.status_code, 401)
 
+    def test_padaria_cannot_login_with_existing_email(self):
+        self.client.post(
+            self.register_padaria_url, self.padaria_data, format="json"
+        )
+
+        existing_email = 'padaria@gmail.com'
+        url = f'{self.login_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_padaria_can_login_with_email(self):
+        existing_email = 'padaria@gmail.com'
+        url = f'{self.login_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 204)
+
     def test_padaria_cannot_login_with_unverified_password(self):
         self.client.post(self.register_padaria_url, self.padaria_data, format="json")  # noqa: E501
         wrong_email = {

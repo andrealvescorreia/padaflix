@@ -14,6 +14,7 @@ export interface PadariaUser {
   cnpj: string,
   telefone: string,
   endereco: Endereco
+  plano_assinatura: PlanoAssinatura[]
 }
 
 export function isPadariaUser(object: any): object is PadariaUser {

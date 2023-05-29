@@ -128,6 +128,31 @@ class TestRegisterPadaria(TestSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
+    def test_padaria_cannot_register_with_existing_telefone(self):
+        endereco = Endereco.objects.create(
+            cep="58705750",
+            rua="Rua Dom Pedro II",
+            numero="01",
+            bairro="Centro",
+            complemento="",
+            uf="PB"
+        )
+
+        padaria_existente = Padaria.objects.create(
+            nome_fantasia="Padaria Existente",
+            endereco=endereco,
+            cnpj="11444777000122",
+            telefone="83912365478",
+            email="padaria_existente@gmail.com",
+            password="Padaria12345"
+        )
+
+        res = self.client.post(
+            self.register_padaria_url, self.padaria_data, format="json"
+        )
+
+        self.assertEqual(res.status_code, 400)
+
     def test_padaria_cannot_register_with_invalid_email_v1(self):
         self.padaria_data['email'] = "arthurgmailcom"
 

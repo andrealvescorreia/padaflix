@@ -5,12 +5,76 @@
 	@include mixins.flex-center;
     flex-direction: column;
 
+    .header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background-color: variables.$bg-color;
+        flex-direction: column;
+    }
 
+    .header-padaria {
+        display: flex;
+        align-items: center;
+        width: 90%;
+        height: 9rem;
+        
+        .padaria-logo{
+            background-color: lightgrey;
+            min-width: 5.5rem;
+            min-height: 5.5rem;
+            border-radius: 0.7rem;
+            margin-right: 2rem;
+            margin-left: 3rem;
+        }
+
+        .padaria-name{
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-left: .3rem;
+            svg {
+                fill: #FFC700;
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+            
+            .number {
+                margin: 0;
+                color: #DDAD02;
+                font-weight: bold;
+                margin-left: .1rem;
+            }
+        }
+        border-bottom: 0.1rem solid #6A6A6A;
+    }
+
+    .tabs {
+        width: 90%;
+        height: 3rem;
+    }
 
     .grid {
 		margin-top: 5rem;
 		display: grid;
 		gap: 1.5rem;
 		grid-template-columns: repeat(2, 1fr);
+    }
+    .about {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 20rem;
+        .address{
+            display: flex;
+            flex-direction: column;
+            
+        }
     }
 }

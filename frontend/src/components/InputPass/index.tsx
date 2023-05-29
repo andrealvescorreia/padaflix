@@ -19,6 +19,7 @@ export default function InputPass({onChange}: InputPassProps) {
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+ 
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>

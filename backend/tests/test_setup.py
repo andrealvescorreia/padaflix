@@ -7,6 +7,7 @@ class TestSetUp(APITestCase):
         self.register_user_url = reverse('register_user')
         self.register_padaria_url = reverse('register_padaria')
         self.login_url = reverse('login')
+        self.logout_url = reverse('logout')
 
         self.user_data = {
             'nome': "Arthur",

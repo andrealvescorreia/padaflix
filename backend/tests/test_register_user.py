@@ -1,4 +1,5 @@
 from .test_setup import TestSetUp
+from authors.models import User, Endereco
 
 
 class TestRegisterUser(TestSetUp):
@@ -103,12 +104,25 @@ class TestRegisterUser(TestSetUp):
         self.assertEqual(res.status_code, 400)
 
     def test_user_cannot_register_with_existing_email(self):
-        self.client.post(
-                self.register_user_url, self.user_data, format="json"
-            )
+        endereco = Endereco.objects.create(
+            cep="58705750",
+            rua="Rua Dom Pedro II",
+            numero="01",
+            bairro="Centro",
+            complemento="",
+            uf="PB"
+        )
+
+        user_existente = User.objects.create(
+            nome="Usuário Existente",
+            endereco=endereco,
+            email="arthur@gmail.com",
+            password="Abc12345"
+        )
+
         res = self.client.post(
-                self.register_user_url, self.user_data, format="json"
-            )
+            self.register_user_url, self.user_data, format="json"
+        )
 
         self.assertEqual(res.status_code, 400)
 

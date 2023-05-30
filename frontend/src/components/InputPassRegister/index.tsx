@@ -28,7 +28,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
     if (value === '') {
       setErrorMessage(''); // Limpa a mensagem de erro quando o campo está vazio
     } else if (value.length < 8) {
-      setErrorMessage('A senha deve ter no mínimo 6 caracteres');
+      setErrorMessage('A senha deve ter no mínimo dígotos');
     } else if (
       validator.isStrongPassword(value, {
         minLength: 8,
@@ -38,7 +38,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
         minSymbols: 1
       })
     ) {
-      setErrorMessage('Is Strong Password');
+      setErrorMessage('Senha forte!');
     } else if (
       validator.isStrongPassword(value, {
         minLength: 8,
@@ -47,9 +47,9 @@ export default function InputPassRegister({ onChange, value }: Props) {
         minNumbers: 1
       })
     ) {
-      setErrorMessage('Is Medium Password');
+      setErrorMessage('Senha média');
     } else {
-      setErrorMessage('Is Weak Password');
+      setErrorMessage('Senha fraca');
     }
   };
   React.useEffect(() => {

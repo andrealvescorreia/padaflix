@@ -28,7 +28,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
     if (value === '') {
       setErrorMessage(''); // Limpa a mensagem de erro quando o campo está vazio
     } else if (value.length < 8) {
-      setErrorMessage('A senha deve ter no mínimo dígotos');
+      setErrorMessage('A senha deve ter no mínimo 8 caracteres');
     } else if (
       validator.isStrongPassword(value, {
         minLength: 8,
@@ -58,13 +58,14 @@ export default function InputPassRegister({ onChange, value }: Props) {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      <FormControl>
+      <FormControl /*autoComplete="off" component="form"*/>
         <OutlinedInput
           id="outlined-adornment-password"
           type={showPassword ? 'text' : 'password'}
           onChange={onChange}
           value={value}
           required
+          
           endAdornment={
             <InputAdornment position="end" id="pass"	>
 

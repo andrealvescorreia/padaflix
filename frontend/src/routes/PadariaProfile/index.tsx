@@ -13,8 +13,25 @@ import axios from 'axios';
 const PadariaProfile = () => {
     const { id } = useParams();
     
-
-    const [padaria, setPadaria] = useState<PadariaUser>({} as PadariaUser);
+    
+    const defaultPadaria : PadariaUser = {
+        id: 0,
+        nome_fantasia: '',
+        endereco: {
+            cep: '', 
+            rua: '', 
+            numero: '', 
+            complemento: '', 
+            bairro: '', 
+            cidade: '', 
+            uf: ''
+        },
+        cnpj: '',
+        email: '',
+        telefone: '',
+        plano_assinatura: [],
+    }
+    const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
 
     const fetchPadaria = async () => {
         axios.get('http://127.0.0.1:8000/api/padarias/'+id, { withCredentials: true })
@@ -76,7 +93,7 @@ const PadariaProfile = () => {
                         </div>
                         <div className="other-info">
                             <h2>Outras informações</h2>
-                            <span>CNPJ: {padaria.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</span>
+                            <span>CNPJ: {padaria?.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</span>
                         </div>
                     </div>
                 )

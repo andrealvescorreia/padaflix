@@ -14,10 +14,6 @@ interface Props {
   value: string
 }
 
-
-
-
-
 export default function InputPassRegister({ onChange, value }: Props) {
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -31,7 +27,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
   const validate = (value: string) => {
     if (value === '') {
       setErrorMessage(''); // Limpa a mensagem de erro quando o campo está vazio
-    } else if (value.length < 6) {
+    } else if (value.length < 8) {
       setErrorMessage('A senha deve ter no mínimo 6 caracteres');
     } else if (
       validator.isStrongPassword(value, {
@@ -85,10 +81,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
           />
           {value !== '' && <FormHelperText>{errorMessage}</FormHelperText>}
         
-
       </FormControl>
-
-
 
     </Box>
   );

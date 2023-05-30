@@ -3,7 +3,7 @@ import { Button, TextField } from "@mui/material";
 import EmailInput from "../EmailInput";
 import InputPassRegister from "../InputPassRegister";
 import { useSnackbar } from "notistack";
-
+import validator from 'validator';
 
 interface UserRegister {
     nome: string,
@@ -32,17 +32,35 @@ const RegisterUserForm = (props: RegisterProps) => {
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
+      
         if (!isEmailValid) {
-            enqueueSnackbar("O e-mail inserido é inválido.", { variant: "error" });
-            return;
+          enqueueSnackbar("O e-mail inserido é inválido.", { variant: "error" });
+          return;
+        } else if (password.length < 8) {
+          enqueueSnackbar("Senha menor que 8 dígitos.", { variant: "error" });
+          return;
+        } else if (!hasUppercaseAndNumber(password)) {
+          enqueueSnackbar(
+            "A senha deve conter no mínimo 1 letra maiúscula e 1 número!",
+            { variant: "error" }
+          );
+          return;
         }
+      
         const user: UserRegister = {
-            nome,
-            email,
-            password,
-        }
+          nome,
+          email,
+          password,
+        };
         onSubmit(user);
-    }
+      };
+      
+      const hasUppercaseAndNumber = (value: string): boolean => {
+        const hasUppercase = /[A-Z]/.test(value);
+        const hasNumber = /[0-9]/.test(value);
+        return hasUppercase && hasNumber;
+      };
+      
 
 
     return (<main id="mainContainer">

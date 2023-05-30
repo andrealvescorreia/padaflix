@@ -5,12 +5,13 @@ import "./Login.scss";
 import InputPass from "../InputPass";
 
 interface LoginFormProps {
-    onSubmit: (email: string, password: string) => void;
+    onSubmit: (email: string, password: string) => void,
+    disabled: boolean,
 }
 
 const LoginForm = (props: LoginFormProps) => {
 
-    const { onSubmit } = props
+    const { onSubmit, disabled } = props
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,16 +27,16 @@ const LoginForm = (props: LoginFormProps) => {
             <form onSubmit={handleSubmit} id="secondaryContainer">
 
                 <label htmlFor="">E-mail
-                    <TextField onChange={e => setEmail(e.target.value)} />
+                    <TextField onChange={e => setEmail(e.target.value)} disabled={disabled}/>
                 </label>
 
                 <label htmlFor="">Senha
-                    <InputPass onChange={e => setPassword(e.target.value)} />
+                    <InputPass onChange={e => setPassword(e.target.value)}  disabled={disabled}/>
                 </label>
                 <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull" type="submit">Login</Button>
-                    <Button variant="outlined" className="buttonEmpty">Cadastrar-se</Button>
-                    <Button variant="text" className="buttonText">Esqueci a senha!</Button>
+                    <Button variant="contained" className="buttonFull" type="submit"  disabled={disabled} >Login</Button>
+                    <Button variant="outlined" className="buttonEmpty" disabled={disabled} >Cadastrar-se</Button>
+                    <Button variant="text" className="buttonText" disabled={disabled}>Esqueci a senha!</Button>
                 </div>
 
             </form>

@@ -72,7 +72,7 @@ const PadariaProfile = () => {
                             <h2>Endereço</h2>
                             <span>{padaria?.endereco.rua + ', ' + padaria?.endereco.numero + '- ' + padaria?.endereco.bairro}</span>
                             <span>{padaria?.endereco.cidade + ' - ' + padaria?.endereco.uf }</span>
-                            <span>CEP: {padaria?.endereco.cep}</span>
+                            <span>CEP: {padaria?.endereco.cep.replace(/^(\d{5})(\d{3})/, "$1-$2")}</span>
                         </div>
                         <div className="other-info">
                             <h2>Outras informações</h2>

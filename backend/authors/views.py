@@ -43,6 +43,17 @@ class Register_UserView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request):
+        email = request.GET.get('email')
+        if email:
+            if User.objects.filter(email=email).exists() or Padaria.objects.filter(email=email).exists():  # noqa: E501
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class Register_PadariaView(APIView):
     def post(self, request):
@@ -52,6 +63,17 @@ class Register_PadariaView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        email = request.GET.get('email')
+        if email:
+            if User.objects.filter(email=email).exists() or Padaria.objects.filter(email=email).exists():  # noqa: E501
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class LoginView(APIView):
@@ -108,29 +130,6 @@ class LoginView(APIView):
             "jwt": token
         }
         return response
-
-    def get(self, request):
-        email = request.GET.get('email')
-        if email:
-            try:
-                User.objects.get(email=email)
-                return Response(
-                    {'error': 'O e-mail já está em uso.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            except User.DoesNotExist:
-                pass
-
-            try:
-                Padaria.objects.get(email=email)
-                return Response(
-                    {'error': 'O e-mail já está em uso.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            except Padaria.DoesNotExist:
-                pass
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserAndPadariaView(APIView):

@@ -103,7 +103,7 @@ class TestRegisterUser(TestSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_user_cannot_register_with_existing_email(self):
+    def test_user_cannot_register_with_existing_email_post(self):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
@@ -125,6 +125,22 @@ class TestRegisterUser(TestSetUp):
         )
 
         self.assertEqual(res.status_code, 400)
+
+    def test_user_cannot_register_with_existing_email_get(self):
+        self.client.post(
+            self.register_user_url, self.user_data, format="json"
+        )
+
+        existing_email = 'arthur@gmail.com'
+        url = f'{self.register_user_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_user_can_register_with_email_get(self):
+        existing_email = 'arthur@gmail.com'
+        url = f'{self.register_user_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 204)
 
     def test_user_cannot_register_with_password_less_than_8_digits(self):
         self.user_data['password'] = "Abc12"

@@ -68,13 +68,15 @@ const PadariaProfile = () => {
             case '2':
                 return(
                     <div className='about'>
-                        <h2>Endereco</h2>
                         <div className="address">
-
+                            <h2>Endereço</h2>
                             <span>{padaria?.endereco.rua + ', ' + padaria?.endereco.numero + '- ' + padaria?.endereco.bairro}</span>
                             <span>{padaria?.endereco.cidade + ' - ' + padaria?.endereco.uf }</span>
                             <span>CEP: {padaria?.endereco.cep}</span>
-
+                        </div>
+                        <div className="other-info">
+                            <h2>Outras informações</h2>
+                            <span>CNPJ: {padaria.cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5")}</span>
                         </div>
                     </div>
                 )

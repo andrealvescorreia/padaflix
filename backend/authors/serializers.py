@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
+from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
 
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -56,6 +57,14 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def validate_email(self, value):
+        validate_email(value)
+        return value
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
 
 class PadariaSerializer(serializers.ModelSerializer):
     endereco = EnderecoSerializer()
@@ -83,3 +92,19 @@ class PadariaSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    def validate_email(self, value):
+        validate_email(value)
+        return value
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
+    def validate_cnpj(self, value):
+        validate_cnpj(value)
+        return value
+
+    def validate_telefone(self, value):
+        validate_telefone(value)
+        return value

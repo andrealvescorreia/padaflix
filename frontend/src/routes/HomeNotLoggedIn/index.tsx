@@ -48,9 +48,6 @@ const HomeNotLoggedIn = () => {
         <p>
           Com o sistema de assinaturas, sua padaria terá uma previsão mais precisa da quantidade e variedade de alimentos a serem fabricados diariamente, assim evitando desperdícios e custos extras, além de otimizar o gerenciamento do seu estabelecimento.
         </p>
-        <p>
-          Com um melhor entendimento da situação do veículo, o mecânico pode mais rapidamente encontrar a raiz do problema e realizar um trabalho bem feito.
-        </p>
       </div>
     </div>
 

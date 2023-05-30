@@ -8,45 +8,28 @@ import { FaStar } from 'react-icons/fa';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
+import axios from "../../axios";
 
 
 const PadariaProfile = () => {
     const { id } = useParams();
-    //const [planos, setPlanos] = useState<PlanoAssinatura[]>();
     
-    const templatePadaria : PadariaUser = {
-        id: 1,
-        nome_fantasia: 'Nome da padaria',
-        endereco: {
-            cep: '58748000', 
-            rua: 'Rua sei lá Oque', 
-            numero: '10', 
-            complemento: 'Do lado do carajá', 
-            bairro: 'Centro', 
-            cidade: 'Agua Branca', 
-            uf: 'PB'
-        },
-        email: 'padaria@email.com',
-        cnpj: '31.877.403/0001-47',
-        telefone: '(83) 9 91234567',
-        plano_assinatura: [{
-            nome: 'Plano 1', descricao: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis tortor et augue ornare consequat. Aliquam sit amet eros mauris. Donec ornare dolor id magna semper sollicitudin. Phasellus ullamcorper quis nunc imperdiet consequat. Nunc maximus hendrerit felis, et finibus lorem ultricies ac. Aliquam id arcu non arcu molestie pellentesque vitae nec leo. In viverra, erat nec elementum sollicitudin, purus erat commodo magna, id laoreet sapien eros et augue.', pessoas_servidas: 1, preco: 456.78
-        }, {
-            nome: 'Plano 2', descricao: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis tortor et augue ornare consequat. Aliquam sit amet eros mauris. Donec ornare dolor id magna semper sollicitudin. Phasellus ullamcorper quis nunc imperdiet consequat. Nunc maximus hendrerit felis, et finibus lorem ultricies ac. Aliquam id arcu non arcu molestie pellentesque vitae nec leo. In viverra, erat nec elementum sollicitudin, purus erat commodo magna, id laoreet sapien eros et augue.', pessoas_servidas: 2, preco: 123.45
-        }]
-    }
 
-    const [padaria, setPadaria] = useState<PadariaUser>(templatePadaria);
-    /*const fetchPlanos = async () => {
-        axiosInstance.get('/plano_de_assinatura/'+id)
+    const [padaria, setPadaria] = useState<PadariaUser>();
+
+    const fetchPadaria = async () => {
+        axios.get('http://127.0.0.1:8000/api/padarias/'+id, { withCredentials: true })
         .then((response)=>{
-            setPlanos(response.data)
+            setPadaria(response.data)
+        })
+        .catch((err)=>{
+            console.log(err.response)
         })
     }
 
     useEffect(() => {
-        fetchPlanos()
-    }, [])*/
+        fetchPadaria()
+    }, [id])
 
     const [currentTab, setCurrentTab] = useState('1');
 
@@ -60,7 +43,7 @@ const PadariaProfile = () => {
                 return(
                     <div className="grid">
                         {
-                            padaria.plano_assinatura?.map(plano => <PlanoCard plano={plano} />)
+                            padaria?.plano_assinatura?.map(plano => <PlanoCard plano={plano} />)
                         } 
                     </div>
                 )
@@ -70,9 +53,9 @@ const PadariaProfile = () => {
                         <h2>Endereco</h2>
                         <div className="address">
 
-                            <span>{padaria.endereco.rua + ', ' + padaria.endereco.numero + '- ' + padaria.endereco.bairro}</span>
-                            <span>{padaria.endereco.cidade + ' - ' + padaria.endereco.uf }</span>
-                            <span>CEP: {padaria.endereco.cep}</span>
+                            <span>{padaria?.endereco.rua + ', ' + padaria?.endereco.numero + '- ' + padaria?.endereco.bairro}</span>
+                            <span>{padaria?.endereco.cidade + ' - ' + padaria?.endereco.uf }</span>
+                            <span>CEP: {padaria?.endereco.cep}</span>
 
                         </div>
                     </div>
@@ -89,7 +72,7 @@ const PadariaProfile = () => {
 
                 <div className="header-padaria">
                     <img className="padaria-logo"></img>
-                    <h2 className='padaria-name'> {padaria.nome_fantasia} </h2>
+                    <h2 className='padaria-name'> {padaria?.nome_fantasia} </h2>
                     <div className="rating">
                         <FaStar className="star"/>
                         <p className="number">0</p>

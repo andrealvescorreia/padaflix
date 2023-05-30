@@ -5,11 +5,18 @@ import Login from './routes/Login';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
-import { User, PadariaUser } from "./types/User";
+import { User, PadariaUser, isUser, isPadariaUser } from "./types/User";
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterUser from './routes/RegisterUser';
 import RegisterBakery from './routes/RegisterBakery';
 import NewSubscriptionPlan from './routes/NewSubscriptionPlan';
+import SideBarPadaria from './components/SideBarPadaria';
+import PlanosPadaria from './routes/routesPadaria/PlanosPadaria';
+import AssinantesPadaria from './routes/routesPadaria/AssinantesPadaria';
+import AvaliacoesPadaria from './routes/routesPadaria/AvaliacoesPadaria';
+import HorariosPadaria from './routes/routesPadaria/HorariosPadaria';
+import PerfilPadaria from './routes/routesPadaria/PerfilPadaria';
+import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -47,14 +54,27 @@ function App() {
 
   return (
     <div>
-      <NavBar user={user} logout={logout} />
+      {
+        isPadariaUser(user) 
+        ? <SideBarPadaria padaria={user} logout={logout}/>  
+        : <NavBar user={user} logout={logout} />
+      }
       <Routes>
         <Route path="/" element={<Home user={user} />} />
         <Route path="/login" element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
-        <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />
+        
+
+        <Route path="/padaria-planos" element={<PlanosPadaria />} />
+        <Route path="/padaria-planos/new" element={<NewSubscriptionPlan />} />
+        <Route path="/padaria-assinantes" element={<AssinantesPadaria />} />
+        <Route path="/padaria-avaliacoes" element={<AvaliacoesPadaria />} />
+        <Route path="/padaria-horarios" element={<HorariosPadaria />} />
+        <Route path="/padaria-perfil" element={<PerfilPadaria />} />
+        <Route path="/padaria-endereco" element={<EnderecoPadaria />} />
+
       </Routes>
     </div>
   )

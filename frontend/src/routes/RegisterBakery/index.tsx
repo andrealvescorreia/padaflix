@@ -109,6 +109,8 @@ const RegisterBakery = () => {
                     />
                 </>
             )
+        default:
+            return(<></>)
     }
 }
  

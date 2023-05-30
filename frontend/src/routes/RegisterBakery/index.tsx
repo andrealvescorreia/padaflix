@@ -52,7 +52,8 @@ const RegisterBakery = () => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const registerPadaria = async (padaria: PadariaRegisterData) => {
-        
+        padaria.cnpj = padaria.cnpj.replaceAll('.', '').replaceAll('/', '').replaceAll('-', '')
+        padaria.telefone = padaria.telefone.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '')
         setIsFetching(true)
 
         axiosInstance.post('/register_padaria', padaria)

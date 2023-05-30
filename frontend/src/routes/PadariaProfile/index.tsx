@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../axios";
 import PlanoCard from "../../components/PlanoCard";
 import "./styles.scss"
 import { PadariaUser } from "../../types/User";
@@ -8,14 +7,14 @@ import { FaStar } from 'react-icons/fa';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import axios from "../../axios";
+import axios from 'axios';
 
 
 const PadariaProfile = () => {
     const { id } = useParams();
     
 
-    const [padaria, setPadaria] = useState<PadariaUser>();
+    const [padaria, setPadaria] = useState<PadariaUser>({} as PadariaUser);
 
     const fetchPadaria = async () => {
         axios.get('http://127.0.0.1:8000/api/padarias/'+id, { withCredentials: true })
@@ -23,13 +22,32 @@ const PadariaProfile = () => {
             setPadaria(response.data)
         })
         .catch((err)=>{
-            console.log(err.response)
+            console.log(err.response.data)
+        })
+    }
+
+
+    const fetchCidade = async () => {
+        axios.get("https://viacep.com.br/ws/"+ padaria.endereco.cep +"/json/")
+        .then((response) => {
+            let newEndereco = padaria?.endereco;
+            newEndereco.cidade = response.data.localidade
+            setPadaria(prevPadaria => ({...prevPadaria, endereco: newEndereco}))
+
+
+        })
+        .catch((err)=>{
+            console.log(err.response.data)
         })
     }
 
     useEffect(() => {
         fetchPadaria()
     }, [id])
+
+    useEffect(() => {
+        fetchCidade()
+    }, [padaria])
 
     const [currentTab, setCurrentTab] = useState('1');
 

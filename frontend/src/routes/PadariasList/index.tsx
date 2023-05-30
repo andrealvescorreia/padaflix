@@ -16,7 +16,7 @@ const PadariasList = ({user} : Props) => {
    const [padarias, setPadarias] = useState<Padaria[]> ([]);
 
    const fetchPadarias = async () => {
-       axiosInstance.get('/padarias/'+user?.endereco.cep)
+       axiosInstance.get('/padarias/cep/'+user?.endereco.cep)
        .then((response) => {
            setPadarias(response.data);
        })

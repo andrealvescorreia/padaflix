@@ -109,6 +109,29 @@ class LoginView(APIView):
         }
         return response
 
+    def get(self, request):
+        email = request.GET.get('email')
+        if email:
+            try:
+                User.objects.get(email=email)
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except User.DoesNotExist:
+                pass
+
+            try:
+                Padaria.objects.get(email=email)
+                return Response(
+                    {'error': 'O e-mail já está em uso.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            except Padaria.DoesNotExist:
+                pass
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserAndPadariaView(APIView):
     def get(self, request):
@@ -133,6 +156,19 @@ class UserAndPadariaView(APIView):
         else:
             raise AuthenticationFailed('Tipo de usuário inválido!')
 
+        return Response(serializer.data)
+
+
+class PadariaDetailsView(APIView):
+    def get(self, request, pk):
+        padaria = Padaria.objects.filter(pk=pk).first()
+        if not padaria:
+            return Response(
+                {'error': 'Padaria não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = PadariaSerializer(padaria)
         return Response(serializer.data)
 
 

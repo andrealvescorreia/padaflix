@@ -3,7 +3,6 @@ import { Button, TextField } from "@mui/material";
 import EmailInput from "../EmailInput";
 import InputPassRegister from "../InputPassRegister";
 import { useSnackbar } from "notistack";
-import validator from 'validator';
 
 interface UserRegister {
     nome: string,

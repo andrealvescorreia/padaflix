@@ -185,7 +185,7 @@ class TestRegisterPadaria(TestSetUp):
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_padaria_cannot_register_with_existing_email(self):
+    def test_padaria_cannot_register_with_existing_email_post(self):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
@@ -209,6 +209,22 @@ class TestRegisterPadaria(TestSetUp):
         )
 
         self.assertEqual(res.status_code, 400)
+
+    def test_padaria_cannot_register_with_existing_email_get(self):
+        self.client.post(
+            self.register_padaria_url, self.padaria_data, format="json"
+        )
+
+        existing_email = 'padaria@gmail.com'
+        url = f'{self.register_padaria_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_padaria_can_register_with_email_get(self):
+        existing_email = 'padaria@gmail.com'
+        url = f'{self.register_padaria_url}?email={existing_email}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 204)
 
     def test_padaria_cannot_register_with_password_less_than_8_digits(self):
         self.padaria_data['password'] = "Abc12"

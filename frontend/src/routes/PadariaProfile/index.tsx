@@ -8,6 +8,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import axios from 'axios';
+import axiosInstance from "../../axios";
 
 
 const PadariaProfile = () => {

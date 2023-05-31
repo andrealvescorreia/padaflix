@@ -35,7 +35,7 @@ const PadariaProfile = () => {
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
 
     const fetchPadaria = async () => {
-        axiosInstance.get('/padarias/'+id)
+        axiosInstance.get('/padarias/'+id+'/')
         .then((response)=>{
             setPadaria(response.data)
         })

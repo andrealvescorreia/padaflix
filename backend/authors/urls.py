@@ -14,7 +14,7 @@ urlpatterns = [
   path('login', LoginView.as_view(), name='login'),
   path('user', UserAndPadariaView.as_view(), name='user_and_padaria'),
   path(
-      'padarias/<int:pk>',
+      'padarias/<int:pk>/',
       PadariaDetailsView.as_view(),
       name='padaria_details'),
   path(

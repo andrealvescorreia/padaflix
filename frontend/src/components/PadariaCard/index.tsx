@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./styles.scss"
 import { FaStar } from 'react-icons/fa';
 
@@ -8,8 +9,7 @@ interface PadariaCardProps {
 }
 
 const PadariaCard = ( padaria : PadariaCardProps ) => {
-    return <div id="padaria-card">
-
+    return <Link to={`padaria/${padaria.id}`} id="padaria-card">
         <img className="logo"></img>
 
         <div className="information-container">
@@ -19,9 +19,10 @@ const PadariaCard = ( padaria : PadariaCardProps ) => {
                 <p className="number">{padaria.rating? padaria.rating : 0}</p>
             </div>
         </div>
+    </Link>
 
 
-    </div>;
+    
 }
  
 export default PadariaCard;

@@ -1,5 +1,27 @@
 @use '../../../styles/variables';
 
 #usuario-padaria-planos {
-  margin-left: variables.$padaria-sidebar-width;// essa margem dá espaço para a sidebar
+    margin-left: variables.$padaria-sidebar-width;// essa margem dá espaço para a sidebar
+    margin-bottom: 11rem;
+    .new-plan{
+        margin-left: 14rem;
+        margin-top: 4rem;
+        margin-bottom: 3rem;
+        color: #B4764D;
+        border-color: #B4764D;
+        font-weight: bold;
+    }
+    .header{
+        font-size: 1.6rem;
+        align-self: flex-start;
+        margin-left: 14rem;
+        margin-bottom: 1rem;
+    }
+    .planos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
 }

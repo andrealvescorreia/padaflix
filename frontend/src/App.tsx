@@ -17,6 +17,7 @@ import AvaliacoesPadaria from './routes/routesPadaria/AvaliacoesPadaria';
 import HorariosPadaria from './routes/routesPadaria/HorariosPadaria';
 import PerfilPadaria from './routes/routesPadaria/PerfilPadaria';
 import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
+import PadariaProfile from './routes/PadariaProfile';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -66,8 +67,12 @@ function App() {
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
         
-
-        <Route path="/padaria-planos" element={<PlanosPadaria />} />
+        <Route
+          path="padaria/:id"
+          element={<PadariaProfile />}
+        />
+     
+        <Route path="/padaria-planos" element={<PlanosPadaria padaria={user} />} />
         <Route path="/padaria-planos/new" element={<NewSubscriptionPlan />} />
         <Route path="/padaria-assinantes" element={<AssinantesPadaria />} />
         <Route path="/padaria-avaliacoes" element={<AvaliacoesPadaria />} />

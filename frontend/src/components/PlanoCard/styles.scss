@@ -1,0 +1,60 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+#subscription-plan-card {
+    width: 40rem;
+    height: 14rem;
+    background-color: variables.$bg-color;
+    border-radius: 1.2rem;
+    display: flex;
+    align-items: center;
+
+    transition: .4s;
+    &:hover {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        cursor: pointer;
+    }
+
+    .plan-info {
+        display: flex;
+        flex-direction: column;
+        width: 26.5rem;
+        height: 100%;
+        padding-left: 1rem;
+
+        .name {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* numero de linhas mostradas */
+                    line-clamp: 4; 
+            -webkit-box-orient: vertical;
+        }
+
+        .served_people{
+            margin-top: auto;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .price {
+            
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+    }
+    
+    .img {
+        background-color: lightgrey;
+        min-width: 11rem;
+        min-height: 11rem;
+        border-radius: 0.7rem;
+        margin-left: 1.2rem;
+    }
+}

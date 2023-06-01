@@ -1,0 +1,36 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+#new-subscription-plan-form{
+
+    background-color: #FFF8E4;
+    border-radius: 15px;
+    padding-bottom: 1rem;
+    
+    .form-title{
+        text-align: center;
+        font-size: 1.6rem;
+        padding-top: 0.8rem;
+        color: #545454;
+    }
+    
+
+    .bttn{
+        margin-top: 1rem;
+        width: 10rem;
+        border-radius: 10px;
+    }
+
+    .submit {
+        background-color: #C78A61;
+    }
+    .cancel {
+        background-color: #c9c9c9;
+        color: black;
+    }
+    .bttns-box{
+        @include mixins.flex-center;
+        gap: 6rem;
+    }
+
+}

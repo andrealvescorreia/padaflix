@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import validator from 'validator';
 import { TextField } from '@mui/material';
+import axiosInstance from '../../axios';
 
 interface EmailInputProps {
   onChange: (value: string, isValid: boolean) => void,
   value: string
 }
 
-const EmailInput = (props: EmailInputProps ) => {
-  const {onChange, value} = props
+const EmailInput = (props: EmailInputProps) => {
+  const { onChange, value } = props
   const [email, setEmail] = useState(value);
   const [isValid, setIsValid] = useState(false);
   const [touched, setTouched] = useState(false);
+  const [emailJaCadastrado, setEmailJaCadastrado] = useState(false)
 
   useEffect(() => {
     const isEmailValid = validator.isEmail(email);
@@ -32,6 +34,22 @@ const EmailInput = (props: EmailInputProps ) => {
   const handleFocus = () => {
     setTouched(false)
   }
+
+  const checkEmail = async () => {
+    axiosInstance.get('')
+      .then(() => {
+        // "algumacoisa"
+      })
+      .catch(() => {
+        alert("email já cadastrado!")
+        setEmailJaCadastrado(true)
+      })
+  }
+  useEffect(() => {
+    if (touched && isValid && email !== '') {
+      checkEmail();
+    }
+  }, [touched, isValid, email]);
 
   return (
     <TextField

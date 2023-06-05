@@ -27,7 +27,7 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
 class AssinaturaSerializer(serializers.ModelSerializer):
     cliente = serializers.PrimaryKeyRelatedField(read_only=True)
     cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
-    dias_semana = serializers.ListField(child=serializers.CharField())
+    dias_semana = serializers.StringRelatedField(many=True)
     plano = serializers.PrimaryKeyRelatedField(queryset=PlanoAssinatura.objects.all())  # noqa: E501
 
     class Meta:

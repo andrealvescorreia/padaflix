@@ -38,10 +38,11 @@ class AssinaturaSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     endereco = EnderecoSerializer()
+    assinatura = AssinaturaSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'nome', 'endereco', 'email', 'password']
+        fields = ['id', 'nome', 'endereco', 'email', 'password', 'assinatura']
         extra_kwargs = {
             'password': {'write_only': True}
         }

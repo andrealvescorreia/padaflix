@@ -264,15 +264,17 @@ class AssinaturaView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        assinatura, created = Assinatura.objects.get_or_create(cliente=cliente, plano=plano)  # noqa: E501
-        if created:
+        serializer = AssinaturaSerializer(data=request.data)
+        if serializer.is_valid():
+            assinatura = serializer.save(cliente=cliente, plano=plano)
+            cliente.assinatura.add(assinatura)
             return Response(
                 'Assinatura criada com sucesso.',
                 status=status.HTTP_201_CREATED
             )
         else:
             return Response(
-                'Cliente já está associado a este plano de assinatura.',
+                serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST
             )
 

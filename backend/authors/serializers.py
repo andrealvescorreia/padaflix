@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura  # noqa: E501
+from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura, DiaSemana  # noqa: E501
 from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
 
 
@@ -34,6 +34,16 @@ class AssinaturaSerializer(serializers.ModelSerializer):
         model = Assinatura
         fields = ['id', 'cliente', 'cliente_nome', 'plano', 'data_inicio',
                   'data_fim', 'horario_entrega', 'dias_semana', 'assinado']
+
+    def create(self, validated_data):
+        dias_semana_data = validated_data.pop('dias_semana')
+        assinatura = Assinatura.objects.create(**validated_data)
+
+        for dia_nome in dias_semana_data:
+            dia_semana, _ = DiaSemana.objects.get_or_create(nome=dia_nome)
+            assinatura.dias_semana.add(dia_semana)
+
+        return assinatura
 
 
 class UserSerializer(serializers.ModelSerializer):

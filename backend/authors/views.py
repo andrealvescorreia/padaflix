@@ -3,8 +3,8 @@ import jwt
 import datetime
 
 from .serializers import UserSerializer, PadariaSerializer
-from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
-from .models import User, Padaria, PlanoAssinatura  # , Assinatura
+from .serializers import PlanoAssinaturaSerializer, AssinaturaSerializer
+from .models import User, Padaria, PlanoAssinatura, Assinatura
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
@@ -250,18 +250,36 @@ class PlanoAssinaturaView(UserAndPadariaView):
         return Response(serializer.data)
 
 
-'''class AssinaturaView(APIView):
+class AssinaturaView(APIView):
     def post(self, request):
-        serializer = AssinaturaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        cliente_id = request.data.get('cliente')
+        plano_id = request.data.get('plano')
+
+        try:
+            cliente = User.objects.get(id=cliente_id)
+            plano = PlanoAssinatura.objects.get(id=plano_id)
+        except (User.DoesNotExist, PlanoAssinatura.DoesNotExist):
+            return Response(
+                'Cliente ou plano de assinatura inválido.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        assinatura, created = Assinatura.objects.get_or_create(cliente=cliente, plano=plano)  # noqa: E501
+        if created:
+            return Response(
+                'Assinatura criada com sucesso.',
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                'Cliente já está associado a este plano de assinatura.',
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def get(self, request):
         assinaturas = Assinatura.objects.all()
         serializer = AssinaturaSerializer(assinaturas, many=True)
-        return Response(serializer.data)'''
+        return Response(serializer.data)
 
 
 class LogoutView(APIView):

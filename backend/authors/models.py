@@ -1,5 +1,14 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+
+
+class DiaSemana(models.Model):
+    nome = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nome
 
 
 class Endereco(models.Model):
@@ -27,8 +36,11 @@ class Assinatura(models.Model):
         related_name='assinaturas'
     )
     plano = models.ForeignKey(PlanoAssinatura, on_delete=models.CASCADE)
-    data_inicio = models.DateField()
-    data_fim = models.DateField()
+    data_inicio = models.DateField(null=True)
+    data_fim = models.DateField(null=True)
+    horario_entrega = models.TimeField(default=datetime.time(0, 0))
+    dias_semana = models.ManyToManyField('DiaSemana', blank=True)
+    assinado = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.cliente} - {self.plano}"
@@ -45,9 +57,10 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     username = None
 
-    assinatura = models.ForeignKey(
-        Assinatura, on_delete=models.SET_NULL,
-        null=True, blank=True
+    assinatura = models.ManyToManyField(
+        Assinatura,
+        blank=True,
+        related_name='user'
     )
 
     USERNAME_FIELD = 'email'

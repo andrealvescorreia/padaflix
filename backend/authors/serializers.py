@@ -4,6 +4,12 @@ from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura, DiaSem
 from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
 
 
+class DiaSemanaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiaSemana
+        fields = '__all__'
+
+
 class EnderecoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Endereco
@@ -27,7 +33,7 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
 class AssinaturaSerializer(serializers.ModelSerializer):
     cliente = serializers.PrimaryKeyRelatedField(read_only=True)
     cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
-    dias_semana = serializers.StringRelatedField(many=True)
+    dias_semana = DiaSemanaSerializer(many=True)
     plano = serializers.PrimaryKeyRelatedField(queryset=PlanoAssinatura.objects.all())  # noqa: E501
 
     class Meta:
@@ -39,8 +45,8 @@ class AssinaturaSerializer(serializers.ModelSerializer):
         dias_semana_data = validated_data.pop('dias_semana')
         assinatura = Assinatura.objects.create(**validated_data)
 
-        for dia_nome in dias_semana_data:
-            dia_semana, _ = DiaSemana.objects.get_or_create(nome=dia_nome)
+        for dia_semana_data in dias_semana_data:
+            dia_semana, _ = DiaSemana.objects.get_or_create(**dia_semana_data)
             assinatura.dias_semana.add(dia_semana)
 
         return assinatura

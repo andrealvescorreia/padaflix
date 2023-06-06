@@ -250,7 +250,7 @@ class PlanoAssinaturaView(UserAndPadariaView):
         return Response(serializer.data)
 
 
-class AssinaturaView(APIView):
+class AssinaturaView(UserAndPadariaView):
     def post(self, request):
         cliente_id = request.data.get('cliente')
         plano_id = request.data.get('plano')
@@ -278,10 +278,44 @@ class AssinaturaView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    def get(self, request):
-        assinaturas = Assinatura.objects.all()
+    def get(self, request, user_id):
+        if not user_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID do usuário.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {'error': 'Usuário não encontrado.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        assinaturas = Assinatura.objects.filter(cliente=user)
         serializer = AssinaturaSerializer(assinaturas, many=True)
         return Response(serializer.data)
+
+
+'''    def get(self, request, user_id):
+        if not user_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID da user.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {'error': 'User não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        assinaturas = Assinatura.objects.filter(user=user)
+        serializer = AssinaturaSerializer(assinaturas, many=True)
+        return Response(serializer.data)'''
 
 
 class LogoutView(APIView):

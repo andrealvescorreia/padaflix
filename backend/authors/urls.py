@@ -33,5 +33,10 @@ urlpatterns = [
     name='plano_de_assinatura_get'
   ),
   path('assinaturas', AssinaturaView.as_view(), name='assinaturas'),
+  path(
+    'assinaturas/<int:user_id>',
+    AssinaturaView.as_view(),
+    name='assinaturas'
+  ),
   path('logout', LogoutView.as_view(), name='logout'),
 ]

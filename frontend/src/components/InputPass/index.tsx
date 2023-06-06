@@ -9,9 +9,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface InputPassProps {
   onChange: () => void
+  disabled: boolean
 }
 
-export default function InputPass({onChange}: InputPassProps) {
+export default function InputPass({onChange, disabled}: InputPassProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -28,6 +29,7 @@ export default function InputPass({onChange}: InputPassProps) {
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
+            disabled={disabled}
             endAdornment={
               <InputAdornment position="end" id="pass"	>
                 

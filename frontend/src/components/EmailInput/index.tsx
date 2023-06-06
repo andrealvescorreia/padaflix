@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import validator from 'validator';
 import { TextField } from '@mui/material';
 import axiosInstance from '../../axios';
+import { enqueueSnackbar } from 'notistack';
 
 interface EmailInputProps {
   onChange: (value: string, isValid: boolean) => void,
@@ -36,15 +37,22 @@ const EmailInput = (props: EmailInputProps) => {
   }
 
   const checkEmail = async () => {
-    axiosInstance.get('')
-      .then(() => {
-        // "algumacoisa"
-      })
-      .catch(() => {
-        alert("email já cadastrado!")
-        setEmailJaCadastrado(true)
-      })
-  }
+    try {
+      const response = await axiosInstance.get(`/register_user?email=${email}`);
+      console.log(response.status);
+      if (response.status === 204) {
+        // Email não cadastrado
+        console.log('Email disponível');
+      }
+    } catch (error) {
+      console.error('Ocorreu um erro:', error);
+      enqueueSnackbar(
+        "O e-mail já existe",
+        { variant: "error" }
+      );
+    }
+  };
+  
   useEffect(() => {
     if (touched && isValid && email !== '') {
       checkEmail();

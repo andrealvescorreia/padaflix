@@ -238,16 +238,45 @@ class PlanoAssinaturaView(UserAndPadariaView):
             )
 
         try:
-            padaria = Padaria.objects.get(id=padaria_id)
+            padaria = Padaria.objects.get(id=padaria_id)  # noqa: F841
         except Padaria.DoesNotExist:
             return Response(
                 {'error': 'Padaria não encontrada.'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        planos = PlanoAssinatura.objects.filter(padaria=padaria)
+        planos = PlanoAssinatura.objects.all()
         serializer = PlanoAssinaturaSerializer(planos, many=True)
         return Response(serializer.data)
+
+
+class AssinantesView(UserAndPadariaView):
+    def get(self, request, padaria_id):
+        if not padaria_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID da padaria.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            padaria = Padaria.objects.get(id=padaria_id)  # noqa: F841
+        except Padaria.DoesNotExist:
+            return Response(
+                {'error': 'Padaria não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        planos = PlanoAssinatura.objects.all()
+        serializer = PlanoAssinaturaSerializer(planos, many=True)
+        planos_data = serializer.data
+
+        for plano_data in planos_data:
+            plano_id = plano_data['id']
+            assinaturas = Assinatura.objects.filter(plano_id=plano_id)
+            assinaturas_serializer = AssinaturaSerializer(assinaturas, many=True)  # noqa: E501
+            plano_data['assinaturas'] = assinaturas_serializer.data
+
+        return Response(planos_data)
 
 
 class AssinaturaView(UserAndPadariaView):
@@ -296,26 +325,6 @@ class AssinaturaView(UserAndPadariaView):
         assinaturas = Assinatura.objects.filter(cliente=user)
         serializer = AssinaturaSerializer(assinaturas, many=True)
         return Response(serializer.data)
-
-
-'''    def get(self, request, user_id):
-        if not user_id:
-            return Response(
-                {'error': 'É necessário fornecer o ID da user.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return Response(
-                {'error': 'User não encontrada.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        assinaturas = Assinatura.objects.filter(user=user)
-        serializer = AssinaturaSerializer(assinaturas, many=True)
-        return Response(serializer.data)'''
 
 
 class LogoutView(APIView):

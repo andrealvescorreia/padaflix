@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
+from datetime import date
 
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -31,8 +32,18 @@ class AssinaturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assinatura
-        fields = ['id', 'cliente', 'cliente_nome', 'plano',
-                  'data_inicio', 'data_fim', 'assinado']
+        fields = ['id', 'cliente', 'cliente_nome',
+                  'plano', 'data_inicio', 'assinado']
+
+    def create(self, validated_data):
+        assinatura = Assinatura.objects.create(
+            data_inicio=date.today(),
+            data_fim=None,
+            assinado=True,
+            **validated_data
+        )
+
+        return assinatura
 
 
 class UserSerializer(serializers.ModelSerializer):

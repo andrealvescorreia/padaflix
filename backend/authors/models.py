@@ -89,7 +89,7 @@ class Padaria(AbstractUser):
     plano_assinatura = models.ManyToManyField(
         PlanoAssinatura,
         blank=True,
-        related_name='padaria'
+        related_name='padaria_planos'
     )
 
     USERNAME_FIELD = 'email'

@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
@@ -38,8 +36,6 @@ class Assinatura(models.Model):
     plano = models.ForeignKey(PlanoAssinatura, on_delete=models.CASCADE)
     data_inicio = models.DateField(null=True)
     data_fim = models.DateField(null=True)
-    horario_entrega = models.TimeField(default=datetime.time(0, 0))
-    dias_semana = models.ManyToManyField('DiaSemana', blank=True)
     assinado = models.BooleanField(default=True)
 
     def __str__(self):

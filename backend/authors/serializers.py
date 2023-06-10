@@ -1,13 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura, DiaSemana  # noqa: E501
+from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
-
-
-class DiaSemanaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DiaSemana
-        fields = '__all__'
 
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -33,23 +27,12 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
 class AssinaturaSerializer(serializers.ModelSerializer):
     cliente = serializers.PrimaryKeyRelatedField(read_only=True)
     cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
-    dias_semana = DiaSemanaSerializer(many=True)
     plano = serializers.PrimaryKeyRelatedField(queryset=PlanoAssinatura.objects.all())  # noqa: E501
 
     class Meta:
         model = Assinatura
-        fields = ['id', 'cliente', 'cliente_nome', 'plano', 'data_inicio',
-                  'data_fim', 'horario_entrega', 'dias_semana', 'assinado']
-
-    def create(self, validated_data):
-        dias_semana_data = validated_data.pop('dias_semana')
-        assinatura = Assinatura.objects.create(**validated_data)
-
-        for dia_semana_data in dias_semana_data:
-            dia_semana, _ = DiaSemana.objects.get_or_create(**dia_semana_data)
-            assinatura.dias_semana.add(dia_semana)
-
-        return assinatura
+        fields = ['id', 'cliente', 'cliente_nome', 'plano',
+                  'data_inicio', 'data_fim', 'assinado']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -90,8 +73,8 @@ class PadariaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Padaria
-        fields = ['id', 'nome_fantasia', 'endereco',
-                  'cnpj', 'telefone', 'email', 'password', 'plano_assinatura']
+        fields = ['id', 'nome_fantasia', 'endereco', 'cnpj',
+                  'telefone', 'email', 'password', 'plano_assinatura']
         extra_kwargs = {
             'password': {'write_only': True}
         }

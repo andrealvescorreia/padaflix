@@ -28,18 +28,18 @@ urlpatterns = [
     name='plano_de_assinatura_post'
   ),
   path(
-    'plano_de_assinatura/<int:padaria_id>',
+    'plano_de_assinatura/padaria/<int:padaria_id>',
     PlanoAssinaturaView.as_view(),
     name='plano_de_assinatura_get'
   ),
   path('assinaturas', AssinaturaView.as_view(), name='assinaturas'),
   path(
-    'assinaturas/<int:user_id>',
+    'assinaturas/usuario/<int:user_id>',
     AssinaturaView.as_view(),
     name='assinaturas'
   ),
   path(
-    'assinantes/<int:padaria_id>/detalhes',
+    'padaria/<int:padaria_id>/assinantes',
     AssinantesView.as_view(),
     name='assinantes'
   ),

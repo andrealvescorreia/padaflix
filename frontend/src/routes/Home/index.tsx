@@ -1,21 +1,18 @@
 import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+import HomeNotLoggedIn from "../HomeNotLoggedIn";
+import HomePadaria from "../routesPadaria/HomePadaria";
+import PadariasList from "../PadariasList";
+
 
 function NotLoggedInHome(){
-  return <div>
-    Não logado...
-  </div>;
+  return <HomeNotLoggedIn/>
 }
 function UserHome(user: User) {
   return <div>
     Olá {user.name}
+    <PadariasList user={user}/>
   </div>;
 }
-function PadariaUserHome(padariaUser: PadariaUser) {
-  return <div>
-    Olá {padariaUser.nome_fantasia}
-  </div>;
-}
-
 
 interface HomeProps {
   user: User | undefined | PadariaUser
@@ -24,7 +21,7 @@ interface HomeProps {
 const Home = ({user} : HomeProps) => {
   if (user) {
     if (isUser(user)) return UserHome(user)
-    if (isPadariaUser(user)) return PadariaUserHome(user)
+    if (isPadariaUser(user)) return <HomePadaria/>
   }
   
   return NotLoggedInHome()

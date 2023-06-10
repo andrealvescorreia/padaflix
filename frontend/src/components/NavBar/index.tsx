@@ -10,82 +10,67 @@ interface NavBarProps {
 
 const NavBar = ( {user, logout} : NavBarProps ) => {
 
-  let leftSideNavOptions;
+  const notLoggedInOptions = (
+    <>
+      <Link to="/login"  id={styles.login_btn} className={styles.btn} >
+        Login
+      </Link>
+      <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
+        Começe Agora
+      </Link>
+    </>
+  )
+
+  const userOptions = (
+    <>
+      <Link to="/login" id={styles.logout_btn} onClick={logout} >
+        Sair
+      </Link>
+    </>
+  )
+
+  
+
+  const padariaOptions = (
+    <>
+      <Link to="/new-subscription-plan" id={styles.logout_btn}  >
+        Nova Plano
+      </Link>
+      {userOptions}
+    </>
+  )
+
   let rigthSideNavOptions;
 
   if (user) {
-    if (isUser(user)) {
-      leftSideNavOptions = (
-        <div className={styles.defaultNavOptions}>
-          <Link to="/"   className={styles.option} >
-            Início
-          </Link>
-              
-          <Link to="/padarias" className={styles.option} >
-            Padarias
-          </Link>
-        </div>
-      )
-      rigthSideNavOptions = (
-        <div className={styles.navOptions}>
-          <Link to="/login" id={styles.logout_btn} onClick={logout} >
-            Sair
-          </Link>
-          
-        </div>
-      )
+    if(isUser(user)){
+      rigthSideNavOptions = userOptions
     }
     if (isPadariaUser(user)) {
-
-      rigthSideNavOptions = (
-        <div className={styles.navOptions}>
-          <Link to="/new-subscription-plan" id={styles.logout_btn}  >
-            Nova Plano
-          </Link>
-          <Link to="/login" id={styles.logout_btn} onClick={logout} >
-            Sair
-          </Link>
-          
-        </div>
-      )
+      rigthSideNavOptions = padariaOptions
     }
   }
-  else{
-    leftSideNavOptions = (
-      <div className={styles.defaultNavOptions}>
-        <Link to="/"   className={styles.option} >
-          Início
-        </Link>
-      </div>
-    )
-    rigthSideNavOptions = (
-      <div className={styles.navOptions}>
-        
-        <Link to="/login"  id={styles.login_btn} className={styles.btn} >
-          Login
-        </Link>
-        
-        <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
-          Começe Agora
-        </Link>
-        
-      </div>
-    )
+  else {
+    rigthSideNavOptions = notLoggedInOptions
   }
 
-
+  
   
   return <nav id={styles.navbar}>
-    {leftSideNavOptions}
+    <div className={styles.defaultNavOptions}>
+      <Link to="/"   className={styles.option} >
+        Início
+      </Link>
+    </div>
 
     <div className={styles.logoContainer}>
       <img src={Logo} className={styles.logo} alt="logo padaflix"/>
     </div>
 
-    
-    {rigthSideNavOptions}
+    <div className={styles.navOptions}>
+      {rigthSideNavOptions}
+    </div>
   </nav>;
-  
 }
  
 export default NavBar;

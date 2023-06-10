@@ -1,18 +1,13 @@
-#new-subscription-plan{
+@use '../../styles/variables';
+@use '../../styles/mixins';
 
-    background-color:  #FFF8E4;
-    border-radius: 15px;
-    padding-bottom: 1rem;
-    
-    
+#new-subscription-plan {
+  margin-left: variables.$padaria-sidebar-width;
+  margin-top: 3rem;
 
-    .bttn{
-        margin-top: 1rem;
-    }
-
-    .submit{
-        width: 10rem;
-        border-radius: 20px;
-        background-color: #C78A61;
-    }
+  .linear-progress {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+  }
 }

@@ -1,75 +1,85 @@
 import NavBar from './components/NavBar'
 import { Route, Routes } from 'react-router-dom';
 import Home from './routes/Home';
-import LoginForm from './routes/LoginForm';
+import Login from './routes/Login';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from './axios'
-import { User, PadariaUser } from "./types/User";
-import PadariasList from './routes/PadariasList';
+import { User, PadariaUser, isUser, isPadariaUser } from "./types/User";
 import ChooseProfile from './routes/ChooseProfile';
 import RegisterUser from './routes/RegisterUser';
 import RegisterBakery from './routes/RegisterBakery';
 import NewSubscriptionPlan from './routes/NewSubscriptionPlan';
+import SideBarPadaria from './components/SideBarPadaria';
+import PlanosPadaria from './routes/routesPadaria/PlanosPadaria';
+import AssinantesPadaria from './routes/routesPadaria/AssinantesPadaria';
+import AvaliacoesPadaria from './routes/routesPadaria/AvaliacoesPadaria';
+import HorariosPadaria from './routes/routesPadaria/HorariosPadaria';
+import PerfilPadaria from './routes/routesPadaria/PerfilPadaria';
+import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
+import PadariaProfile from './routes/PadariaProfile';
 
 function App() {
-
-
   const [user, setUser] = useState<User | PadariaUser | undefined>()
 
   const fetchUser = async () => {
     axiosInstance.get('/user')
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch(() => {
-        console.log('não autorizado...')
-      })
+    .then((response) => {
+      setUser(response.data);
+    })
+    .catch(() => {
+      setUser(undefined)
+    })
   }
 
   useEffect(() => {
     fetchUser()
   }, [])
 
-  const navigate = useNavigate()
-
-  const login = async (email: string, password: string) => {
-    axiosInstance.post('/login', {
-      email,
-      password
-    })
-      .then(async () => {
-        fetchUser()
-        navigate('/')// redireciona para a homepage
-      })
-      .catch((err) => {
-        alert(err)
-      })
-  }
 
   const logout = async () => {
     axiosInstance.post('/logout')
       .then(() => {
         setUser(undefined)
-        
       })
       .catch((err) => {
-        console.log(err.data)
+        console.log(err.response.data)
       })
   }
-
+  
+  const navigate = useNavigate()
+  function onSuccessfulLogin(){
+    fetchUser()
+    navigate('/')
+  }
 
   return (
     <div>
-      <NavBar user={user} logout={logout} />
+      {
+        isPadariaUser(user) 
+        ? <SideBarPadaria padaria={user} logout={logout}/>  
+        : <NavBar user={user} logout={logout} />
+      }
       <Routes>
         <Route path="/" element={<Home user={user} />} />
-        <Route path="/login" element={<LoginForm onSubmit={login} />} />
+        <Route path="/login" element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
-        <Route path="/padarias" element={<PadariasList user={user} />} />
         <Route path="/register/user" element={<RegisterUser/>} />
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
-        <Route path="/new-subscription-plan" element={<NewSubscriptionPlan />} />
+        
+        <Route
+          path="padaria/:id"
+          element={<PadariaProfile />}
+        />
+     
+        <Route path="/padaria-planos" element={<PlanosPadaria padaria={user} />} />
+        <Route path="/padaria-planos/new" element={<NewSubscriptionPlan />} />
+        <Route path="/padaria-assinantes" element={<AssinantesPadaria />} />
+        <Route path="/padaria-avaliacoes" element={<AvaliacoesPadaria />} />
+        <Route path="/padaria-horarios" element={<HorariosPadaria />} />
+        <Route path="/padaria-perfil" element={<PerfilPadaria />} />
+        <Route path="/padaria-endereco" element={<EnderecoPadaria />} />
+
       </Routes>
     </div>
   )

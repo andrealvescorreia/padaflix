@@ -1,0 +1,35 @@
+@use '../../styles/variables';
+
+#sidebar-padaria {
+
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  width: variables.$padaria-sidebar-width;
+
+  .header {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+
+    .logo{
+      width: 80%;
+    }
+
+    .padaria-name{
+      text-align: center;
+      font-size: 1.3rem;
+    }
+    
+  }
+
+  .last-child {
+    position: absolute;
+    bottom: 0px;
+  }
+
+}

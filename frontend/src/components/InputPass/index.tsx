@@ -7,7 +7,12 @@ import FormControl, { useFormControl } from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function InputPass({onChange}) {
+interface InputPassProps {
+  onChange: () => void
+  disabled: boolean
+}
+
+export default function InputPass({onChange, disabled}: InputPassProps) {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -15,6 +20,7 @@ export default function InputPass({onChange}) {
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
+ 
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -23,6 +29,7 @@ export default function InputPass({onChange}) {
             id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
+            disabled={disabled}
             endAdornment={
               <InputAdornment position="end" id="pass"	>
                 

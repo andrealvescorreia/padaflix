@@ -12,10 +12,10 @@ class Endereco(models.Model):
 
 
 class PlanoAssinatura(models.Model):
-    nome = models.CharField(max_length=100)
-    descricao = models.CharField(max_length=100)
+    nome = models.CharField(max_length=80)
+    descricao = models.CharField(max_length=255)
     preco = models.DecimalField(max_digits=8, decimal_places=2)
-    servings_unit = models.IntegerField()
+    pessoas_servidas = models.IntegerField()
 
     def __str__(self):
         return self.nome
@@ -35,7 +35,7 @@ class Assinatura(models.Model):
 
 
 class User(AbstractUser):
-    name = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255)
     endereco = models.OneToOneField(
         Endereco, on_delete=models.CASCADE,
         related_name='user',
@@ -62,7 +62,7 @@ class Padaria(AbstractUser):
         null=True, blank=True
     )
     cnpj = models.CharField(max_length=18, unique=True)
-    telefone = models.CharField(max_length=20)
+    telefone = models.CharField(max_length=20, unique=True)
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
     username = None
@@ -73,9 +73,10 @@ class Padaria(AbstractUser):
         Permission, related_name='padaria_permissions', blank=True
     )
 
-    plano_assinatura = models.ForeignKey(
-        PlanoAssinatura, on_delete=models.SET_NULL,
-        null=True, blank=True
+    plano_assinatura = models.ManyToManyField(
+        PlanoAssinatura,
+        blank=True,
+        related_name='padaria'
     )
 
     USERNAME_FIELD = 'email'

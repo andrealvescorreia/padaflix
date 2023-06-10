@@ -7,9 +7,10 @@ class TestSetUp(APITestCase):
         self.register_user_url = reverse('register_user')
         self.register_padaria_url = reverse('register_padaria')
         self.login_url = reverse('login')
+        self.logout_url = reverse('logout')
 
         self.user_data = {
-            'name': "Arthur",
+            'nome': "Arthur",
             'endereco': {
                 "cep": "58701750",
                 "rua": "Nestor Pereira",
@@ -32,8 +33,8 @@ class TestSetUp(APITestCase):
                 "complemento": "",
                 "uf": "PB"
             },
-            'cnpj': "11.444.777/0001-22",
-            'telefone': "(83) 9 1236-5478",
+            'cnpj': "11444777000122",
+            'telefone': "83912365478",
             'email': 'padaria@gmail.com',
             'password': 'Padaria12345',
         }

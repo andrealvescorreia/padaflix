@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import home, Register_UserView, Register_PadariaView, LoginView
-from .views import UserAndPadariaView, LogoutView, PadariaPorCidadeView
-from .views import PlanoAssinaturaView  #, AssinaturaView
+from .views import UserAndPadariaView, LogoutView, PadariaDetailsView, PadariaPorCidadeView  # noqa: E501
+from .views import PlanoAssinaturaView  # , AssinaturaView
 
 urlpatterns = [
   path('', home, name='home'),
@@ -14,14 +14,24 @@ urlpatterns = [
   path('login', LoginView.as_view(), name='login'),
   path('user', UserAndPadariaView.as_view(), name='user_and_padaria'),
   path(
-    'padarias/<str:cep>',
+      'padarias/<int:pk>/',
+      PadariaDetailsView.as_view(),
+      name='padaria_details'),
+  path(
+    'padarias/cep/<str:cep>',
     PadariaPorCidadeView.as_view(),
     name='padarias_por_cidade'
   ),
   path(
     'plano_de_assinatura',
     PlanoAssinaturaView.as_view(),
-    name='plano_de_assinatura'),
+    name='plano_de_assinatura_post'
+  ),
+  path(
+    'plano_de_assinatura/<int:padaria_id>',
+    PlanoAssinaturaView.as_view(),
+    name='plano_de_assinatura_get'
+  ),
   # path('assinaturas', AssinaturaView.as_view(), name='assinaturas'),
   path('logout', LogoutView.as_view(), name='logout'),
 ]

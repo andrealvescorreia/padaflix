@@ -30,7 +30,7 @@ jobs:
           working-directory: frontend
 
       - name: Build project
-        run: /
+        run: |
           cd frontend
           npm run build
 

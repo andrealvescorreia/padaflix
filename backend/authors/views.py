@@ -238,14 +238,14 @@ class PlanoAssinaturaView(UserAndPadariaView):
             )
 
         try:
-            padaria = Padaria.objects.get(id=padaria_id)  # noqa: F841
+            padaria = Padaria.objects.get(id=padaria_id)
         except Padaria.DoesNotExist:
             return Response(
                 {'error': 'Padaria não encontrada.'},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        planos = PlanoAssinatura.objects.all()
+        planos = PlanoAssinatura.objects.filter(padaria_planos=padaria)
         serializer = PlanoAssinaturaSerializer(planos, many=True)
         return Response(serializer.data)
 
@@ -266,7 +266,7 @@ class AssinantesView(UserAndPadariaView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        planos = PlanoAssinatura.objects.all()
+        planos = PlanoAssinatura.objects.filter(padaria_planos=padaria)
         serializer = PlanoAssinaturaSerializer(planos, many=True)
         planos_data = serializer.data
 

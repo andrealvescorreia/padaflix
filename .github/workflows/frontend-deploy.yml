@@ -43,14 +43,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/frontend/deploy'
-    defaults:
-      run:
-        working-directory: frontend
+
     steps:
       - name: entra na pasta
         run: |
           cd frontend
-          
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:

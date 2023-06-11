@@ -31,6 +31,7 @@ jobs:
         run: |
           cd frontend
           npm run build
+          cd ..
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v3
@@ -45,10 +46,6 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/frontend/deploy'
 
     steps:
-      - name: entra na pasta
-        run: |
-          cd frontend
-
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:

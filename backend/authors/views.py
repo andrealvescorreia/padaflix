@@ -2,8 +2,10 @@ import requests
 import jwt
 import datetime
 
-from .serializers import UserSerializer, PadariaSerializer
-from .serializers import PlanoAssinaturaSerializer, AssinaturaSerializer
+from .serializers import (
+    UserSerializer, PadariaSerializer,
+    PlanoAssinaturaSerializer, AssinaturaSerializer
+)
 from .models import User, Padaria, PlanoAssinatura, Assinatura
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
@@ -176,12 +178,14 @@ class PadariaPorCidadeView(APIView):
         response = requests.get(f'https://viacep.com.br/ws/{cep}/json/')
         if response.status_code != status.HTTP_200_OK:
             return JsonResponse(
-                {'message': 'CEP inválido.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+                {'message': 'CEP inválido.'},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         if "erro" in response.json() and response.json()["erro"]:
             return JsonResponse(
-                {'message': 'CEP não encontrado.'}, status=status.HTTP_404_NOT_FOUND  # noqa: E501
+                {'message': 'CEP não encontrado.'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
         cidade = response.json().get('localidade', '').upper()
@@ -259,7 +263,7 @@ class AssinantesView(UserAndPadariaView):
             )
 
         try:
-            padaria = Padaria.objects.get(id=padaria_id)  # noqa: F841
+            padaria = Padaria.objects.get(id=padaria_id)
         except Padaria.DoesNotExist:
             return Response(
                 {'error': 'Padaria não encontrada.'},
@@ -289,7 +293,7 @@ class AssinaturaView(UserAndPadariaView):
             plano = PlanoAssinatura.objects.get(id=plano_id)
         except (User.DoesNotExist, PlanoAssinatura.DoesNotExist):
             return Response(
-                'Cliente ou plano de assinatura inválido.',
+                {'error': 'Cliente ou plano de assinatura inválido.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -297,8 +301,8 @@ class AssinaturaView(UserAndPadariaView):
         if serializer.is_valid():
             assinatura = serializer.save(cliente=cliente, plano=plano)
             cliente.assinatura.add(assinatura)
-            return Response(
-                'Assinatura criada com sucesso.',
+            return JsonResponse(
+                {'message': 'Assinatura criada com sucesso.'},
                 status=status.HTTP_201_CREATED
             )
         else:

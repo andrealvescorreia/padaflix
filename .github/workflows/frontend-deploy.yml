@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/frontend/deploy
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -43,7 +40,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/frontend/deploy'
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Download artifact

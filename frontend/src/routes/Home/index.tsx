@@ -9,7 +9,7 @@ function NotLoggedInHome(){
 }
 function UserHome(user: User) {
   return <div>
-    Olá {user.name}
+    Olá {user.nome}
     <PadariasList user={user}/>
   </div>;
 }

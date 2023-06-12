@@ -1,4 +1,4 @@
-interface PlanoAssinatura{
+export interface PlanoAssinatura{
   nome: string,
   descricao: string,
   preco: number,

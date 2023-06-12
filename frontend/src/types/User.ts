@@ -1,4 +1,5 @@
 import { Endereco } from "./Endereco";
+import { PlanoAssinatura } from "./PlanoAssinatura";
 
 export interface User {
   id: number,

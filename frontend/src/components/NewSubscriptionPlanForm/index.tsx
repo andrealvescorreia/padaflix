@@ -1,6 +1,7 @@
 import { useState, SyntheticEvent } from "react";
 import { Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
 import "./styles.scss";
+import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 
 
 interface NewSubscriptionPlanFormProps {

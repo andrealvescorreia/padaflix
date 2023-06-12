@@ -18,16 +18,21 @@ import HorariosPadaria from './routes/routesPadaria/HorariosPadaria';
 import PerfilPadaria from './routes/routesPadaria/PerfilPadaria';
 import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
 import PadariaProfile from './routes/PadariaProfile';
+import { useSnackbar } from 'notistack';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
-
+  const { enqueueSnackbar } = useSnackbar();
+  
   const fetchUser = async () => {
     axiosInstance.get('/user')
     .then((response) => {
       setUser(response.data);
     })
-    .catch(() => {
+    .catch((err) => {
+      if(!err.response) {
+        enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+      }
       setUser(undefined)
     })
   }

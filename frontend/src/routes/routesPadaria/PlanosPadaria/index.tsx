@@ -5,6 +5,7 @@ import axiosInstance from '../../../axios';
 import { PadariaUser, User, isPadariaUser } from '../../../types/User';
 import { useEffect, useState } from 'react';
 import PlanoCard from '../../../components/PlanoCard';
+import { PlanoAssinatura } from '../../../types/PlanoAssinatura';
 
 interface PlanosPadariaProps {
     padaria: PadariaUser | User | undefined // talvez receba User ou undefined de App.tsx , o que não queremos.

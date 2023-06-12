@@ -8,7 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 interface InputPassProps {
-  onChange: () => void
+  onChange: (e: any) => void
   disabled: boolean
 }
 

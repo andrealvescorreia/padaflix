@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack';
 import { useNavigate } from "react-router-dom";
 import LinearProgress from '@mui/material/LinearProgress';
 import NewSubscriptionPlanForm from "../../components/NewSubscriptionPlanForm";
+import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 
 
 const NewSubscriptionPlan = () => {

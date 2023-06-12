@@ -1,3 +1,4 @@
+import { PlanoAssinatura } from '../../types/PlanoAssinatura';
 import './styles.scss'
 
 interface PlanoCardProps {

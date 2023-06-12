@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import User, Padaria, Endereco, PlanoAssinatura, Assinatura
 from .validators import validate_cnpj, validate_telefone, validate_email, validate_password  # noqa: E501
+from datetime import date
 
 
 class EnderecoSerializer(serializers.ModelSerializer):
@@ -13,7 +14,7 @@ class EnderecoSerializer(serializers.ModelSerializer):
 class PlanoAssinaturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanoAssinatura
-        fields = ['nome', 'descricao', 'preco', 'pessoas_servidas']
+        fields = ['id', 'nome', 'descricao', 'preco', 'pessoas_servidas']
 
     def is_valid(self):
         if not self.initial_data:
@@ -26,21 +27,32 @@ class PlanoAssinaturaSerializer(serializers.ModelSerializer):
 
 class AssinaturaSerializer(serializers.ModelSerializer):
     cliente = serializers.PrimaryKeyRelatedField(read_only=True)
-    cliente_nome = serializers.CharField(source='cliente.name', read_only=True)
-    plano = PlanoAssinaturaSerializer()
+    cliente_nome = serializers.CharField(source='cliente.nome', read_only=True)
+    plano = serializers.PrimaryKeyRelatedField(queryset=PlanoAssinatura.objects.all())  # noqa: E501
 
     class Meta:
         model = Assinatura
         fields = ['id', 'cliente', 'cliente_nome',
-                  'plano', 'data_inicio', 'data_fim']
+                  'plano', 'data_inicio', 'assinado']
+
+    def create(self, validated_data):
+        assinatura = Assinatura.objects.create(
+            data_inicio=date.today(),
+            data_fim=None,
+            assinado=True,
+            **validated_data
+        )
+
+        return assinatura
 
 
 class UserSerializer(serializers.ModelSerializer):
     endereco = EnderecoSerializer()
+    assinatura = AssinaturaSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'nome', 'endereco', 'email', 'password']
+        fields = ['id', 'nome', 'endereco', 'email', 'password', 'assinatura']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -72,8 +84,8 @@ class PadariaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Padaria
-        fields = ['id', 'nome_fantasia', 'endereco',
-                  'cnpj', 'telefone', 'email', 'password', 'plano_assinatura']
+        fields = ['id', 'nome_fantasia', 'endereco', 'cnpj',
+                  'telefone', 'email', 'password', 'plano_assinatura']
         extra_kwargs = {
             'password': {'write_only': True}
         }

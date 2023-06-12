@@ -18,7 +18,7 @@ const PlanosPadaria = ({padaria}: PlanosPadariaProps) => {
     const fetchPlanos = async () => {
         if(!isPadariaUser(padaria)) return
 
-        axiosInstance.get('/plano_de_assinatura/' + padaria.id)
+        axiosInstance.get('/plano_de_assinatura/padaria/' + padaria.id)
         .then((response) => {
             setPlanos(response.data)
         })

@@ -27,8 +27,9 @@ class Assinatura(models.Model):
         related_name='assinaturas'
     )
     plano = models.ForeignKey(PlanoAssinatura, on_delete=models.CASCADE)
-    data_inicio = models.DateField()
-    data_fim = models.DateField()
+    data_inicio = models.DateField(null=True)
+    data_fim = models.DateField(null=True)
+    assinado = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.cliente} - {self.plano}"
@@ -45,9 +46,10 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     username = None
 
-    assinatura = models.ForeignKey(
-        Assinatura, on_delete=models.SET_NULL,
-        null=True, blank=True
+    assinatura = models.ManyToManyField(
+        Assinatura,
+        blank=True,
+        related_name='user'
     )
 
     USERNAME_FIELD = 'email'
@@ -76,7 +78,7 @@ class Padaria(AbstractUser):
     plano_assinatura = models.ManyToManyField(
         PlanoAssinatura,
         blank=True,
-        related_name='padaria'
+        related_name='padaria_planos'
     )
 
     USERNAME_FIELD = 'email'

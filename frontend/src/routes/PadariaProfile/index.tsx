@@ -2,19 +2,64 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PlanoCard from "../../components/PlanoCard";
 import "./styles.scss"
-import { PadariaUser } from "../../types/User";
+import { PadariaUser, User, isUser } from "../../types/User";
 import { FaStar } from 'react-icons/fa';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import axios from 'axios';
 import axiosInstance from "../../axios";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import { PlanoAssinatura } from "../../types/PlanoAssinatura";
+import { enqueueSnackbar } from "notistack";
 
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    outline: 0,
+};
 
-const PadariaProfile = () => {
+interface PadariaProfileProps {
+    user: User | undefined | PadariaUser
+}
+
+const PadariaProfile = ({user} : PadariaProfileProps) => {
     const { id } = useParams();
     
-    
+    const [open, setOpen] = useState(false);
+    const openPlanModal = (plano: PlanoAssinatura) => {
+        setPlanModal(plano)
+        setOpen(true)
+    }
+    const closePlanModal = () => setOpen(false);
+
+    const [planModal, setPlanModal] = useState<PlanoAssinatura>();
+
+    const assinarPlano = async () => {
+        if(!isUser(user)) return
+        axiosInstance.post('usuario/assinaturas', {
+            cliente: user.id,
+            plano: planModal?.id
+        })
+        .then(()=>{
+            enqueueSnackbar('Assinado com sucesso',{ variant: 'success'})
+            setOpen(false)
+        })
+        .catch((err)=>{
+            console.log(err.response.data)
+        })
+    }
+
     const defaultPadaria : PadariaUser = {
         id: 0,
         nome_fantasia: '',
@@ -79,7 +124,7 @@ const PadariaProfile = () => {
                 return(
                     <div className="grid">
                         {
-                            padaria?.plano_assinatura?.map(plano => <PlanoCard plano={plano} />)
+                            padaria?.plano_assinatura?.map(plano => <PlanoCard plano={plano} onClick={openPlanModal}/>)
                         } 
                     </div>
                 )
@@ -105,7 +150,24 @@ const PadariaProfile = () => {
 
     return (
         <div id="padaria-profile">
-
+            
+            <Modal
+                open={open}
+                onClose={closePlanModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        {planModal?.nome}
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        {planModal?.descricao}
+                    </Typography>
+                    <Button variant = "contained" onClick = { assinarPlano } >Assinar R${planModal?.preco}/mês</Button>
+                </Box>
+            </Modal>
+            
             <div className='header'>
 
                 <div className="header-padaria">

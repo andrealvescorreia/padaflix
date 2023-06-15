@@ -2,7 +2,7 @@
 @use '../../styles/mixins';
 
 #subscription-plan-card {
-    width: 40rem;
+    width: 38rem;
     height: 14rem;
     background-color: variables.$bg-color;
     border-radius: 1.2rem;
@@ -18,7 +18,7 @@
     .plan-info {
         display: flex;
         flex-direction: column;
-        width: 26.5rem;
+        width: 24.5rem;
         height: 100%;
         padding-left: 1rem;
 
@@ -44,7 +44,6 @@
         }
 
         .price {
-            
             font-weight: bold;
             margin-bottom: 1rem;
         }

@@ -3,12 +3,13 @@ import './styles.scss'
 
 interface PlanoCardProps {
     plano : PlanoAssinatura
+    onClick: (plano: PlanoAssinatura) => void;
 }
 
-const PlanoCard = ({plano} : PlanoCardProps) => {
+const PlanoCard = ({plano, onClick} : PlanoCardProps) => {
 
     return (
-        <div id="subscription-plan-card">
+        <div id="subscription-plan-card" onClick={()=> onClick(plano)}>
             <div className='plan-info'>
                 <h2 className='name'>
                     {plano.nome}

@@ -4,6 +4,7 @@ import { PadariaUser, User } from "../../types/User";
 import "./styles.scss"
 import { useEffect, useState } from "react";
 import { LinearProgress } from "@mui/material";
+import { useSnackbar } from 'notistack';
 
 interface Props {
     user: User | PadariaUser | undefined
@@ -16,6 +17,7 @@ interface Padaria {
 const PadariasList = ({user} : Props) => {
     const [padarias, setPadarias] = useState<Padaria[]> ([]);
     const [isFetching, setIsFetching] = useState(false)
+    const { enqueueSnackbar } = useSnackbar();
 
     const fetchPadarias = async () => {
         setIsFetching(true)
@@ -23,8 +25,9 @@ const PadariasList = ({user} : Props) => {
         .then((response) => {
             setPadarias(response.data);
         })
-        .catch(() => {
-            alert("Ih Serjão, sujou!")
+        .catch((err) => {
+            enqueueSnackbar("Ocorreu um erro")
+            console.log(err.response.data)
         })
         .finally(()=>{
             setIsFetching(false)

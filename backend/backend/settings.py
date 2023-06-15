@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%ufs(t%=k1j6dx@(hzue^%(y8qw(jsz6yv%^+e0sgljn8_6z3p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['3.15.184.226']
+ALLOWED_HOSTS = ['18.191.203.223']
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
 COVERAGE_MODULE_EXCLUDES = [

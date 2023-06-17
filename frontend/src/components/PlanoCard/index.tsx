@@ -5,15 +5,16 @@ import './styles.scss'
 
 interface PlanoCardProps {
     plano : PlanoAssinatura
-    onClick: (plano: PlanoAssinatura) => void;
-    isSubscribed:  (plano: PlanoAssinatura)=>boolean,
+    onClick?: (plano: PlanoAssinatura) => void;
+    isSubscribed?:  (plano: PlanoAssinatura) => boolean,
 }
 
 
-const PlanoCard = ({plano, onClick, isSubscribed} : PlanoCardProps) => {
+const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) => {
     const [sub, setSub] = useState(false)
 
     useEffect(() => {
+        if(!isSubscribed) return
         setSub(isSubscribed(plano))
     }, [plano])
 

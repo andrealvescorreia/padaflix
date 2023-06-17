@@ -27,6 +27,7 @@ const modalStyle = {
     width: 400,
     bgcolor: 'background.paper',
     p: 4,
+    outline: 0,
 };
 
 interface PadariaProfileProps {

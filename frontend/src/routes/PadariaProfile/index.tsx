@@ -56,6 +56,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         .then(()=>{
             enqueueSnackbar('Assinado com sucesso',{ variant: 'success'})
             setOpen(false)
+            fetchAssinaturas()
         })
         .catch((err)=>{
             console.log(err.response.data)

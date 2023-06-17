@@ -1,3 +1,4 @@
+import { Assinatura } from "./Assinatura";
 import { Endereco } from "./Endereco";
 import { PlanoAssinatura } from "./PlanoAssinatura";
 
@@ -6,6 +7,7 @@ export interface User {
   nome: string,
   email: string,
   endereco: Endereco
+  assinatura: Assinatura[]// assinaturas
 }
 
 export interface PadariaUser {

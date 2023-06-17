@@ -27,3 +27,21 @@ export function isUser(object: any): object is User {
   if(object == undefined) return false;
   return 'nome' in object;
 }
+
+export const defaultPadaria : PadariaUser = {
+  id: 0,
+  nome_fantasia: '',
+  endereco: {
+      cep: '', 
+      rua: '', 
+      numero: '', 
+      complemento: '', 
+      bairro: '', 
+      cidade: '', 
+      uf: ''
+  },
+  cnpj: '',
+  email: '',
+  telefone: '',
+  plano_assinatura: [],
+}

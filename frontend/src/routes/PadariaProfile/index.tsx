@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PlanoCard from "../../components/PlanoCard";
 import "./styles.scss"
-import { PadariaUser, User, isUser } from "../../types/User";
+import { PadariaUser, User, defaultPadaria, isUser } from "../../types/User";
 import { FaStar } from 'react-icons/fa';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -18,7 +18,7 @@ import { enqueueSnackbar } from "notistack";
 import CheckIcon from '@mui/icons-material/Check';
 import { Assinatura } from "../../types/Assinatura";
 
-const style = {
+const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
@@ -36,26 +36,32 @@ interface PadariaProfileProps {
 }
 
 const PadariaProfile = ({user} : PadariaProfileProps) => {
-    const { id } = useParams();
+    const { id } = useParams();// url params
     
-    const [open, setOpen] = useState(false);
-    const openPlanModal = (plano: PlanoAssinatura) => {
-        setPlanModal(plano)
-        setOpen(true)
-    }
-    const closePlanModal = () => setOpen(false);
+    const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
+    const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
+    const [assinaturasUser, setAssinaturasUser] = useState<Assinatura[]>();// usado para saber se o usuario é assinante da padaria
+    const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+    const [planModalContent, setPlanModalContent] = useState<PlanoAssinatura>();
+    const [currentTab, setCurrentTab] = useState('1');
 
-    const [planModal, setPlanModal] = useState<PlanoAssinatura>();
+    const openPlanModal = (plano: PlanoAssinatura) => {
+        setPlanModalContent(plano)
+        setIsPlanModalOpen(true)
+    }
+    const closePlanModal = () => setIsPlanModalOpen(false);
+
+    
 
     const assinarPlano = async () => {
         if(!isUser(user)) return
         axiosInstance.post('usuario/assinaturas', {
             cliente: user.id,
-            plano: planModal?.id
+            plano: planModalContent?.id
         })
         .then(()=>{
             enqueueSnackbar('Assinado com sucesso',{ variant: 'success'})
-            setOpen(false)
+            setIsPlanModalOpen(false)
             fetchAssinaturas()
         })
         .catch((err)=>{
@@ -63,26 +69,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         })
     }
 
-    const defaultPadaria : PadariaUser = {
-        id: 0,
-        nome_fantasia: '',
-        endereco: {
-            cep: '', 
-            rua: '', 
-            numero: '', 
-            complemento: '', 
-            bairro: '', 
-            cidade: '', 
-            uf: ''
-        },
-        cnpj: '',
-        email: '',
-        telefone: '',
-        plano_assinatura: [],
-    }
-    const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
-    const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
-    const [assinaturasUser, setAssinaturasUser] = useState<Assinatura[]>();// usado para saber se o usuario é assinante da padaria
+    
 
     const fetchPadaria = async () => {
         axiosInstance.get('/padarias/'+id)
@@ -96,6 +83,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
 
     const fetchCidade = async () => {// gambiarra pra pegar a cidade, ja que ela nao fica salva no BD
+        if(padaria.endereco.cep == '') return
         axios.get("https://viacep.com.br/ws/"+ padaria.endereco.cep +"/json/")
         .then((response) => {
             let newEndereco = padaria?.endereco;
@@ -108,9 +96,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     }
 
     const fetchAssinaturas = async () => {
-        if(!isUser(user)){
-            return
-        }
+        if(!isUser(user)) return
         axiosInstance.get('/assinaturas/usuario/'+user.id)
         .then((response)=> {
             setAssinaturasUser(response.data) 
@@ -134,25 +120,23 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
 
     function isUserSubscribedToPlan(plano: PlanoAssinatura) {
-        
         if(!isUser(user)) return false
-        if(assinaturasUser == undefined) {
-            return false
-        }
-        let achou = false
+        if(!assinaturasUser) return false
+    
+        let isSubscribedToPlan = false
         assinaturasUser.forEach(assinatura => {
             if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
+                isSubscribedToPlan = true
                 setIsSubscribedToPadaria(true)
-                achou = true
             }
         })
-        return achou
+        return isSubscribedToPlan
     }
 
 
-    const [currentTab, setCurrentTab] = useState('1');
+    
 
-    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handleChange = (e: React.SyntheticEvent, newValue: string) => {
         setCurrentTab(newValue);
     };
 
@@ -192,19 +176,21 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         <div id="padaria-profile">
             
             <Modal
-                open={open}
+                open={isPlanModalOpen}
                 onClose={closePlanModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
+                <Box sx={modalStyle}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        {planModal?.nome}
+                        {planModalContent?.nome}
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        {planModal?.descricao}
+                        {planModalContent?.descricao}
                     </Typography>
-                    <Button variant = "contained" onClick = { assinarPlano } >Assinar R${planModal?.preco}/mês</Button>
+                    <Button variant = "contained" onClick = { assinarPlano } >
+                        Assinar R${planModalContent?.preco}/mês
+                    </Button>
                 </Box>
             </Modal>
             

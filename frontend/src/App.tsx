@@ -74,7 +74,7 @@ function App() {
         
         <Route
           path="padaria/:id"
-          element={<PadariaProfile user={user}/>}
+          element={<PadariaProfile user={user} afterSuccessfulSubscription={fetchUser} />}
         />
      
         <Route path="/padaria-planos" element={<PlanosPadaria padaria={user} />} />

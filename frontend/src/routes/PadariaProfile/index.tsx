@@ -2,10 +2,8 @@ import "./styles.scss"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PadariaUser, User, defaultPadaria, isUser } from "../../types/User";
-import { Assinatura } from "../../types/Assinatura";
 import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 import PlanoCard from "../../components/PlanoCard";
-
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -32,14 +30,14 @@ const modalStyle = {
 
 interface PadariaProfileProps {
     user: User | undefined | PadariaUser
+    afterSuccessfulSubscription: () => void
 }
 
-const PadariaProfile = ({user} : PadariaProfileProps) => {
+const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProps) => {
     const { id } = useParams();// url params
     
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
     const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
-    const [assinaturasUser, setAssinaturasUser] = useState<Assinatura[]>();// usado para saber se o usuario é assinante da padaria
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planModalContent, setPlanModalContent] = useState<PlanoAssinatura>();
     const [currentTab, setCurrentTab] = useState('1');
@@ -62,7 +60,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         .then(()=>{
             enqueueSnackbar('Assinado com sucesso',{ variant: 'success'})
             setIsPlanModalOpen(false)
-            fetchAssinaturas()
+            afterSuccessfulSubscription()
         })
         .catch((err)=>{
             enqueueSnackbar('Ocorreu um erro ao tentar realizar a assinatura',{ variant: 'error'})
@@ -72,10 +70,9 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
     function isUserSubscribedToPlan(plano: PlanoAssinatura) {
         if(!isUser(user)) return false
-        if(!assinaturasUser) return false
     
         let isSubscribedToPlan = false
-        assinaturasUser.forEach(assinatura => {
+        user.assinatura.forEach(assinatura => {
             if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
                 isSubscribedToPlan = true
                 setIsSubscribedToPadaria(true)
@@ -102,17 +99,6 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
             let newEndereco = padaria?.endereco;
             newEndereco.cidade = response.data.localidade
             setPadaria(prevPadaria => ({...prevPadaria, endereco: newEndereco}))
-        })
-        .catch((err)=>{
-            console.log(err.response.data)
-        })
-    }
-
-    const fetchAssinaturas = async () => {
-        if(!isUser(user)) return
-        axiosInstance.get('/assinaturas/usuario/'+user.id)
-        .then((response)=> {
-            setAssinaturasUser(response.data) 
         })
         .catch((err)=>{
             console.log(err.response.data)
@@ -154,12 +140,8 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
 
     useEffect(() => {
-        fetchAssinaturas()
-    }, [user])
-
-    useEffect(() => {
         fetchPadaria()
-    }, [id, assinaturasUser])
+    }, [id, user])
 
     useEffect(() => {
         fetchCidade()

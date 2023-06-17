@@ -15,6 +15,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 import { enqueueSnackbar } from "notistack";
+import CheckIcon from '@mui/icons-material/Check';
+import { Assinatura } from "../../types/Assinatura";
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -78,6 +80,8 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         plano_assinatura: [],
     }
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
+    const [isSubscribed, setIsSubscribed] = useState(false)
+    const [assinaturasUser, setAssinaturasUser] = useState<Assinatura[]>();// usado para saber se o usuario é assinante da padaria
 
     const fetchPadaria = async () => {
         axiosInstance.get('/padarias/'+id)
@@ -90,14 +94,23 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     }
 
 
-    const fetchCidade = async () => {
+    const fetchCidade = async () => {// gambiarra pra pegar a cidade, ja que ela nao fica salva no BD
         axios.get("https://viacep.com.br/ws/"+ padaria.endereco.cep +"/json/")
         .then((response) => {
             let newEndereco = padaria?.endereco;
             newEndereco.cidade = response.data.localidade
             setPadaria(prevPadaria => ({...prevPadaria, endereco: newEndereco}))
+        })
+        .catch((err)=>{
+            console.log(err.response.data)
+        })
+    }
 
-
+    const fetchAssinaturas = async () => {
+        if(!isUser(user)) return
+        axiosInstance.get('/assinaturas/usuario/'+user.id)
+        .then((response)=> {
+            setAssinaturasUser(response.data) 
         })
         .catch((err)=>{
             console.log(err.response.data)
@@ -106,11 +119,63 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
     useEffect(() => {
         fetchPadaria()
+        fetchAssinaturas()
     }, [id])
+
+    useEffect(() => {
+        
+        //console.log('aaaaaaaaaaaa')
+    }, [assinaturasUser])
 
     useEffect(() => {
         fetchCidade()
     }, [padaria])
+
+    const isUserSubscribedToPlan = async (plano: PlanoAssinatura) => {
+        console.log('executou')
+        if(!isUser(user)) return false
+        let assinaturas : Assinatura[]
+        axiosInstance.get('/assinaturas/usuario/'+user.id)
+        .then((response)=> {
+            assinaturas = (response.data) 
+            console.log(assinaturas)
+            assinaturas.forEach(assinatura => {
+                
+                if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado ){
+                    console.log('assinadouuuu')
+                    return true
+                }
+            })
+        })
+        .catch((err)=>{
+            console.log(err.response.data)
+        })
+        console.log('naooo assinadooo')
+        return false
+        
+    }
+
+    function isUserSubscribedToPlan2(plano: PlanoAssinatura) {
+        
+        if(!isUser(user)) return false
+        if(assinaturasUser == undefined) console.log('ainda nao pegou as assinaturas')
+        else console.log('pegou as assinaturas!')
+        assinaturasUser?.forEach(assinatura => {
+            
+            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado ){
+                console.log('assinadouuuu')
+                return true
+            }
+        })
+        console.log('nao assinado')
+        return false
+        
+    }
+
+    function funcao(){
+        console.log('tomanananan')
+        return true
+    }
 
     const [currentTab, setCurrentTab] = useState('1');
 
@@ -124,7 +189,12 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
                 return(
                     <div className="grid">
                         {
-                            padaria?.plano_assinatura?.map(plano => <PlanoCard plano={plano} onClick={openPlanModal}/>)
+                            padaria?.plano_assinatura?.map(plano => 
+                                <PlanoCard key={plano.id} plano={plano} onClick={openPlanModal} isSubscribed={()=>{
+                                    return isUserSubscribedToPlan2(plano)
+                                }}/>
+                            )
+                            
                         } 
                     </div>
                 )
@@ -174,9 +244,17 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
                     <img className="padaria-logo"></img>
                     <h2 className='padaria-name'> {padaria?.nome_fantasia} </h2>
                     <div className="rating">
-                        <FaStar className="star"/>
+                        <FaStar/>
                         <p className="number">0</p>
                     </div>
+                    {
+                        isSubscribed && 
+                        <div className='subscription-status'>
+                            <CheckIcon/>
+                            Assinante
+                        </div>
+                    }
+                    
                     <hr/>
                 </div>
 

@@ -18,7 +18,7 @@
         align-items: center;
         width: 90%;
         height: 9rem;
-        
+        gap: .5rem;
         .padaria-logo{
             background-color: lightgrey;
             min-width: 5.5rem;
@@ -32,19 +32,17 @@
             font-size: 1.5rem;
             margin: 0;
             font-weight: bold;
-            margin-right: 0.5rem;
         }
 
         .rating {
             display: flex;
             align-items: center;
-            margin-left: .3rem;
+
             svg {
                 fill: #FFC700;
                 width: 1.5rem;
                 height: 1.5rem;
             }
-            
             .number {
                 margin: 0;
                 color: #DDAD02;
@@ -52,6 +50,16 @@
                 margin-left: .1rem;
             }
         }
+
+        .subscription-status {
+            color: #04AF01;
+            svg {
+                fill: #04AF01;
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+
         border-bottom: 0.1rem solid #6A6A6A;
     }
 

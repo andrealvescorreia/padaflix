@@ -80,7 +80,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         plano_assinatura: [],
     }
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
-    const [isSubscribed, setIsSubscribed] = useState(false)
+    const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
     const [assinaturasUser, setAssinaturasUser] = useState<Assinatura[]>();// usado para saber se o usuario é assinante da padaria
 
     const fetchPadaria = async () => {
@@ -107,7 +107,9 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     }
 
     const fetchAssinaturas = async () => {
-        if(!isUser(user)) return
+        if(!isUser(user)){
+            return
+        }
         axiosInstance.get('/assinaturas/usuario/'+user.id)
         .then((response)=> {
             setAssinaturasUser(response.data) 
@@ -118,64 +120,34 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     }
 
     useEffect(() => {
-        fetchPadaria()
         fetchAssinaturas()
-    }, [id])
+    }, [user])
 
     useEffect(() => {
-        
-        //console.log('aaaaaaaaaaaa')
-    }, [assinaturasUser])
+        fetchPadaria()
+    }, [id, assinaturasUser])
 
     useEffect(() => {
         fetchCidade()
     }, [padaria])
 
-    const isUserSubscribedToPlan = async (plano: PlanoAssinatura) => {
-        console.log('executou')
-        if(!isUser(user)) return false
-        let assinaturas : Assinatura[]
-        axiosInstance.get('/assinaturas/usuario/'+user.id)
-        .then((response)=> {
-            assinaturas = (response.data) 
-            console.log(assinaturas)
-            assinaturas.forEach(assinatura => {
-                
-                if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado ){
-                    console.log('assinadouuuu')
-                    return true
-                }
-            })
-        })
-        .catch((err)=>{
-            console.log(err.response.data)
-        })
-        console.log('naooo assinadooo')
-        return false
-        
-    }
 
-    function isUserSubscribedToPlan2(plano: PlanoAssinatura) {
+    function isUserSubscribedToPlan(plano: PlanoAssinatura) {
         
         if(!isUser(user)) return false
-        if(assinaturasUser == undefined) console.log('ainda nao pegou as assinaturas')
-        else console.log('pegou as assinaturas!')
-        assinaturasUser?.forEach(assinatura => {
-            
-            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado ){
-                console.log('assinadouuuu')
-                return true
+        if(assinaturasUser == undefined) {
+            return false
+        }
+        let achou = false
+        assinaturasUser.forEach(assinatura => {
+            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
+                setIsSubscribedToPadaria(true)
+                achou = true
             }
         })
-        console.log('nao assinado')
-        return false
-        
+        return achou
     }
 
-    function funcao(){
-        console.log('tomanananan')
-        return true
-    }
 
     const [currentTab, setCurrentTab] = useState('1');
 
@@ -190,11 +162,8 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
                     <div className="grid">
                         {
                             padaria?.plano_assinatura?.map(plano => 
-                                <PlanoCard key={plano.id} plano={plano} onClick={openPlanModal} isSubscribed={()=>{
-                                    return isUserSubscribedToPlan2(plano)
-                                }}/>
-                            )
-                            
+                                <PlanoCard key={plano.id} plano={plano} onClick={openPlanModal} isSubscribed={isUserSubscribedToPlan}/>
+                            )   
                         } 
                     </div>
                 )
@@ -248,7 +217,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
                         <p className="number">0</p>
                     </div>
                     {
-                        isSubscribed && 
+                        isSubscribedToPadaria && 
                         <div className='subscription-status'>
                             <CheckIcon/>
                             Assinante

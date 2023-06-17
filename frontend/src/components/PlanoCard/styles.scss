@@ -47,9 +47,15 @@
             font-weight: bold;
             margin-bottom: 1rem;
             
+        }svg {
+            width: 0rem;
         }
         .subscribed {
             color: green;
+            svg {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
         }
     }
     

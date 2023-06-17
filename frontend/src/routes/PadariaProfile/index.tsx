@@ -55,9 +55,8 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     };
 
     const assinarPlano = async () => {
-        if(!isUser(user)) return
         axiosInstance.post('usuario/assinaturas', {
-            cliente: user.id,
+            cliente: user?.id,
             plano: planModalContent?.id
         })
         .then(()=>{
@@ -191,7 +190,7 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
                 <div className='tabs'>
                     <TabContext value={currentTab}>
-                        <TabList onChange={handleTabChange} aria-label="lab API tabs example" >
+                        <TabList onChange={handleTabChange}>
                             <Tab label="Planos" value="1" className='tab' />
                             <Tab label="Sobre" value="2" className='tab'/>
                         </TabList>

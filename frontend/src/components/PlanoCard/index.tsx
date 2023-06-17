@@ -14,12 +14,15 @@ const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) =
     const [subscribed, setSubscribed] = useState(false)
 
     useEffect(() => {
-        if(!isSubscribed) return
+        if(isSubscribed == undefined) return
         setSubscribed(isSubscribed(plano))
     }, [plano])
 
+
+
     return (
-        <div id="subscription-plan-card" onClick={()=> onClick(plano)}>
+        <div id="subscription-plan-card" onClick={()=> {if(!subscribed){onClick(plano)}}// gambiarra: se ja for assinante, não deixa clicar
+            }>
             <div className='plan-info'>
                 <h2 className='name'>
                     {plano.nome}

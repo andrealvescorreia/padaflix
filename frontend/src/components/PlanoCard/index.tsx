@@ -11,11 +11,11 @@ interface PlanoCardProps {
 
 
 const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) => {
-    const [sub, setSub] = useState(false)
+    const [subscribed, setSubscribed] = useState(false)
 
     useEffect(() => {
         if(!isSubscribed) return
-        setSub(isSubscribed(plano))
+        setSubscribed(isSubscribed(plano))
     }, [plano])
 
     return (
@@ -30,7 +30,7 @@ const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) =
                 <span className='served_people'>
                     { 'Serve ' + plano.pessoas_servidas + (plano.pessoas_servidas > 1 ? ' pessoas' : ' pessoa')} 
                 </span>
-                <span className={'price' + (sub ? ' subscribed' : '')}>
+                <span className={'price' + (subscribed ? ' subscribed' : '')}>
                     <CheckIcon/>
                     R${plano.preco} /mês
                 </span>

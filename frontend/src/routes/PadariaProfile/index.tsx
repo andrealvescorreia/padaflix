@@ -1,22 +1,23 @@
+import "./styles.scss"
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PlanoCard from "../../components/PlanoCard";
-import "./styles.scss"
 import { PadariaUser, User, defaultPadaria, isUser } from "../../types/User";
-import { FaStar } from 'react-icons/fa';
+import { Assinatura } from "../../types/Assinatura";
+import { PlanoAssinatura } from "../../types/PlanoAssinatura";
+import PlanoCard from "../../components/PlanoCard";
+
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import axios from 'axios';
-import axiosInstance from "../../axios";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { PlanoAssinatura } from "../../types/PlanoAssinatura";
-import { enqueueSnackbar } from "notistack";
 import CheckIcon from '@mui/icons-material/Check';
-import { Assinatura } from "../../types/Assinatura";
+import { FaStar } from 'react-icons/fa';
+import axios from 'axios';
+import axiosInstance from "../../axios";
+import { enqueueSnackbar } from "notistack";
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
@@ -25,10 +26,7 @@ const modalStyle = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
     p: 4,
-    outline: 0,
 };
 
 interface PadariaProfileProps {
@@ -51,7 +49,9 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
     }
     const closePlanModal = () => setIsPlanModalOpen(false);
 
-    
+    const handleTabChange = (e: React.SyntheticEvent, newValue: string) => {
+        setCurrentTab(newValue);
+    };
 
     const assinarPlano = async () => {
         if(!isUser(user)) return
@@ -65,11 +65,24 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
             fetchAssinaturas()
         })
         .catch((err)=>{
+            enqueueSnackbar('Ocorreu um erro ao tentar realizar a assinatura',{ variant: 'error'})
             console.log(err.response.data)
         })
     }
 
+    function isUserSubscribedToPlan(plano: PlanoAssinatura) {
+        if(!isUser(user)) return false
+        if(!assinaturasUser) return false
     
+        let isSubscribedToPlan = false
+        assinaturasUser.forEach(assinatura => {
+            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
+                isSubscribedToPlan = true
+                setIsSubscribedToPadaria(true)
+            }
+        })
+        return isSubscribedToPlan
+    }
 
     const fetchPadaria = async () => {
         axiosInstance.get('/padarias/'+id)
@@ -106,48 +119,15 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         })
     }
 
-    useEffect(() => {
-        fetchAssinaturas()
-    }, [user])
 
-    useEffect(() => {
-        fetchPadaria()
-    }, [id, assinaturasUser])
-
-    useEffect(() => {
-        fetchCidade()
-    }, [padaria])
-
-
-    function isUserSubscribedToPlan(plano: PlanoAssinatura) {
-        if(!isUser(user)) return false
-        if(!assinaturasUser) return false
-    
-        let isSubscribedToPlan = false
-        assinaturasUser.forEach(assinatura => {
-            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
-                isSubscribedToPlan = true
-                setIsSubscribedToPadaria(true)
-            }
-        })
-        return isSubscribedToPlan
-    }
-
-
-    
-
-    const handleChange = (e: React.SyntheticEvent, newValue: string) => {
-        setCurrentTab(newValue);
-    };
-
-    function renderContent() {
+    function renderCurrentTabContent() {
         switch(currentTab) {
             case '1':
                 return(
-                    <div className="grid">
+                    <div className="plans-grid">
                         {
                             padaria?.plano_assinatura?.map(plano => 
-                                <PlanoCard key={plano.id} plano={plano} onClick={openPlanModal} isSubscribed={isUserSubscribedToPlan}/>
+                                <PlanoCard plano={plano} onClick={openPlanModal} isSubscribed={isUserSubscribedToPlan} key={plano.id} />
                             )   
                         } 
                     </div>
@@ -172,28 +152,22 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
         }
     }
 
+
+    useEffect(() => {
+        fetchAssinaturas()
+    }, [user])
+
+    useEffect(() => {
+        fetchPadaria()
+    }, [id, assinaturasUser])
+
+    useEffect(() => {
+        fetchCidade()
+    }, [padaria])
+
+
     return (
         <div id="padaria-profile">
-            
-            <Modal
-                open={isPlanModalOpen}
-                onClose={closePlanModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={modalStyle}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        {planModalContent?.nome}
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        {planModalContent?.descricao}
-                    </Typography>
-                    <Button variant = "contained" onClick = { assinarPlano } >
-                        Assinar R${planModalContent?.preco}/mês
-                    </Button>
-                </Box>
-            </Modal>
-            
             <div className='header'>
 
                 <div className="header-padaria">
@@ -216,17 +190,33 @@ const PadariaProfile = ({user} : PadariaProfileProps) => {
 
                 <div className='tabs'>
                     <TabContext value={currentTab}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example" >
+                        <TabList onChange={handleTabChange} aria-label="lab API tabs example" >
                             <Tab label="Planos" value="1" className='tab' />
                             <Tab label="Sobre" value="2" className='tab'/>
                         </TabList>
                     </TabContext>
                 </div>
             </div>
-
-            { renderContent() }
-
             
+            <Modal
+                open={isPlanModalOpen}
+                onClose={closePlanModal}
+            >
+                <Box sx={modalStyle}>
+                    <Typography variant="h6" component="h2">
+                        {planModalContent?.nome}
+                    </Typography>
+                    <Typography sx={{ mt: 2 }}>
+                        {planModalContent?.descricao}
+                    </Typography>
+                    <Button variant = "contained" onClick = { assinarPlano } >
+                        Assinar R${planModalContent?.preco}/mês
+                    </Button>
+                </Box>
+            </Modal>
+
+            { renderCurrentTabContent() }
+
         </div>
     );
 }

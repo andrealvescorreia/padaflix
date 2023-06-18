@@ -47,7 +47,7 @@ const PadariasList = ({user} : Props) => {
             {
                 padarias?.map(padaria => 
                     <PadariaCard 
-                        {...padaria} 
+                        padaria={padaria} 
                         key={padaria.id} 
                     />
                 )

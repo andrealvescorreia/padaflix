@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
 import "./styles.scss"
 import { FaStar } from 'react-icons/fa';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface PadariaCardProps {
-    id: number,
-    nome_fantasia: string,
-    rating?: number,
+    padaria : {
+        id: number,
+        nome_fantasia: string,
+        rating?: number,
+    }
+    isSubscribedToPadaria?: boolean
 }
 
-const PadariaCard = ( padaria : PadariaCardProps ) => {
+const PadariaCard = ( {padaria, isSubscribedToPadaria=false} : PadariaCardProps ) => {
     return <Link to={`/padarias/${padaria.id}`} id="padaria-card">
         <img className="logo"></img>
 
@@ -17,6 +21,13 @@ const PadariaCard = ( padaria : PadariaCardProps ) => {
             <div className="rating">
                 <FaStar className="star"/>
                 <p className="number">{padaria.rating? padaria.rating : 0}</p>
+                {
+                    isSubscribedToPadaria && 
+                    <div className='subscription-status'>
+                        <CheckIcon/>
+                        Assinante
+                    </div>
+                }
             </div>
         </div>
     </Link>

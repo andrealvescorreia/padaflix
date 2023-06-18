@@ -9,7 +9,7 @@ interface PadariaCardProps {
 }
 
 const PadariaCard = ( padaria : PadariaCardProps ) => {
-    return <Link to={`padaria/${padaria.id}`} id="padaria-card">
+    return <Link to={`/padarias/${padaria.id}`} id="padaria-card">
         <img className="logo"></img>
 
         <div className="information-container">

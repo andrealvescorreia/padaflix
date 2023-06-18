@@ -75,7 +75,7 @@ function App() {
         <Route path="/register/user-padaria" element={<RegisterBakery />} />
         
         <Route
-          path="padaria/:id"
+          path="/padarias/:id"
           element={<PadariaProfile user={user} afterSuccessfulSubscription={fetchUser} />}
         />
      

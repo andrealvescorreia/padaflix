@@ -1,8 +1,8 @@
 import { SyntheticEvent, useState } from "react";
-import InputAdornments from "../InputPass";
 import { Button, TextField } from "@mui/material";
 import "./Login.scss";
 import InputPass from "../InputPass";
+import { Link } from "react-router-dom";
 
 interface LoginFormProps {
     onSubmit: (email: string, password: string) => void,
@@ -35,7 +35,12 @@ const LoginForm = (props: LoginFormProps) => {
                 </label>
                 <div id="buttonsOfLogin">
                     <Button variant="contained" className="buttonFull" type="submit"  disabled={disabled} >Login</Button>
-                    <Button variant="outlined" className="buttonEmpty" disabled={disabled} >Criar conta</Button>
+                    
+                    <Link to="/choose-profile" className='link'>
+                        <Button variant="outlined" className="buttonEmpty" disabled={disabled} >
+                            Criar conta
+                        </Button>
+                    </Link>
                 </div>
 
             </form>

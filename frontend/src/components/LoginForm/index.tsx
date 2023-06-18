@@ -35,8 +35,7 @@ const LoginForm = (props: LoginFormProps) => {
                 </label>
                 <div id="buttonsOfLogin">
                     <Button variant="contained" className="buttonFull" type="submit"  disabled={disabled} >Login</Button>
-                    <Button variant="outlined" className="buttonEmpty" disabled={disabled} >Cadastrar-se</Button>
-                    <Button variant="text" className="buttonText" disabled={disabled}>Esqueci a senha!</Button>
+                    <Button variant="outlined" className="buttonEmpty" disabled={disabled} >Criar conta</Button>
                 </div>
 
             </form>

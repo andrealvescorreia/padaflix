@@ -4,7 +4,7 @@ import datetime
 
 from .serializers import (
     UserSerializer, PadariaSerializer,
-    PlanoAssinaturaSerializer, AssinaturaSerializer
+    PlanoAssinaturaSerializer, AssinaturaSerializer, EnderecoSerializer
 )
 from .models import User, Padaria, PlanoAssinatura, Assinatura
 from django.db.models import Value, CharField
@@ -278,6 +278,13 @@ class AssinantesView(UserAndPadariaView):
             plano_id = plano_data['id']
             assinaturas = Assinatura.objects.filter(plano_id=plano_id)
             assinaturas_serializer = AssinaturaSerializer(assinaturas, many=True)  # noqa: E501
+
+            for assinatura_data in assinaturas_serializer.data:
+                cliente_id = assinatura_data['cliente']
+                cliente = User.objects.get(id=cliente_id)
+                endereco_cliente = EnderecoSerializer(cliente.endereco).data
+                assinatura_data['endereco_cliente'] = endereco_cliente
+
             plano_data['assinaturas'] = assinaturas_serializer.data
 
         return Response(planos_data)
@@ -328,7 +335,16 @@ class AssinaturaView(UserAndPadariaView):
 
         assinaturas = Assinatura.objects.filter(cliente=user)
         serializer = AssinaturaSerializer(assinaturas, many=True)
-        return Response(serializer.data)
+
+        plano_data = serializer.data
+        for item in plano_data:
+            plano_id = item['plano']
+            padaria_id = PlanoAssinatura.objects.get(id=plano_id).padaria_planos.first().id  # noqa: E501
+            item['nome_plano'] = PlanoAssinatura.objects.get(id=plano_id).nome
+            item['id_padaria'] = padaria_id
+            item['nome_padaria'] = Padaria.objects.get(id=padaria_id).nome_fantasia  # noqa: E501
+
+        return Response(plano_data)
 
 
 class LogoutView(APIView):

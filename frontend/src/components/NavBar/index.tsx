@@ -10,7 +10,7 @@ interface NavBarProps {
 
 const NavBar = ( {user, logout} : NavBarProps ) => {
 
-  const notLoggedInOptions = (
+  const notLoggedInRightOptions = (
     <>
       <Link to="/login"  id={styles.login_btn} className={styles.btn} >
         Login
@@ -21,46 +21,49 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     </>
   )
 
-  const userOptions = (
+  const userRightOptions = (
     <>
       <Link to="/login" id={styles.logout_btn} onClick={logout} >
         Sair
       </Link>
     </>
   )
-
   
+  const defaultLeftOptions = (
+    <Link to="/inicio" id={styles.logout_btn}>
+      Início
+    </Link>
+  )
 
-  const padariaOptions = (
+  const userSubscriberLeftOptions = (
     <>
-      <Link to="/new-subscription-plan" id={styles.logout_btn}  >
-        Nova Plano
+      <Link to="/inicio" id={styles.logout_btn}>
+        Início
       </Link>
-      {userOptions}
+      <Link to="/padarias" id={styles.logout_btn}>
+        Padarias
+      </Link>
     </>
   )
 
+  let leftSideNavOptions;
   let rigthSideNavOptions;
 
-  if (user) {
-    if(isUser(user)){
-      rigthSideNavOptions = userOptions
-    }
-    if (isPadariaUser(user)) {
-      rigthSideNavOptions = padariaOptions
-    }
+  
+  if(isUser(user)){
+    rigthSideNavOptions = userRightOptions
+    leftSideNavOptions = userSubscriberLeftOptions
   }
   else {
-    rigthSideNavOptions = notLoggedInOptions
+    rigthSideNavOptions = notLoggedInRightOptions
+    leftSideNavOptions = defaultLeftOptions
   }
 
   
   
   return <nav id={styles.navbar}>
     <div className={styles.defaultNavOptions}>
-      <Link to="/"   className={styles.option} >
-        Início
-      </Link>
+      { leftSideNavOptions }
     </div>
 
     <div className={styles.logoContainer}>
@@ -68,7 +71,7 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     </div>
 
     <div className={styles.navOptions}>
-      {rigthSideNavOptions}
+      { rigthSideNavOptions }
     </div>
   </nav>;
 }

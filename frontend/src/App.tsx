@@ -19,6 +19,7 @@ import PerfilPadaria from './routes/routesPadaria/PerfilPadaria';
 import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
 import PadariaProfile from './routes/PadariaProfile';
 import { useSnackbar } from 'notistack';
+import PadariasList from './routes/PadariasList';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -55,7 +56,7 @@ function App() {
   const navigate = useNavigate()
   function onSuccessfulLogin(){
     fetchUser()
-    navigate('/')
+    navigate('/inicio')
   }
 
   return (
@@ -66,7 +67,8 @@ function App() {
         : <NavBar user={user} logout={logout} />
       }
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
+        <Route path="/inicio" element={<Home user={user} />} />
+        <Route path="/padarias" element={<PadariasList user={user} />} />
         <Route path="/login" element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
         <Route path="/choose-profile" element={<ChooseProfile />} />
         <Route path="/register/user" element={<RegisterUser/>} />

@@ -40,7 +40,7 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 </div>
                 
                 <MenuItem 
-                    component={<Link to="/" />}
+                    component={<Link to="/inicio" />}
                     icon = {<HomeIcon />}
                 >
                     Inicio

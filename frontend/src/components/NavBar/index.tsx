@@ -16,7 +16,7 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
         Login
       </Link>
       <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
-        Começe Agora
+        Comece Agora
       </Link>
     </>
   )

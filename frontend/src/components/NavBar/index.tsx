@@ -62,7 +62,7 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
   
   
   return <nav id={styles.navbar}>
-    <div className={styles.defaultNavOptions}>
+    <div className={styles.leftNavOptions}>
       { leftSideNavOptions }
     </div>
 

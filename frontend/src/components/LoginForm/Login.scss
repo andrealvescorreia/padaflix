@@ -33,14 +33,15 @@
     button{
         border-radius: 25px;
         border-collapse: 1;
-        border: none;
     }
     .buttonFull{
         width: 10rem;
         background-color: #C78A61;
     }
     .buttonEmpty{
-        background-color: white;
+        background-color: none;
+        border-color: #C78A61;
+        color: #C78A61;
     }
     .buttonText{
         padding: 0px;

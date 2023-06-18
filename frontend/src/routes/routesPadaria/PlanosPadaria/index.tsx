@@ -28,7 +28,7 @@ const PlanosPadaria = ({padaria}: PlanosPadariaProps) => {
 
     useEffect(() => {
         fetchPlanos()
-    }, [])
+    }, [padaria])
 
     return (
         <div id="usuario-padaria-planos">
@@ -44,7 +44,7 @@ const PlanosPadaria = ({padaria}: PlanosPadariaProps) => {
             <div className='planos'>
                 {
                     planos?.map(plano => 
-                        <PlanoCard plano={plano}/>
+                        <PlanoCard plano={plano} key={plano.id}/>
                     )
                 }
             </div>

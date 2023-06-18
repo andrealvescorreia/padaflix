@@ -1,3 +1,4 @@
+import { Assinatura } from "./Assinatura";
 import { Endereco } from "./Endereco";
 import { PlanoAssinatura } from "./PlanoAssinatura";
 
@@ -6,6 +7,7 @@ export interface User {
   nome: string,
   email: string,
   endereco: Endereco
+  assinatura: Assinatura[]// assinaturas
 }
 
 export interface PadariaUser {
@@ -26,4 +28,22 @@ export function isPadariaUser(object: any): object is PadariaUser {
 export function isUser(object: any): object is User {
   if(object == undefined) return false;
   return 'nome' in object;
+}
+
+export const defaultPadaria : PadariaUser = {
+  id: 0,
+  nome_fantasia: '',
+  endereco: {
+      cep: '', 
+      rua: '', 
+      numero: '', 
+      complemento: '', 
+      bairro: '', 
+      cidade: '', 
+      uf: ''
+  },
+  cnpj: '',
+  email: '',
+  telefone: '',
+  plano_assinatura: [],
 }

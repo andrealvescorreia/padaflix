@@ -8,10 +8,7 @@ function NotLoggedInHome(){
   return <HomeNotLoggedIn/>
 }
 function UserHome(user: User) {
-  return <div>
-    Olá {user.nome}
-    <PadariasList user={user}/>
-  </div>;
+  return <PadariasList user={user}/>
 }
 
 interface HomeProps {

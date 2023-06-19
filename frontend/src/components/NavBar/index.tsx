@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from './Navbar.module.scss';
 import Logo from '../../assets/logo.png';
-import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+import { PadariaUser, User, isUser } from "../../types/User";
 
 interface NavBarProps {
   user: User | undefined | PadariaUser
@@ -21,6 +21,12 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     </>
   )
 
+  const defaultLeftOptions = (
+    <Link to="/inicio" id={styles.logout_btn}>
+      Início
+    </Link>
+  )
+
   const userRightOptions = (
     <>
       <Link to="/login" id={styles.logout_btn} onClick={logout} >
@@ -29,13 +35,7 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     </>
   )
   
-  const defaultLeftOptions = (
-    <Link to="/inicio" id={styles.logout_btn}>
-      Início
-    </Link>
-  )
-
-  const userSubscriberLeftOptions = (
+  const userLeftOptions = (
     <>
       <Link to="/inicio" id={styles.logout_btn}>
         Início
@@ -48,18 +48,15 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
 
   let leftSideNavOptions;
   let rigthSideNavOptions;
-
   
   if(isUser(user)){
     rigthSideNavOptions = userRightOptions
-    leftSideNavOptions = userSubscriberLeftOptions
+    leftSideNavOptions = userLeftOptions
   }
   else {
     rigthSideNavOptions = notLoggedInRightOptions
     leftSideNavOptions = defaultLeftOptions
   }
-
-  
   
   return <nav id={styles.navbar}>
     <div className={styles.leftNavOptions}>

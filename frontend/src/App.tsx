@@ -21,9 +21,10 @@ import PadariaProfile from './routes/PadariaProfile';
 import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
 
+const navigate = useNavigate()
+
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
-  const navigate = useNavigate()
 
   const fetchUser = async () => {
     axiosInstance.get('/user')
@@ -36,6 +37,7 @@ function App() {
         enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
       }
       else {
+        enqueueSnackbar('Ocorreu um erro', { variant: 'error'})
         console.log(err.response.data)
       }
     })
@@ -56,7 +58,6 @@ function App() {
       console.log(err.response.data)
     })
   }
-  
   
   function onSuccessfulLogin(){
     fetchUser()
@@ -91,7 +92,6 @@ function App() {
     </>
   }
 
- 
 
   return (
     <div>
@@ -120,16 +120,14 @@ function App() {
     </div>
   )
 }
-function PageNotFound() {
-  return <h2>404 Página não encontrada</h2>
-}
 
 function DefaultRoute() {
-  const navigate = useNavigate()
-  useEffect(() => {
-    navigate('/inicio')
-  }, [])
+  useEffect(() => navigate('/inicio'), [])
   return <></>
+}
+
+function PageNotFound() {
+  return <h2>404 Página não encontrada</h2>
 }
 
 export default App

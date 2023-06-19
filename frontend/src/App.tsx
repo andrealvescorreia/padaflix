@@ -21,10 +21,11 @@ import PadariaProfile from './routes/PadariaProfile';
 import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
 
-const navigate = useNavigate()
+
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
+  const navigate = useNavigate()
 
   const fetchUser = async () => {
     axiosInstance.get('/user')
@@ -37,7 +38,6 @@ function App() {
         enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
       }
       else {
-        enqueueSnackbar('Ocorreu um erro', { variant: 'error'})
         console.log(err.response.data)
       }
     })
@@ -122,6 +122,7 @@ function App() {
 }
 
 function DefaultRoute() {
+  const navigate = useNavigate()
   useEffect(() => navigate('/inicio'), [])
   return <></>
 }

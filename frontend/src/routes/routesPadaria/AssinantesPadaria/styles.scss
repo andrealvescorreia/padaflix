@@ -2,4 +2,17 @@
 
 #usuario-padaria-assinantes {
   margin-left: variables.$padaria-sidebar-width;// essa margem dá espaço para a sidebar
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  h2 {
+    margin-right: auto;
+    margin-left: 4.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-size: 1.7rem;
+  }
+
 }

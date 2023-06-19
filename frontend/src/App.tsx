@@ -78,10 +78,12 @@ function App() {
           path="/padarias/:id"
           element={<PadariaProfile user={user} afterSuccessfulSubscription={fetchUser} />}
         />
-     
+
+        
+
         <Route path="/padaria-planos" element={<PlanosPadaria padaria={user} />} />
         <Route path="/padaria-planos/new" element={<NewSubscriptionPlan />} />
-        <Route path="/padaria-assinantes" element={<AssinantesPadaria />} />
+        <Route path="/padaria-assinantes" element={<AssinantesPadaria padariaUser={user} />} />
         <Route path="/padaria-avaliacoes" element={<AvaliacoesPadaria />} />
         <Route path="/padaria-horarios" element={<HorariosPadaria />} />
         <Route path="/padaria-perfil" element={<PerfilPadaria />} />

@@ -36,7 +36,8 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 		let auxPadarias : Padaria[] = []
 		assinaturasUser?.forEach(assinatura => {
 			const padaria:Padaria = {id: assinatura.id_padaria, nome_fantasia: assinatura.nome_padaria}
-			auxPadarias.push(padaria)
+			const index = auxPadarias.findIndex(obj => obj.id === padaria.id);
+			if (index === -1) auxPadarias.push(padaria)// evita repetir a mesma padaria caso assinado mais de um plano dela
 		})
 		setPadariasAssinadas(auxPadarias)
 	}

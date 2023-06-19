@@ -1,0 +1,19 @@
+@use '../../styles/variables';
+@use '../../styles/mixins';
+
+#user-dashboard {
+  @include mixins.flex-center;
+  flex-direction: column;
+  h2 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    margin-right: auto;
+    margin-left: 11.3rem;
+    font-weight: normal;
+  }
+  .subscriptions-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -30,7 +30,6 @@
 }
 
 .logo{
-  
   width: 13rem;
   min-width: 8rem;
 }
@@ -65,13 +64,18 @@
   text-decoration: none;
 }
 
-.defaultNavOptions{
-  width: 30%;
+.leftNavOptions{
+  width: 5%;
+  display: flex;
+  margin-right: auto;
+  margin-left: 1.2rem;
+  gap: 1.2rem;
 }
 
 .navOptions{
   display: flex;
   width: 30%;
+
 }
 
 

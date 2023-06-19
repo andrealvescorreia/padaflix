@@ -17,7 +17,7 @@ const NewSubscriptionPlan = () => {
 
     const createSubscriptionPlan = async (plano: PlanoAssinatura) => {
         setIsFetching(true)
-        axiosInstance.post('/plano_de_assinatura', plano)
+        axiosInstance.post('padaria/plano_de_assinatura', plano)
         .then(() => {
             enqueueSnackbar("Plano de assinatura criado", { variant: 'success'})
         })
@@ -26,7 +26,7 @@ const NewSubscriptionPlan = () => {
                 enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
             }
             else{
-                enqueueSnackbar("Ocorreu um erro: "+JSON.stringify(err.response.data), { variant: 'error'})
+                enqueueSnackbar("Ocorreu um erro ao criar o plano", { variant: 'error'})
                 console.log(err.response.data)
             }
         })

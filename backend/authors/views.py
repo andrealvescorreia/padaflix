@@ -2,9 +2,11 @@ import requests
 import jwt
 import datetime
 
-from .serializers import UserSerializer, PadariaSerializer
-from .serializers import PlanoAssinaturaSerializer  # , AssinaturaSerializer
-from .models import User, Padaria, PlanoAssinatura  # , Assinatura
+from .serializers import (
+    UserSerializer, PadariaSerializer,
+    PlanoAssinaturaSerializer, AssinaturaSerializer, EnderecoSerializer
+)
+from .models import User, Padaria, PlanoAssinatura, Assinatura
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
@@ -176,12 +178,14 @@ class PadariaPorCidadeView(APIView):
         response = requests.get(f'https://viacep.com.br/ws/{cep}/json/')
         if response.status_code != status.HTTP_200_OK:
             return JsonResponse(
-                {'message': 'CEP inválido.'}, status=status.HTTP_400_BAD_REQUEST  # noqa: E501
+                {'message': 'CEP inválido.'},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         if "erro" in response.json() and response.json()["erro"]:
             return JsonResponse(
-                {'message': 'CEP não encontrado.'}, status=status.HTTP_404_NOT_FOUND  # noqa: E501
+                {'message': 'CEP não encontrado.'},
+                status=status.HTTP_404_NOT_FOUND
             )
 
         cidade = response.json().get('localidade', '').upper()
@@ -245,23 +249,102 @@ class PlanoAssinaturaView(UserAndPadariaView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        planos = PlanoAssinatura.objects.filter(padaria=padaria)
+        planos = PlanoAssinatura.objects.filter(padaria_planos=padaria)
         serializer = PlanoAssinaturaSerializer(planos, many=True)
         return Response(serializer.data)
 
 
-'''class AssinaturaView(APIView):
+class AssinantesView(UserAndPadariaView):
+    def get(self, request, padaria_id):
+        if not padaria_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID da padaria.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            padaria = Padaria.objects.get(id=padaria_id)
+        except Padaria.DoesNotExist:
+            return Response(
+                {'error': 'Padaria não encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        planos = PlanoAssinatura.objects.filter(padaria_planos=padaria)
+        serializer = PlanoAssinaturaSerializer(planos, many=True)
+        planos_data = serializer.data
+
+        for plano_data in planos_data:
+            plano_id = plano_data['id']
+            assinaturas = Assinatura.objects.filter(plano_id=plano_id)
+            assinaturas_serializer = AssinaturaSerializer(assinaturas, many=True)  # noqa: E501
+
+            for assinatura_data in assinaturas_serializer.data:
+                cliente_id = assinatura_data['cliente']
+                cliente = User.objects.get(id=cliente_id)
+                endereco_cliente = EnderecoSerializer(cliente.endereco).data
+                assinatura_data['endereco_cliente'] = endereco_cliente
+
+            plano_data['assinaturas'] = assinaturas_serializer.data
+
+        return Response(planos_data)
+
+
+class AssinaturaView(UserAndPadariaView):
     def post(self, request):
+        cliente_id = request.data.get('cliente')
+        plano_id = request.data.get('plano')
+
+        try:
+            cliente = User.objects.get(id=cliente_id)
+            plano = PlanoAssinatura.objects.get(id=plano_id)
+        except (User.DoesNotExist, PlanoAssinatura.DoesNotExist):
+            return Response(
+                {'error': 'Cliente ou plano de assinatura inválido.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         serializer = AssinaturaSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            assinatura = serializer.save(cliente=cliente, plano=plano)
+            cliente.assinatura.add(assinatura)
+            return JsonResponse(
+                {'message': 'Assinatura criada com sucesso.'},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    def get(self, request):
-        assinaturas = Assinatura.objects.all()
+    def get(self, request, user_id):
+        if not user_id:
+            return Response(
+                {'error': 'É necessário fornecer o ID do usuário.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {'error': 'Usuário não encontrado.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        assinaturas = Assinatura.objects.filter(cliente=user)
         serializer = AssinaturaSerializer(assinaturas, many=True)
-        return Response(serializer.data)'''
+
+        plano_data = serializer.data
+        for item in plano_data:
+            plano_id = item['plano']
+            padaria_id = PlanoAssinatura.objects.get(id=plano_id).padaria_planos.first().id  # noqa: E501
+            item['nome_plano'] = PlanoAssinatura.objects.get(id=plano_id).nome
+            item['id_padaria'] = padaria_id
+            item['nome_padaria'] = Padaria.objects.get(id=padaria_id).nome_fantasia  # noqa: E501
+
+        return Response(plano_data)
 
 
 class LogoutView(APIView):

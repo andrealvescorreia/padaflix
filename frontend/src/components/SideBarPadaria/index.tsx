@@ -40,7 +40,7 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 </div>
                 
                 <MenuItem 
-                    component={<Link to="/" />}
+                    component={<Link to="/inicio" />}
                     icon = {<HomeIcon />}
                 >
                     Inicio
@@ -53,7 +53,9 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 <MenuItem component={<Link to="/padaria-assinantes" />} icon={<GroupIcon/>}> 
                     Assinantes
                 </MenuItem>
-
+                
+                {/*
+                
                 <MenuItem component={<Link to="/padaria-avaliacoes" />} icon={<StarBorderIcon/>}> 
                     Avaliações
                 </MenuItem>
@@ -61,7 +63,7 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 <MenuItem component={<Link to="/padaria-horarios" />} icon={<AccessTimeIcon/>}> 
                     Horários
                 </MenuItem>
-
+                
                 <MenuItem component={<Link to="/padaria-endereco" />} icon={<LocationOnIcon/>}> 
                     Endereco
                 </MenuItem>
@@ -69,6 +71,8 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 <MenuItem component={<Link to="/padaria-perfil" />} icon={<StoreIcon/>}> 
                     Perfil
                 </MenuItem>
+                */}
+
 
                 <MenuItem component={<Link to="/login" onClick={logout} />}  className='last-child' 
                     icon={<LogoutIcon/>}> 

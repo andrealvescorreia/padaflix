@@ -52,9 +52,9 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 
 	return <div id="user-dashboard">
 		{ padariasAssinadas.length == 0 && !isFetchingAssinaturas && 
-		<>
-			sem assinatura, acesse o nosso catálogo de padarias para começar
-		</>}
+		<h4 style={{margin: '2rem', marginRight: 'auto'}}>
+			Pareçe que você ainda não é assinante. Acesse o nosso catálogo de padarias para começar.
+		</h4>}
 		
 		{ padariasAssinadas.length > 0 && 
 		<>

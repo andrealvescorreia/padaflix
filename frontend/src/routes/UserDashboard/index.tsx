@@ -12,13 +12,14 @@ interface UserDashboardProps {
 
 interface Padaria{
 	id: number,
-    nome_fantasia: string,
+  nome_fantasia: string,
 }
 
 const UserDashboard = ({user} : UserDashboardProps) => {
-	const [assinaturasUser, setAssinaturasUser] = useState<AssinaturaUser[]>();
+	const [assinaturasUser, setAssinaturasUser] = useState<AssinaturaUser[]>([]);
 	const [isFetchingAssinaturas, setIsFetchingAssinaturas] = useState(false)
-	const [padariasAssinadas, setPadariasAssinadas] = useState<Padaria[]>([{id: 1, nome_fantasia: 'aaaa'}])
+	const [padariasAssinadas, setPadariasAssinadas] = useState<Padaria[]>([])
+
 	const fetchAssinaturasUser = async () => {
 		setIsFetchingAssinaturas(true)
 		axiosInstance.get('/assinaturas/usuario/'+user.id)
@@ -34,7 +35,7 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 	
 	function updatePadariasAssinadas(){
 		let auxPadarias : Padaria[] = []
-		assinaturasUser?.forEach(assinatura => {
+		assinaturasUser.forEach(assinatura => {
 			const padaria:Padaria = {id: assinatura.id_padaria, nome_fantasia: assinatura.nome_padaria}
 			const index = auxPadarias.findIndex(obj => obj.id === padaria.id);
 			if (index === -1) auxPadarias.push(padaria)// evita repetir a mesma padaria caso assinado mais de um plano dela

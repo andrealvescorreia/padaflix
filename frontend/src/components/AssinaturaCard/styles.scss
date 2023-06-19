@@ -1,0 +1,29 @@
+@use '../../styles/variables.scss';
+@use '../../styles/mixins.scss';
+
+#assinatura-card{
+  width: 60rem;
+  background-color: variables.$bg-color;
+  height: 9rem;
+  display: grid;
+	grid-template-columns: 2.5fr 2fr 1fr 0.8fr;
+  gap: 0.5rem;
+  color: #1C1C1C;
+  .span {
+    padding-top: 1rem;
+  }
+  .client {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    padding-left: 1.5rem;
+    .client-name {
+      font-size: 1.35rem;
+    }
+    .client-address{
+      color: #545454;
+      
+    }
+  }
+  
+}

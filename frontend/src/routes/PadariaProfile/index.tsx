@@ -41,6 +41,7 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planModalContent, setPlanModalContent] = useState<PlanoAssinatura>();
     const [currentTab, setCurrentTab] = useState('1');
+    const [isFetchingPadaria, setIsFetchingPadaria] = useState(false);
 
     const openPlanModal = (plano: PlanoAssinatura) => {
         setPlanModalContent(plano)
@@ -82,6 +83,7 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
     }
 
     const fetchPadaria = async () => {
+        setIsFetchingPadaria(true)
         axiosInstance.get('/padarias/'+id)
         .then((response)=>{
             setPadaria(response.data)
@@ -89,6 +91,7 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
         .catch((err)=>{
             console.log(err.response.data)
         })
+        .finally(()=>setIsFetchingPadaria(false))
     }
 
 
@@ -109,6 +112,9 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
     function renderCurrentTabContent() {
         switch(currentTab) {
             case '1':
+                if(padaria?.plano_assinatura.length == 0 && !isFetchingPadaria){
+                    return <h2>Sem planos :(</h2>
+                }
                 return(
                     <div className="plans-grid">
                         {

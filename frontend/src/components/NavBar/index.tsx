@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from './Navbar.module.scss';
 import Logo from '../../assets/logo.png';
-import { PadariaUser, User, isPadariaUser, isUser } from "../../types/User";
+import { PadariaUser, User, isUser } from "../../types/User";
 
 interface NavBarProps {
   user: User | undefined | PadariaUser
@@ -10,57 +10,57 @@ interface NavBarProps {
 
 const NavBar = ( {user, logout} : NavBarProps ) => {
 
-  const notLoggedInOptions = (
+  const notLoggedInRightOptions = (
     <>
       <Link to="/login"  id={styles.login_btn} className={styles.btn} >
         Login
       </Link>
       <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
-        Começe Agora
+        Comece Agora
       </Link>
     </>
   )
 
-  const userOptions = (
+  const defaultLeftOptions = (
+    <Link to="/inicio" id={styles.logout_btn}>
+      Início
+    </Link>
+  )
+
+  const userRightOptions = (
     <>
       <Link to="/login" id={styles.logout_btn} onClick={logout} >
         Sair
       </Link>
     </>
   )
-
   
-
-  const padariaOptions = (
+  const userLeftOptions = (
     <>
-      <Link to="/new-subscription-plan" id={styles.logout_btn}  >
-        Nova Plano
+      <Link to="/inicio" id={styles.logout_btn}>
+        Início
       </Link>
-      {userOptions}
+      <Link to="/padarias" id={styles.logout_btn}>
+        Padarias
+      </Link>
     </>
   )
 
+  let leftSideNavOptions;
   let rigthSideNavOptions;
-
-  if (user) {
-    if(isUser(user)){
-      rigthSideNavOptions = userOptions
-    }
-    if (isPadariaUser(user)) {
-      rigthSideNavOptions = padariaOptions
-    }
+  
+  if(isUser(user)){
+    rigthSideNavOptions = userRightOptions
+    leftSideNavOptions = userLeftOptions
   }
   else {
-    rigthSideNavOptions = notLoggedInOptions
+    rigthSideNavOptions = notLoggedInRightOptions
+    leftSideNavOptions = defaultLeftOptions
   }
-
-  
   
   return <nav id={styles.navbar}>
-    <div className={styles.defaultNavOptions}>
-      <Link to="/"   className={styles.option} >
-        Início
-      </Link>
+    <div className={styles.leftNavOptions}>
+      { leftSideNavOptions }
     </div>
 
     <div className={styles.logoContainer}>
@@ -68,7 +68,7 @@ const NavBar = ( {user, logout} : NavBarProps ) => {
     </div>
 
     <div className={styles.navOptions}>
-      {rigthSideNavOptions}
+      { rigthSideNavOptions }
     </div>
   </nav>;
 }

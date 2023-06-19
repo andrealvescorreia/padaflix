@@ -7,7 +7,7 @@ import {MdOutlineKeyboardArrowRight} from 'react-icons/md'
 import { Link } from "react-router-dom";
 
 const StartNowBtn = () => {
-  return <Link to="/choose-profile" className={styles.startNowBtn}>Começe Agora {<MdOutlineKeyboardArrowRight/>}</Link>
+  return <Link to="/choose-profile" className={styles.startNowBtn}>Comece Agora {<MdOutlineKeyboardArrowRight/>}</Link>
 }
 
 const HomeNotLoggedIn = () => {
@@ -66,7 +66,7 @@ const HomeNotLoggedIn = () => {
 
 
     <div id={styles.callToActionContainer}>
-      <h2>Começe agora gratuitamente</h2>
+      <h2>Comece agora gratuitamente</h2>
       <StartNowBtn/>
     </div>
 

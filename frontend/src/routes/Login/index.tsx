@@ -26,7 +26,7 @@ const Login = ({ onSuccessfulLogin }: LoginProps) => {
                 enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
             }
             else{
-                enqueueSnackbar("Ocorreu um erro no registro: "+JSON.stringify(err.response.data), { variant: 'error'})
+                enqueueSnackbar("Não foi possível realizar o login",{ variant: 'error'})
                 console.log(err.response.data)
             }
         })

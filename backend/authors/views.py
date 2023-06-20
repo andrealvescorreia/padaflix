@@ -137,7 +137,11 @@ class LoginView(APIView):
 class UserAndPadariaView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
-        print(token)
+        
+        print('jwt: ', token)
+        csrftoken = request.COOKIES.get('csrftoken')
+        print('csrftoken: ', csrftoken)
+        
         if not token:
             raise AuthenticationFailed('Não Autenticado!')
 

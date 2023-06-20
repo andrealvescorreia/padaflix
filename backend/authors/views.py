@@ -137,7 +137,7 @@ class LoginView(APIView):
 class UserAndPadariaView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
-
+        print(token)
         if not token:
             raise AuthenticationFailed('Não Autenticado!')
 

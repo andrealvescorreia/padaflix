@@ -127,7 +127,7 @@ class LoginView(APIView):
 
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='jwt', value=token, httponly=True, secure=True)
         response.data = {
             "jwt": token
         }
@@ -141,7 +141,7 @@ class UserAndPadariaView(APIView):
         print('jwt: ', token)
         csrftoken = request.COOKIES.get('csrftoken')
         print('csrftoken: ', csrftoken)
-        
+
         if not token:
             raise AuthenticationFailed('Não Autenticado!')
 

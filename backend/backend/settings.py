@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '18.191.203.223',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
 ]
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = 'coverage'
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'authors',
     'corsheaders',
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

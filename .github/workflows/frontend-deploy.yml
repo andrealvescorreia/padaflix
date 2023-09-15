@@ -41,7 +41,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || 'refs/heads/feature/backend/deploy-to-pythonanywhere.com'
 
     steps:
       - name: Download artifact

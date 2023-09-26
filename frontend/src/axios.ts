@@ -2,8 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  baseURL: 'https://andrezitob.pythonanywhere.com/api',
-  //baseURL: 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {'Content-Type': 'application/json'}
 });
 

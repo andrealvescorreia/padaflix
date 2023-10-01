@@ -16,11 +16,11 @@ interface Padaria {
 
 const PadariasList = ({user} : Props) => {
     const [padarias, setPadarias] = useState<Padaria[]> ([]);
-    const [isFetching, setIsFetching] = useState(false)
+    const [doneFetching, setDoneFetching] = useState(false)
     const { enqueueSnackbar } = useSnackbar();
 
     const fetchPadarias = async () => {
-        setIsFetching(true)
+        setDoneFetching(false)
         axiosInstance.get('/padarias/cep/'+user?.endereco.cep)
         .then((response) => {
             setPadarias(response.data);
@@ -30,7 +30,7 @@ const PadariasList = ({user} : Props) => {
             console.log(err.response.data)
         })
         .finally(()=>{
-            setIsFetching(false)
+            setDoneFetching(true)
         })
    }
 
@@ -40,7 +40,7 @@ const PadariasList = ({user} : Props) => {
 
 
     return <div id="padarias-list">
-        { isFetching ? <LinearProgress className="linear-progress" /> : null}
+        { !doneFetching ? <LinearProgress className="linear-progress" /> : null}
         <h2>Padarias</h2>
 
         <div className="grid">
@@ -53,7 +53,7 @@ const PadariasList = ({user} : Props) => {
                 )
             }
             {
-                padarias.length == 0 && !isFetching &&
+                padarias.length == 0 && doneFetching &&
                 <h2>Sem padarias na sua cidade :(</h2>
             }
         </div>

@@ -17,11 +17,11 @@ interface Padaria{
 
 const UserDashboard = ({user} : UserDashboardProps) => {
 	const [assinaturasUser, setAssinaturasUser] = useState<AssinaturaUser[]>([]);
-	const [isFetchingAssinaturas, setIsFetchingAssinaturas] = useState(false)
+	const [doneFetchingAssinaturas, setDoneFetchingAssinaturas] = useState(false)
 	const [padariasAssinadas, setPadariasAssinadas] = useState<Padaria[]>([])
 
 	const fetchAssinaturasUser = async () => {
-		setIsFetchingAssinaturas(true)
+		setDoneFetchingAssinaturas(false)
 		axiosInstance.get('/assinaturas/usuario/'+user.id)
 		.then((response) => {
 			setAssinaturasUser(response.data);
@@ -30,7 +30,7 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 			enqueueSnackbar('Ocorreu um erro', { variant: 'error'})
 			console.log(err.response.data)
 		})
-		.finally(()=> setIsFetchingAssinaturas(false))
+		.finally(()=> setDoneFetchingAssinaturas(true))
 	}
 	
 	function updatePadariasAssinadas(){
@@ -52,7 +52,7 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 	}, [assinaturasUser])
 
 	return <div id="user-dashboard">
-		{ padariasAssinadas.length == 0 && !isFetchingAssinaturas && 
+		{ padariasAssinadas.length == 0 && doneFetchingAssinaturas && 
 		<h4 style={{margin: '2rem', marginRight: 'auto'}}>
 			Pareçe que você ainda não é assinante. Acesse o nosso catálogo de padarias para começar.
 		</h4>}

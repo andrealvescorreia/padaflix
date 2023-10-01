@@ -25,9 +25,11 @@ import PadariasList from './routes/PadariasList';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
+  const [doneFetchingUser, setDoneFetchingUser] = useState(false)
   const navigate = useNavigate()
 
   const fetchUser = async () => {
+    setDoneFetchingUser(false)
     axiosInstance.get('/user')
     .then((response) => {
       setUser(response.data);
@@ -41,6 +43,7 @@ function App() {
         console.log(err.response.data)
       }
     })
+    .finally(()=>setDoneFetchingUser(true))
   }
 
   useEffect(() => {
@@ -59,9 +62,8 @@ function App() {
     })
   }
   
-  function onSuccessfulLogin(){
-    fetchUser()
-    navigate('/inicio')
+  async function onSuccessfulLogin(){
+    await fetchUser().then(()=>navigate('/inicio'))
   }
 
   function notLoggedInRoutes(){
@@ -102,20 +104,27 @@ function App() {
       }
       <Routes>
         <Route path="/" element={<DefaultRoute/>}/>
-        <Route path="/inicio" element={ <Home user={user} /> }/>
         {
-          !user &&
+          doneFetchingUser && !user &&
+          <Route path="/inicio" element={ <Home user={undefined} /> }/>
+        }
+        {
+          doneFetchingUser && user &&
+          <Route path="/inicio" element={ <Home user={user} /> }/>
+        }
+        {
+          doneFetchingUser && !user &&
           notLoggedInRoutes()
         }
         {
-          isUser(user) &&
+          doneFetchingUser && isUser(user) &&
           userRoutes()
         }
         {
-          isPadariaUser(user) &&
+          doneFetchingUser && isPadariaUser(user) &&
           padariaRoutes()
         }
-        <Route path="*" element={<PageNotFound />} />
+        {/*<Route path="*" element={<PageNotFound />} />*/}
       </Routes>
     </div>
   )

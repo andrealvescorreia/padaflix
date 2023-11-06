@@ -127,7 +127,7 @@ class LoginView(APIView):
 
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='jwt', value=token, httponly=True, samesite='None', secure=True)
         response.data = {
             "jwt": token
         }
@@ -137,6 +137,10 @@ class LoginView(APIView):
 class UserAndPadariaView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
+        
+        print('jwt: ', token)
+        csrftoken = request.COOKIES.get('csrftoken')
+        print('csrftoken: ', csrftoken)
 
         if not token:
             raise AuthenticationFailed('Não Autenticado!')
@@ -350,7 +354,7 @@ class AssinaturaView(UserAndPadariaView):
 class LogoutView(APIView):
     def post(self, request):
         response = Response()
-        response.delete_cookie('jwt')
+        response.delete_cookie(key='jwt', samesite='None')
         response.data = {
             'message': 'Logout feito com sucesso'
         }

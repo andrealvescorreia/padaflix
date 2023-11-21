@@ -15,10 +15,6 @@ const NavBar = ({ user, logout }: NavBarProps) => {
     return document.URL.match(text)
   }
 
-  const isSelectedOption = (text: string) => {
-    return document.URL.match(text)
-  }
-
   const notLoggedInRightOptions = (
     <>
       <Link to="/login" id={styles.login_btn} className={styles.btn} >
@@ -68,18 +64,29 @@ const NavBar = ({ user, logout }: NavBarProps) => {
     centerSideNavOptions = defaultCenterOptions
   }
 
-  return <nav id={styles.navbar}>
+  let hideNavigation = isThisPath("/register") || isThisPath("/login")
+
+  return <nav id={hideNavigation ? styles.cleanNavbar : styles.navbar}>
     <Link className={styles.logoContainer} to="/inicio">
       <img src={Logo} className={styles.logo} alt="logo padaflix" />
     </Link>
 
-    <div className={styles.centerNavOptions}>
-      {centerSideNavOptions}
-    </div>
+    {
+      hideNavigation
+        ?
+        <></>
+        :
+        <>
+          <div className={styles.centerNavOptions}>
+            {centerSideNavOptions}
+          </div>
 
-    <div className={styles.navOptions}>
-      {rigthSideNavOptions}
-    </div>
+          <div className={styles.navOptions}>
+            {rigthSideNavOptions}
+          </div>
+        </>
+    }
+
   </nav>;
 }
 

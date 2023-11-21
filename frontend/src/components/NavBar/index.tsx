@@ -15,6 +15,10 @@ const NavBar = ({ user, logout }: NavBarProps) => {
     return document.URL.match(text)
   }
 
+  const isSelectedOption = (text: string) => {
+    return document.URL.match(text)
+  }
+
   const notLoggedInRightOptions = (
     <>
       <Link to="/login" id={styles.login_btn} className={styles.btn} >

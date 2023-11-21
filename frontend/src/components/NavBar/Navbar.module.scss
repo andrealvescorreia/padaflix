@@ -5,28 +5,31 @@
   background-color: variables.$bg-color;
   width: 100%;
   height: 4.7rem;
-  @include mixins.flex-center;
+  padding-inline: 20px;
+  @include mixins.flex-between;
   box-shadow: 0 4px 2px -2px rgba(128, 128, 128, 0.301);
   z-index: 3;
   position: relative;
+  font-size: 1.2rem;
 }
 
 
 .btn{
   
   height: 2.3rem;
-  width: 9rem;
+  width: fit-content;
+  padding-inline: 1rem;
   @include mixins.flex-center;
-  margin-right:1.2rem;
   transition: .2s;
   text-decoration: none;
   font-weight: bold;
+  gap: .5rem;
   border-radius: 10px;
 }
 
 .logoContainer{
   @include mixins.flex-center;
-  width: 40%;
+  padding: 20px;
 }
 
 .logo{
@@ -34,15 +37,15 @@
   min-width: 8rem;
 }
 
-#login_btn{
+#login_btn, #logout_btn{
   border: solid 0.1rem #C78A61;
   color: #C78A61;
   margin-left: auto;
 }
 
-#login_btn:hover{
-  border-color: #e9b28d;;
-  color: #e9b28d;;
+#login_btn:hover, #logout_btn:hover{
+  border-color: #e9b28d;
+  color: #e9b28d;
 }
 
 #start_now_btn{
@@ -55,27 +58,36 @@
   background-color: #C78A61;
 }
 
-#logout_btn{
+#nav_btn, #selected_btn{
   margin-left: auto;
-  color: black;
-  margin-right: 1rem;
+  color: variables.$text-color-secondary;
   display: flex;
+  padding: .5rem;
   align-items: center;
   text-decoration: none;
+  transition: .2s;
 }
 
-.leftNavOptions{
-  width: 5%;
+#nav_btn:hover{
+  color: black;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.205);
+  border-radius: 10px;
+}
+
+#selected_btn{
+  font-weight: bold;
+}
+
+.centerNavOptions{
+  padding: 10px;
   display: flex;
-  margin-right: auto;
-  margin-left: 1.2rem;
   gap: 1.2rem;
 }
 
 .navOptions{
   display: flex;
-  width: 30%;
-
+  padding: 20px;
+  gap: 1.2rem;
 }
 
 

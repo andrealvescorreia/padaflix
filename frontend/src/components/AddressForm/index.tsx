@@ -140,12 +140,20 @@ const AddressForm = ( props : AddressFormProps ) => {
                     <TextField 
                         label = "Número" 
                         required
-                        type = "number" 
                         value = {endereco.numero}
-                        onChange = { e => setEndereco( prevEndereco => 
-                            ({ ...prevEndereco, numero: e.target.value } )
-                        )}
-                        disabled={disabled}
+                        onChange={(e) => {
+                            const numberInput = e.target.value;
+
+                            numberInput.match(/[^0-9]/) || numberInput[0] == '0'
+                            ? 
+                            e.preventDefault 
+                            : 
+                            setEndereco( prevEndereco => (
+                                { ...prevEndereco, numero: e.target.value }
+                            ))
+                           
+                        }}
+                        disabled={disabled} 
                     />
                     <TextField 
                         label = "Complemento" 

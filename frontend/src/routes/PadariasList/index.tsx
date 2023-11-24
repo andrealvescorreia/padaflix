@@ -103,6 +103,10 @@ const PadariasList = ({user} : Props) => {
         ifUserThenFetchUsingHisCep()
     }, [])
 
+    useEffect(() => {
+        if(inputCep.length == 8) onSubmitInputCep()
+    }, [inputCep])
+
     function incorrectInputCepCondition(){
         return submitedCep && isDoneValidatingInputCep && inputCepIsInvalid
     }
@@ -112,21 +116,15 @@ const PadariasList = ({user} : Props) => {
             mask = "99999-999"  
             value = {inputCep}
             onChange = { e => {
-                setInputCep((e.target.value).replace('-', '').replaceAll('_', ''));
-                setSubmitedCep(false)
+                let cep = (e.target.value).replace('-', '').replaceAll('_', '')
+                setInputCep(cep);
+                
             }}
-            onBlur = { () => onSubmitInputCep() }
         >
             <TextField className="cep-input"
                 size="small"
                 label = "CEP" 
                 error = { incorrectInputCepCondition() }
-                onKeyDown={(ev) => {
-                    if (ev.key === 'Enter') {
-                        onSubmitInputCep()
-                        ev.preventDefault()
-                    }
-                }}
                 helperText= { incorrectInputCepCondition() ? 'CEP incorreto' : ' '}
             />
         </InputMask>
@@ -161,11 +159,12 @@ const PadariasList = ({user} : Props) => {
                     />
                 )
             }
-            {
-                padarias.length == 0 && isDoneFetching && !inputCepIsInvalid &&
-                <h2> Sem padarias na sua cidade :( </h2>
-            }
+            
         </div>
+        {
+            padarias.length == 0 && isDoneFetching && !inputCepIsInvalid &&
+            <h2> Sem padarias na sua cidade :( </h2>
+        }
     </div>;
 }
  

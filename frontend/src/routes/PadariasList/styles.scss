@@ -4,13 +4,24 @@
 #padarias-list{
     @include mixins.flex-center;
     flex-direction: column;
-    h2 {
+    .header {
         margin-top: 2rem;
         margin-bottom: 2rem;
         margin-right: auto;
         margin-left: 11.3rem;
-        font-weight: normal;
+        
+        display: flex;
+        gap: 5em;
+
+        .cep-input {
+            width: 7em;
+        }
+        h2 {
+            font-weight: normal;
+        }
     }
+
+    
 
     .grid {
         display: grid;

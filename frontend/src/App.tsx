@@ -68,6 +68,8 @@ function App() {
 
   function notLoggedInRoutes(){
     return <>
+      <Route path="/padarias"              element={<PadariasList user={user} />} />
+      <Route path="/padarias/:id" element={<PadariaProfile user={user} afterSuccessfulSubscription={fetchUser} />}/>
       <Route path="/login"                 element={<Login onSuccessfulLogin={onSuccessfulLogin} />} />
       <Route path="/choose-profile"        element={<ChooseProfile />} />
       <Route path="/register/user"         element={<RegisterUser/>} />

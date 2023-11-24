@@ -67,7 +67,7 @@ const AddressForm = ( props : AddressFormProps ) => {
     function clearForm(){
         setRuaWasAutoFilled(false)
         setBairroWasAutoFilled(false)
-        setEndereco({cep: endereco.cep, rua: '', numero: '', uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
+        setEndereco({cep: endereco.cep, rua: '', numero: null, uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
     }
 
     function badCepRequest() {
@@ -149,7 +149,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                             e.preventDefault 
                             : 
                             setEndereco( prevEndereco => (
-                                { ...prevEndereco, numero: e.target.value }
+                                { ...prevEndereco, numero: parseInt(e.target.value) }
                             ))
                            
                         }}

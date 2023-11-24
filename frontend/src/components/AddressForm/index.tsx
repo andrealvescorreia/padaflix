@@ -149,7 +149,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                             e.preventDefault 
                             : 
                             setEndereco( prevEndereco => (
-                                { ...prevEndereco, numero: parseInt(e.target.value) }
+                                { ...prevEndereco, numero:  (typeof numberInput == 'number') ?  parseInt(numberInput) : null } 
                             ))
                            
                         }}

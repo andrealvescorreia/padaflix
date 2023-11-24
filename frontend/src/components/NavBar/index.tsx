@@ -64,7 +64,7 @@ const NavBar = ({ user, logout }: NavBarProps) => {
     centerSideNavOptions = defaultCenterOptions
   }
 
-  let hideNavigation = isThisPath("/register") || isThisPath("/login")
+  let hideNavigation = isThisPath("/register") || isThisPath("/login") || isThisPath("/choose-profile")
 
   return <nav id={hideNavigation ? styles.cleanNavbar : styles.navbar}>
     <Link className={styles.logoContainer} to="/inicio">

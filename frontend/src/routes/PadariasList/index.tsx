@@ -4,7 +4,6 @@ import { PadariaUser, User, isUser } from "../../types/User";
 import "./styles.scss"
 import { useEffect, useState } from "react";
 import { LinearProgress, TextField } from "@mui/material";
-import { useSnackbar } from 'notistack';
 import InputMask from 'react-input-mask';
 import axios from "axios";
 
@@ -22,23 +21,30 @@ const PadariasList = ({user} : Props) => {
     const [isDoneFetching, setIsDoneFetching] = useState<boolean>(false)
 
     const [inputCep, setInputCep] = useState('');
-    const [cepIsValid, setCepIsValid] = useState<boolean>()
+    const [submitedCep, setSubmitedCep] = useState(false);
+    const [isValidatingInputCep, setIsValidatingInputCep] = useState(false);
+    const [isDoneValidatingInputCep, setIsDoneValidatingInputCep] = useState<boolean>(false)
+    const [inputCepIsInvalid, setInputCepIsInvalid] = useState<boolean>(false)
 
-    const { enqueueSnackbar } = useSnackbar();
-    const [ cidadeAndUf, setCidadeAndUf] = useState('');
+    const [ cidadeAndUf, setCidadeAndUf ] = useState('');
 
-    function isCepValid(cep: String){
-        return cep.length == 8
+    async function isCepValid(cep: String){
+        if( cep.length != 8) return false
+        try {
+            await queryCidadeAndUfFromCep(cep)
+        } catch (error) {
+            return false
+        }
+        return true
     }
 
     const fetchPadarias = async (cep: String) => {
-        
-        setCepIsValid(true)
         setIsFetching(true)
         setIsDoneFetching(false)
         axiosInstance.get('/padarias/cep/'+cep)
         .then((response) => {
             setPadarias(response.data);
+            //console.log(response.data)
         })
         .catch((err) => {
             console.log(err.response.data)
@@ -59,8 +65,6 @@ const PadariasList = ({user} : Props) => {
         uf: string,
     }
 
-    
-
     async function queryCidadeAndUfFromCep(cep: String){
         return axios.get("https://viacep.com.br/ws/"+ cep +"/json/")
         .then((response) => {
@@ -72,63 +76,80 @@ const PadariasList = ({user} : Props) => {
     }   
 
     async function onSubmitInputCep(){
-        if(isCepValid(inputCep) == false) {
-            setCepIsValid(false)
+        setSubmitedCep(true)
+        setIsValidatingInputCep(true)
+        setIsDoneValidatingInputCep(false)
+        if(await isCepValid(inputCep) == false) {
+            setInputCepIsInvalid(true)
+            setPadarias([])
+            setIsValidatingInputCep(false)
+            setIsDoneValidatingInputCep(true)
             return
         }
+        setIsValidatingInputCep(false)
+        setIsDoneValidatingInputCep(true)
+        setInputCepIsInvalid(false)
         setCidadeAndUf(await queryCidadeAndUfFromCep(inputCep))
         fetchPadarias(inputCep)
     }
 
     useEffect(() => {
-        if(isUser(user)) {
-            fetchPadarias(user.endereco.cep)
-            aaa()
+        async function ifUserThenFetchUsingHisCep() {
+            if(isUser(user)) {
+                setCidadeAndUf(await queryCidadeAndUfFromCep(user.endereco.cep))
+                fetchPadarias(user.endereco.cep)
+            }
         }
+        ifUserThenFetchUsingHisCep()
     }, [])
 
-    async function aaa() {
-        if(isUser(user)) {
-        setCidadeAndUf(await queryCidadeAndUfFromCep(user.endereco.cep))
-    }
+    function incorrectInputCepCondition(){
+        return submitedCep && isDoneValidatingInputCep && inputCepIsInvalid
     }
 
     function CepInput() {
         return <InputMask 
             mask = "99999-999"  
             value = {inputCep}
-            onChange = { e => setInputCep((e.target.value).replace('-', '').replaceAll('_', '')) }
+            onChange = { e => {
+                setInputCep((e.target.value).replace('-', '').replaceAll('_', ''));
+                setSubmitedCep(false)
+            }}
             onBlur = { () => onSubmitInputCep() }
         >
             <TextField className="cep-input"
                 size="small"
                 label = "CEP" 
-                error = {cepIsValid == false}
+                error = { incorrectInputCepCondition() }
                 onKeyDown={(ev) => {
                     if (ev.key === 'Enter') {
-                        onSubmitInputCep
+                        onSubmitInputCep()
                         ev.preventDefault()
                     }
                 }}
-                helperText= {cepIsValid == false ? 'CEP incorreto' : ' '}
+                helperText= { incorrectInputCepCondition() ? 'CEP incorreto' : ' '}
             />
         </InputMask>
     }
 
     return <div id="padarias-list">
-        { isFetching && <LinearProgress className="linear-progress" /> }
+        { 
+            isFetching || isValidatingInputCep && 
+            <LinearProgress className="linear-progress" /> 
+        }
         <div className="header">
             { 
                 user == undefined 
                 && CepInput() 
             }
-            { 
-                isDoneFetching &&
-                <h2>Padarias em  { cidadeAndUf }</h2>}
             {   
-                user == undefined && !isFetching && inputCep == '' && !isDoneFetching && 
+                user == undefined && !isFetching && !submitedCep && !isDoneFetching && 
                 <h2>Insira seu CEP</h2> 
             }
+            { 
+                isDoneFetching && !inputCepIsInvalid &&
+                <h2>Padarias em  { cidadeAndUf }</h2>
+            }  
         </div>
         
         <div className="grid">
@@ -141,8 +162,8 @@ const PadariasList = ({user} : Props) => {
                 )
             }
             {
-                padarias.length == 0 && isDoneFetching && cepIsValid &&
-                <h2>Sem padarias na sua cidade :(</h2>
+                padarias.length == 0 && isDoneFetching && !inputCepIsInvalid &&
+                <h2> Sem padarias na sua cidade :( </h2>
             }
         </div>
     </div>;

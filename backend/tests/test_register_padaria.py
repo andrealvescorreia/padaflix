@@ -40,7 +40,7 @@ class TestRegisterPadaria(TestSetUp):
         self.assertEqual(res.status_code, 400)
 
     def test_padaria_cannot_register_with_invalid_numero(self):
-        self.padaria_data['endereco']['numero'] = ""
+        self.padaria_data['endereco']['numero'] = -1
 
         res = self.client.post(
             self.register_padaria_url, self.padaria_data, format="json"
@@ -91,7 +91,7 @@ class TestRegisterPadaria(TestSetUp):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
-            numero="01",
+            numero=1,
             bairro="Centro",
             complemento="",
             uf="PB"
@@ -132,7 +132,7 @@ class TestRegisterPadaria(TestSetUp):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
-            numero="01",
+            numero=1,
             bairro="Centro",
             complemento="",
             uf="PB"
@@ -189,7 +189,7 @@ class TestRegisterPadaria(TestSetUp):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
-            numero="01",
+            numero=1,
             bairro="Centro",
             complemento="",
             uf="PB"

@@ -40,7 +40,7 @@ class TestRegisterUser(TestSetUp):
         self.assertEqual(res.status_code, 400)
 
     def test_user_cannot_register_with_invalid_numero(self):
-        self.user_data['endereco']['numero'] = ""
+        self.user_data['endereco']['numero'] = -1
 
         res = self.client.post(
             self.register_user_url, self.user_data, format="json"
@@ -107,7 +107,7 @@ class TestRegisterUser(TestSetUp):
         endereco = Endereco.objects.create(
             cep="58705750",
             rua="Rua Dom Pedro II",
-            numero="01",
+            numero=1,
             bairro="Centro",
             complemento="",
             uf="PB"

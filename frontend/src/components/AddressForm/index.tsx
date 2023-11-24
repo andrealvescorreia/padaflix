@@ -141,6 +141,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         label = "Número" 
                         required
                         value = {endereco.numero}
+                        InputLabelProps={{ shrink: true }}
                         onChange={(e) => {
                             const numberInput = e.target.value;
 

@@ -144,7 +144,9 @@ const AddressForm = ( props : AddressFormProps ) => {
                     <TextField
                         label = "Número" 
                         required
+                        type='number'
                         value = {endereco.numero}
+                        InputProps={{ inputProps: { min: 1 } }}
                         onKeyDown={(e) => {
                             if (e.key === "e" || e.key === "E" || e.key === "-" || e.key === "+") {
                                 e.preventDefault()
@@ -155,7 +157,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                         }}
                         onChange={(e) => {
                             const numberInput = e.target.value;
-                            if (numberInput === '') 
+                            if (numberInput === '')
                                 setEndereco( prevEndereco => (
                                     { ...prevEndereco, numero: undefined } 
                                 ))

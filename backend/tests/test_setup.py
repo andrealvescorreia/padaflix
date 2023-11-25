@@ -14,7 +14,7 @@ class TestSetUp(APITestCase):
             'endereco': {
                 "cep": "58701750",
                 "rua": "Nestor Pereira",
-                "numero": "01",
+                "numero": 1,
                 "bairro": "Bivar Olinto",
                 "complemento": "",
                 "uf": "PB"
@@ -28,7 +28,7 @@ class TestSetUp(APITestCase):
             'endereco': {
                 "cep": "58705750",
                 "rua": "Dom Pedro II",
-                "numero": "02",
+                "numero": 2,
                 "bairro": "Centro",
                 "complemento": "",
                 "uf": "PB"

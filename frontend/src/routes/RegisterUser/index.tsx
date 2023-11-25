@@ -28,7 +28,7 @@ const RegisterUser = () => {
         endereco: {
             cep: '', 
             rua: '', 
-            numero: '', 
+            numero: undefined, 
             complemento: '', 
             bairro: '', 
             cidade: '', 

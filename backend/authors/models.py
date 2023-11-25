@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
-
+from django.core.validators import MinValueValidator
 
 class Endereco(models.Model):
     cep = models.CharField(max_length=8)
     rua = models.CharField(max_length=100)
-    numero = models.CharField(max_length=10)
+    numero = models.IntegerField(validators=[MinValueValidator(1)])
     bairro = models.CharField(max_length=100)
     complemento = models.CharField(max_length=100, null=True, blank=True)
     uf = models.CharField(max_length=2)

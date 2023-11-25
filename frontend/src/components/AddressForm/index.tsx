@@ -9,7 +9,6 @@ import { MdLocationOn } from "react-icons/md";
 import axios from 'axios';
 import { Endereco } from '../../types/Endereco';
 
-
 interface ViaCepApiResponse {
     cep: string,
     logradouro: string, // equivale a rua
@@ -20,14 +19,19 @@ interface ViaCepApiResponse {
 }
 
 interface AddressFormProps {
-    onSubmit: (endereco: Endereco) => void,
-    onGoBack: (endereco: Endereco) => void,
-    defaultData: Endereco,
-    disabled: boolean,
+    onSubmit?: (endereco: Endereco) => void,
+    onGoBack?: (endereco: Endereco) => void,
+    defaultData?: Endereco,
+    disabled?: boolean,
 }
 
 const AddressForm = ( props : AddressFormProps ) => {
-    const { onSubmit, onGoBack, defaultData, disabled } = props
+    const { 
+        onSubmit = ()=>{}, 
+        onGoBack = ()=>{}, 
+        defaultData = {cep: '', rua: '', numero: undefined, uf: '', cidade: '', complemento: '', bairro: ''} as Endereco, 
+        disabled = false 
+    } = props
    
     const [endereco, setEndereco] = useState<Endereco>(defaultData)
 
@@ -67,7 +71,7 @@ const AddressForm = ( props : AddressFormProps ) => {
     function clearForm(){
         setRuaWasAutoFilled(false)
         setBairroWasAutoFilled(false)
-        setEndereco({cep: endereco.cep, rua: '', numero: null, uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
+        setEndereco({cep: endereco.cep, rua: '', numero: undefined, uf: '', cidade: '', complemento: '', bairro: ''} as Endereco)
     }
 
     function badCepRequest() {
@@ -125,7 +129,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                     label = "Logradouro" 
                     required
                     value = {endereco.rua}
-                    onChange = { e => setEndereco( prevEndereco => 
+                    onChange = { (e) => setEndereco( prevEndereco => 
                         ({ ...prevEndereco, rua: e.target.value })
                     )}
                     
@@ -137,22 +141,29 @@ const AddressForm = ( props : AddressFormProps ) => {
                         gap: 2,
                     }}
                     >
-                    <TextField 
+                    <TextField
                         label = "Número" 
                         required
                         value = {endereco.numero}
                         InputLabelProps={{ shrink: true }}
+                        onKeyDown={(e) => {
+                            if (e.key === "e" || e.key === "E" || e.key === "-" || e.key === "+") {
+                                e.preventDefault()
+                            }
+                            if (e.key === '0' && endereco.numero == undefined) {
+                                e.preventDefault()
+                            }
+                        }}
                         onChange={(e) => {
                             const numberInput = e.target.value;
-
-                            numberInput.match(/[^0-9]/) || numberInput[0] == '0'
-                            ? 
-                            e.preventDefault 
-                            : 
-                            setEndereco( prevEndereco => (
-                                { ...prevEndereco, numero:  (typeof numberInput == 'number') ?  parseInt(numberInput) : null } 
-                            ))
-                           
+                            if (numberInput === '') 
+                                setEndereco( prevEndereco => (
+                                    { ...prevEndereco, numero: undefined } 
+                                ))
+                            else
+                                setEndereco( prevEndereco => (
+                                    { ...prevEndereco, numero: parseInt(numberInput) } 
+                                ))
                         }}
                         disabled={disabled} 
                     />

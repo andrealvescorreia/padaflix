@@ -145,7 +145,6 @@ const AddressForm = ( props : AddressFormProps ) => {
                         label = "Número" 
                         required
                         value = {endereco.numero}
-                        InputLabelProps={{ shrink: true }}
                         onKeyDown={(e) => {
                             if (e.key === "e" || e.key === "E" || e.key === "-" || e.key === "+") {
                                 e.preventDefault()

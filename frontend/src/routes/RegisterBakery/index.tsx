@@ -32,7 +32,7 @@ const RegisterBakery = () => {
         endereco: {
             cep: '', 
             rua: '', 
-            numero: '', 
+            numero: undefined, 
             complemento: '', 
             bairro: '', 
             cidade: '', 

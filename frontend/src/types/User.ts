@@ -36,7 +36,7 @@ export const defaultPadaria : PadariaUser = {
   endereco: {
       cep: '', 
       rua: '', 
-      numero: '', 
+      numero: undefined, 
       complemento: '', 
       bairro: '', 
       cidade: '', 

@@ -2,6 +2,7 @@
 @use '../../styles/mixins';
 
 #subscription-plan-card {
+    border: none;
     width: 38rem;
     height: 14rem;
     background-color: variables.$bg-color;
@@ -10,9 +11,13 @@
     align-items: center;
 
     transition: .4s;
-    &:hover {
+    &:hover, &:focus-visible {
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         cursor: pointer;
+    }
+
+    &:focus-visible {
+        outline: 2px solid black;
     }
 
     .plan-info {

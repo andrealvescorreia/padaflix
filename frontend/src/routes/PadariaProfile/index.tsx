@@ -15,6 +15,7 @@ import { FaStar } from 'react-icons/fa';
 import axios from 'axios';
 import axiosInstance from "../../axios";
 import { enqueueSnackbar } from "notistack";
+import ModalAskingForLogin from "../../components/ModalAskingForLogin";
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
@@ -29,18 +30,6 @@ const modalStyle = {
     padding: 0
 };
 
-const askingForLoginModalStyle = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 450,
-    bgcolor: '#FFF8E4',
-    borderRadius: "20px",
-    p: 4,
-    outline: 0,
-    padding: 0
-};
 
 interface PadariaProfileProps {
     user: User | undefined | PadariaUser
@@ -75,7 +64,6 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
     }
 
     const closeModalAskingForLogin = () => setIsTheModalAskingForLoginOpen(false);
-    
 
     const handleTabChange = (e: React.SyntheticEvent, newValue: string) => {
         setCurrentTab(newValue);
@@ -136,7 +124,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
             })
     }
 
-    function onClickSubscriptionPlanCard (plano: PlanoAssinatura)  {
+    function onClickSubscriptionPlanCard(plano: PlanoAssinatura) {
         user === undefined ? openModalAskingForLogin() : openPlanModal(plano)
     }
 
@@ -217,6 +205,13 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                 </div>
             </div>
 
+            <ModalAskingForLogin
+                open={isTheModalAskingForLoginOpen}
+                onClose={closeModalAskingForLogin} 
+                onClickLogin={()=> {navigate('/login')}}
+                onClickCreateAccount={()=> {navigate('/choose-profile')}}
+            />
+
             <Modal
                 open={isPlanModalOpen}
                 onClose={closePlanModal}
@@ -228,7 +223,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                                 {planModalContent?.nome}
                             </h3>
                             <button onClick={closePlanModal} aria-details="Fechar tela de assinar plano">
-                                <CloseIcon/>
+                                <CloseIcon />
                             </button>
                         </div>
                         <div className="content">
@@ -239,43 +234,10 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                                 Serve {planModalContent?.pessoas_servidas} pessoas
                             </p>
                         </div>
-                        
+
                         <button id="assinarBtn" autoFocus onClick={assinarPlano}>
                             Assinar R${planModalContent?.preco}/mês
                         </button>
-                    </div>
-                </Box>
-            </Modal>
-
-            <Modal
-                open={isTheModalAskingForLoginOpen}
-                onClose={closeModalAskingForLogin}
-            >
-                <Box sx={askingForLoginModalStyle}>
-                    <div className="askingForLoginModalContainer">
-                        <div className="header">
-                            <button onClick={closeModalAskingForLogin}>
-                                <CloseIcon/>
-                            </button>
-                        </div>
-                       
-                        <div className="message">
-                            Entre no Padaflix para assinar planos
-                        </div>
-                        
-                        <div className="actions">
-
-                            <button autoFocus onClick={()=>{navigate('/login')}} className='loginBtn'>
-                                Log in
-                            </button>
-
-                            ou
-                            
-                            <button autoFocus onClick={()=>{navigate('/choose-profile')}} className='createNewAccountBtn'>
-                                Criar nova conta
-                            </button>
-                        </div>
-
                     </div>
                 </Box>
             </Modal>

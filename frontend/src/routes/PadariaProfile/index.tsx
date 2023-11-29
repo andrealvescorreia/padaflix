@@ -1,6 +1,6 @@
 import "./styles.scss"
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PadariaUser, User, defaultPadaria, isUser } from "../../types/User";
 import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 import PlanoCard from "../../components/PlanoCard";
@@ -22,7 +22,20 @@ const modalStyle = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 500,
-    bgcolor: 'background.paper',
+    bgcolor: '#FFF8E4',
+    borderRadius: "20px",
+    p: 4,
+    outline: 0,
+    padding: 0
+};
+
+const askingForLoginModalStyle = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 450,
+    bgcolor: '#FFF8E4',
     borderRadius: "20px",
     p: 4,
     outline: 0,
@@ -39,16 +52,30 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
 
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
     const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
+
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planModalContent, setPlanModalContent] = useState<PlanoAssinatura>();
+
+    const [isTheModalAskingForLoginOpen, setIsTheModalAskingForLoginOpen] = useState(false);
+
     const [currentTab, setCurrentTab] = useState('1');
     const [isFetchingPadaria, setIsFetchingPadaria] = useState(false);
+
+    const navigate = useNavigate()
 
     const openPlanModal = (plano: PlanoAssinatura) => {
         setPlanModalContent(plano)
         setIsPlanModalOpen(true)
     }
+
     const closePlanModal = () => setIsPlanModalOpen(false);
+
+    const openModalAskingForLogin = () => {
+        setIsTheModalAskingForLoginOpen(true)
+    }
+
+    const closeModalAskingForLogin = () => setIsTheModalAskingForLoginOpen(false);
+    
 
     const handleTabChange = (e: React.SyntheticEvent, newValue: string) => {
         setCurrentTab(newValue);
@@ -109,6 +136,9 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
             })
     }
 
+    function onClickSubscriptionPlanCard (plano: PlanoAssinatura)  {
+        user === undefined ? openModalAskingForLogin() : openPlanModal(plano)
+    }
 
     function renderCurrentTabContent() {
         switch (currentTab) {
@@ -120,7 +150,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                     <div className="plans-grid">
                         {
                             padaria?.plano_assinatura?.map(plano =>
-                                <PlanoCard plano={plano} onClick={openPlanModal} isSubscribed={isUserSubscribedToPlan} key={plano.id} />
+                                <PlanoCard plano={plano} onClick={onClickSubscriptionPlanCard} isSubscribed={isUserSubscribedToPlan} key={plano.id} />
                             )
                         }
                     </div>
@@ -192,12 +222,12 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                 onClose={closePlanModal}
             >
                 <Box sx={modalStyle}>
-                    <div className="modalContainer">
+                    <div className="planModalContainer">
                         <div className="header">
                             <h3>
                                 {planModalContent?.nome}
                             </h3>
-                            <button onClick={closePlanModal} aria-details="Fechar tela de comprar plano">
+                            <button onClick={closePlanModal} aria-details="Fechar tela de assinar plano">
                                 <CloseIcon/>
                             </button>
                         </div>
@@ -213,6 +243,39 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                         <button id="assinarBtn" autoFocus onClick={assinarPlano}>
                             Assinar R${planModalContent?.preco}/mês
                         </button>
+                    </div>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={isTheModalAskingForLoginOpen}
+                onClose={closeModalAskingForLogin}
+            >
+                <Box sx={askingForLoginModalStyle}>
+                    <div className="askingForLoginModalContainer">
+                        <div className="header">
+                            <button onClick={closeModalAskingForLogin}>
+                                <CloseIcon/>
+                            </button>
+                        </div>
+                       
+                        <div className="message">
+                            Entre no Padaflix para assinar planos
+                        </div>
+                        
+                        <div className="actions">
+
+                            <button autoFocus onClick={()=>{navigate('/login')}} className='loginBtn'>
+                                Log in
+                            </button>
+
+                            ou
+                            
+                            <button autoFocus onClick={()=>{navigate('/choose-profile')}} className='createNewAccountBtn'>
+                                Criar nova conta
+                            </button>
+                        </div>
+
                     </div>
                 </Box>
             </Modal>

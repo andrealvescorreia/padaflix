@@ -2,6 +2,6 @@ export interface PlanoAssinatura{
   id?: number,
   nome: string,
   descricao: string,
-  preco: number,
+  preco: number | null,
   pessoas_servidas: number
 }

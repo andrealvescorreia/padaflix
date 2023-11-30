@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent } from "react";
+import { useState, SyntheticEvent, useEffect } from "react";
 import { Button, Container, InputAdornment, Stack, TextField } from "@mui/material";
 import "./styles.scss";
 import { PlanoAssinatura } from "../../types/PlanoAssinatura";
@@ -14,10 +14,17 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
     const [nome, setNome] = useState('');
     const [descricao, setDescricao] = useState('');
     const [pessoasServidas, setPessoasServidas] = useState(1);
-    const [preco, setPreco] = useState<number>(0);
+    const [preco, setPreco] = useState<number | null>(null);
     const nomeMaxCharacters = 80;
     const descricaoMaxCharacters = 250;
     const pessoasServidarMin = 1;
+
+    function clearForm(){
+        setNome('')
+        setDescricao('')
+        setPessoasServidas(1)
+        setPreco(null)
+    }
 
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
@@ -25,6 +32,7 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
             nome, descricao, preco, pessoas_servidas: pessoasServidas
         }
         onSubmit(plano)
+        clearForm()
     }
 
     return (
@@ -81,14 +89,29 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
                 
                 <TextField 
                     label="Valor de assinatura" 
-                    value={preco}
+                    value={preco ? preco : ''}
                     type="number"
-                    onChange={e => setPreco(parseFloat(e.target.value))} 
+                    
+                    onChange={e => {
+                        const numberInput = e.target.value;
+                        if (numberInput === '')
+                            setPreco(null)
+                        else
+                            setPreco(parseFloat(numberInput))
+                    }} 
+                    onKeyDown={(e) => {
+                        const key = e.key
+                        if (key === "e" || key === "E" || key === "-" || key === "+") 
+                            e.preventDefault()
+                        if (key === '0' && preco === null )
+                            e.preventDefault()
+                    }}
                     margin="dense"
                     required
                     variant="standard"
                     InputProps={{
-                        startAdornment: <InputAdornment position="start">R$</InputAdornment>
+                        inputProps: { min: 1.00 , step: 0.01},
+                        startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                     }}
                     disabled={disabled}
                 />

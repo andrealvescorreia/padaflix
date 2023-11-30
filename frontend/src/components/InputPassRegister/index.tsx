@@ -57,8 +57,8 @@ export default function InputPassRegister({ onChange, value }: Props) {
   }, [value]);
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      <FormControl /*autoComplete="off" component="form"*/>
+    <Box>
+      <FormControl sx={{width: '100%'}}>
         <OutlinedInput
           id="outlined-adornment-password"
           type={showPassword ? 'text' : 'password'}

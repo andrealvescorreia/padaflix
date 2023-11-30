@@ -19,12 +19,20 @@ const NewSubscriptionPlanForm = ({ onSubmit, onCancel, disabled } : NewSubscript
     const descricaoMaxCharacters = 250;
     const pessoasServidarMin = 1;
 
+    function clearForm(){
+        setNome('')
+        setDescricao('')
+        setPessoasServidas(1)
+        setPreco(null)
+    }
+
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault()
         const plano : PlanoAssinatura = {
             nome, descricao, preco, pessoas_servidas: pessoasServidas
         }
         onSubmit(plano)
+        clearForm()
     }
 
     return (

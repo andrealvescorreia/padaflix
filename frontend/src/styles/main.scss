@@ -8,6 +8,10 @@
   box-sizing: border-box;
   text-decoration: none;
   font-family: 'Plus Jakarta Sans', sans-serif;
+  
+  @media (min-width: 1600px) {
+    font-size: clamp(1rem, 2vw + 0.75rem, 1.3rem);
+  }
 }
 
 body {

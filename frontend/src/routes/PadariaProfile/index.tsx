@@ -22,7 +22,7 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
+    width: '31rem',
     bgcolor: '#FFF8E4',
     borderRadius: "20px",
     p: 4,

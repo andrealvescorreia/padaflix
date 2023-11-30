@@ -1,8 +1,8 @@
 #mainContainer{
     height: 100%;
     display: flex;
-    background-color: #FFE7BD;
     justify-content: center;
+    width: 100%;
 }
 #secondaryContainer{
     display: flex;
@@ -12,11 +12,9 @@
     border-radius: 15px;
     margin: 2rem;
     width: 20rem;
+    min-width: 30%;
     background-color: #FFF8E4;
-    img{
-        max-width: 50%;
-        margin: 1rem;
-    }
+
     label{
         display: flex;
         flex-direction: column;

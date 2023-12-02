@@ -8,29 +8,12 @@
   box-sizing: border-box;
   text-decoration: none;
   font-family: 'Plus Jakarta Sans', sans-serif;
+  
+  @media (min-width: 1600px) {
+    font-size: clamp(1rem, 2vw + 0.75rem, 1.3rem);
+  }
 }
 
 body {
   background-color: variables.$body-bg-color;
-}
-
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
-}
-
-.form-signin .form-floating:focus-within {
-  z-index: 2;
-}
-
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }

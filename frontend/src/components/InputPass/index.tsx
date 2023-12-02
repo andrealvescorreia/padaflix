@@ -23,15 +23,14 @@ export default function InputPass({onChange, disabled}: InputPassProps) {
  
 
   return (
-    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        <FormControl>
+    <Box>
+        <FormControl sx={{width: '100%'}}>
           <OutlinedInput
-            id="outlined-adornment-password"
             type={showPassword ? 'text' : 'password'}
             onChange={onChange}
             disabled={disabled}
             endAdornment={
-              <InputAdornment position="end" id="pass"	>
+              <InputAdornment position="end">
                 
                 <IconButton
                   aria-label="toggle password visibility"

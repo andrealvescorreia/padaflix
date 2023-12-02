@@ -1,6 +1,6 @@
 import "./styles.scss"
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PadariaUser, User, defaultPadaria, isUser } from "../../types/User";
 import { PlanoAssinatura } from "../../types/PlanoAssinatura";
 import PlanoCard from "../../components/PlanoCard";
@@ -8,46 +8,62 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close'
 import { FaStar } from 'react-icons/fa';
 import axios from 'axios';
 import axiosInstance from "../../axios";
 import { enqueueSnackbar } from "notistack";
+import ModalAskingForLogin from "../../components/ModalAskingForLogin";
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
+    width: '31rem',
+    bgcolor: '#FFF8E4',
+    borderRadius: "20px",
     p: 4,
     outline: 0,
+    padding: 0
 };
+
 
 interface PadariaProfileProps {
     user: User | undefined | PadariaUser
     afterSuccessfulSubscription: () => void
 }
 
-const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProps) => {
+const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfileProps) => {
     const { id } = useParams();// url params
-    
+
     const [padaria, setPadaria] = useState<PadariaUser>(defaultPadaria);
     const [isSubscribedToPadaria, setIsSubscribedToPadaria] = useState(false)
+
     const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
     const [planModalContent, setPlanModalContent] = useState<PlanoAssinatura>();
+
+    const [isTheModalAskingForLoginOpen, setIsTheModalAskingForLoginOpen] = useState(false);
+
     const [currentTab, setCurrentTab] = useState('1');
     const [isFetchingPadaria, setIsFetchingPadaria] = useState(false);
+
+    const navigate = useNavigate()
 
     const openPlanModal = (plano: PlanoAssinatura) => {
         setPlanModalContent(plano)
         setIsPlanModalOpen(true)
     }
+
     const closePlanModal = () => setIsPlanModalOpen(false);
+
+    const openModalAskingForLogin = () => {
+        setIsTheModalAskingForLoginOpen(true)
+    }
+
+    const closeModalAskingForLogin = () => setIsTheModalAskingForLoginOpen(false);
 
     const handleTabChange = (e: React.SyntheticEvent, newValue: string) => {
         setCurrentTab(newValue);
@@ -58,23 +74,23 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
             cliente: user?.id,
             plano: planModalContent?.id
         })
-        .then(()=>{
-            enqueueSnackbar('Assinado com sucesso',{ variant: 'success'})
-            setIsPlanModalOpen(false)
-            afterSuccessfulSubscription()
-        })
-        .catch((err)=>{
-            enqueueSnackbar('Ocorreu um erro ao tentar realizar a assinatura',{ variant: 'error'})
-            console.log(err.response.data)
-        })
+            .then(() => {
+                enqueueSnackbar('Assinado com sucesso', { variant: 'success' })
+                setIsPlanModalOpen(false)
+                afterSuccessfulSubscription()
+            })
+            .catch((err) => {
+                enqueueSnackbar('Ocorreu um erro ao tentar realizar a assinatura', { variant: 'error' })
+                console.log(err.response.data)
+            })
     }
 
     function isUserSubscribedToPlan(plano: PlanoAssinatura) {
-        if(!isUser(user)) return false
-    
+        if (!isUser(user)) return false
+
         let isSubscribedToPlan = false
         user.assinatura.forEach(assinatura => {
-            if(plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado){
+            if (plano.id == assinatura.plano && user.id == assinatura.cliente && assinatura.assinado) {
                 isSubscribedToPlan = true
                 setIsSubscribedToPadaria(true)
             }
@@ -84,53 +100,56 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
 
     const fetchPadaria = async () => {
         setIsFetchingPadaria(true)
-        axiosInstance.get('/padarias/'+id)
-        .then((response)=>{
-            setPadaria(response.data)
-        })
-        .catch((err)=>{
-            console.log(err.response.data)
-        })
-        .finally(()=>setIsFetchingPadaria(false))
+        axiosInstance.get('/padarias/' + id)
+            .then((response) => {
+                setPadaria(response.data)
+            })
+            .catch((err) => {
+                console.log(err.response.data)
+            })
+            .finally(() => setIsFetchingPadaria(false))
     }
 
 
     const fetchCidade = async () => {// gambiarra pra pegar a cidade, ja que ela nao fica salva no BD
-        if(padaria.endereco.cep == '') return
-        axios.get("https://viacep.com.br/ws/"+ padaria.endereco.cep +"/json/")
-        .then((response) => {
-            let newEndereco = padaria?.endereco;
-            newEndereco.cidade = response.data.localidade
-            setPadaria(prevPadaria => ({...prevPadaria, endereco: newEndereco}))
-        })
-        .catch((err)=>{
-            console.log(err.response.data)
-        })
+        if (padaria.endereco.cep == '') return
+        axios.get("https://viacep.com.br/ws/" + padaria.endereco.cep + "/json/")
+            .then((response) => {
+                let newEndereco = padaria?.endereco;
+                newEndereco.cidade = response.data.localidade
+                setPadaria(prevPadaria => ({ ...prevPadaria, endereco: newEndereco }))
+            })
+            .catch((err) => {
+                console.log(err.response.data)
+            })
     }
 
+    function onClickSubscriptionPlanCard(plano: PlanoAssinatura) {
+        user === undefined ? openModalAskingForLogin() : openPlanModal(plano)
+    }
 
     function renderCurrentTabContent() {
-        switch(currentTab) {
+        switch (currentTab) {
             case '1':
-                if(padaria?.plano_assinatura.length == 0 && !isFetchingPadaria){
+                if (padaria?.plano_assinatura.length == 0 && !isFetchingPadaria) {
                     return <h2>Sem planos :(</h2>
                 }
-                return(
+                return (
                     <div className="plans-grid">
                         {
-                            padaria?.plano_assinatura?.map(plano => 
-                                <PlanoCard plano={plano} onClick={openPlanModal} isSubscribed={isUserSubscribedToPlan} key={plano.id} />
-                            )   
-                        } 
+                            padaria?.plano_assinatura?.map(plano =>
+                                <PlanoCard plano={plano} onClick={onClickSubscriptionPlanCard} isSubscribed={isUserSubscribedToPlan} key={plano.id} />
+                            )
+                        }
                     </div>
                 )
             case '2':
-                return(
+                return (
                     <div className='about'>
                         <div className="address">
                             <h2>Endereço</h2>
                             <span>{padaria?.endereco.rua + ', ' + padaria?.endereco.numero + '- ' + padaria?.endereco.bairro}</span>
-                            <span>{padaria?.endereco.cidade + ' - ' + padaria?.endereco.uf }</span>
+                            <span>{padaria?.endereco.cidade + ' - ' + padaria?.endereco.uf}</span>
                             <span>CEP: {padaria?.endereco.cep.replace(/^(\d{5})(\d{3})/, "$1-$2")}</span>
                         </div>
                         <div className="other-info">
@@ -140,7 +159,7 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
                     </div>
                 )
             default:
-                return(<></>)
+                return (<></>)
         }
     }
 
@@ -162,51 +181,71 @@ const PadariaProfile = ({user, afterSuccessfulSubscription} : PadariaProfileProp
                     <img className="padaria-logo"></img>
                     <h2 className='padaria-name'> {padaria?.nome_fantasia} </h2>
                     <div className="rating">
-                        <FaStar/>
+                        <FaStar />
                         <p className="number">0</p>
                     </div>
                     {
-                        isSubscribedToPadaria && 
+                        isSubscribedToPadaria &&
                         <div className='subscription-status'>
-                            <CheckIcon/>
+                            <CheckIcon />
                             Assinante
                         </div>
                     }
-                    
-                    <hr/>
+
+                    <hr />
                 </div>
 
                 <div className='tabs'>
                     <TabContext value={currentTab}>
                         <TabList onChange={handleTabChange}>
                             <Tab label="Planos" value="1" className='tab' />
-                            <Tab label="Sobre" value="2" className='tab'/>
+                            <Tab label="Sobre" value="2" className='tab' />
                         </TabList>
                     </TabContext>
                 </div>
             </div>
-            
+
+            <ModalAskingForLogin
+                open={isTheModalAskingForLoginOpen}
+                onClose={closeModalAskingForLogin} 
+                onClickLogin={()=> {navigate('/login')}}
+                onClickCreateAccount={()=> {navigate('/choose-profile')}}
+            />
+
             <Modal
                 open={isPlanModalOpen}
                 onClose={closePlanModal}
             >
                 <Box sx={modalStyle}>
-                    <Typography variant="h6" component="h2">
-                        {planModalContent?.nome}
-                    </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                        {planModalContent?.descricao}
-                    </Typography>
-                    <Button variant = "contained" onClick = { assinarPlano } >
-                        Assinar R${planModalContent?.preco}/mês
-                    </Button>
+                    <div className="planModalContainer">
+                        <div className="header">
+                            <h3>
+                                {planModalContent?.nome}
+                            </h3>
+                            <button onClick={closePlanModal} aria-details="Fechar tela de assinar plano">
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="content">
+                            <p>
+                                {planModalContent?.descricao}
+                            </p>
+                            <p>
+                                Serve {planModalContent?.pessoas_servidas} pessoas
+                            </p>
+                        </div>
+
+                        <button id="assinarBtn" autoFocus onClick={assinarPlano}>
+                            Assinar R${planModalContent?.preco}/mês
+                        </button>
+                    </div>
                 </Box>
             </Modal>
 
-            { renderCurrentTabContent() }
+            {renderCurrentTabContent()}
 
         </div>
     );
 }
- 
+
 export default PadariaProfile;

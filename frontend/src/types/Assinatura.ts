@@ -8,7 +8,7 @@ export interface Assinatura {
     plano: number, // id do plano
     data_inicio: string,
     assinado: boolean,
-    preco: number,
+    preco: number | null,
 }
 
 export interface AssinaturaUser extends Assinatura {

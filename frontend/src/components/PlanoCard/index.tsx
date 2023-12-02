@@ -21,7 +21,7 @@ const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) =
 
 
     return (
-        <div id="subscription-plan-card" onClick={()=> {if(!subscribed){onClick(plano)}}// gambiarra: se ja for assinante, não deixa clicar
+        <button id="subscription-plan-card" onClick={()=> {if(!subscribed){onClick(plano)}}// gambiarra: se ja for assinante, não deixa clicar
             }>
             <div className='plan-info'>
                 <h2 className='name'>
@@ -40,7 +40,7 @@ const PlanoCard = ({plano, onClick = () => {}, isSubscribed} : PlanoCardProps) =
                 
             </div>
             <img className="img"></img>
-        </div>
+        </button>
     );
 }
  

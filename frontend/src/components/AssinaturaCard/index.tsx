@@ -6,7 +6,7 @@ interface AssinaturaCardProps {
     cliente_nome: string
     endereco_cliente: Endereco
     nome_plano: string
-    preco: number
+    preco: number | null
     data_inicio: string
   }
 }

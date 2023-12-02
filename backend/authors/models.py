@@ -14,8 +14,8 @@ class Endereco(models.Model):
 class PlanoAssinatura(models.Model):
     nome = models.CharField(max_length=80)
     descricao = models.CharField(max_length=255)
-    preco = models.DecimalField(max_digits=8, decimal_places=2)
-    pessoas_servidas = models.IntegerField()
+    preco = models.DecimalField(max_digits=8, decimal_places=2, validators=[MinValueValidator(1)])
+    pessoas_servidas = models.IntegerField(validators=[MinValueValidator(1)])
 
     def __str__(self):
         return self.nome

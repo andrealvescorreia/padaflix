@@ -3,6 +3,8 @@ import axiosInstance from "../../axios";
 import LoginForm from "../../components/LoginForm";
 import { useSnackbar } from 'notistack';
 import { LinearProgress } from "@mui/material";
+import { Link } from "react-router-dom";
+import "./styles.scss";
 
 interface LoginProps {
     onSuccessfulLogin: () => void;
@@ -35,10 +37,11 @@ const Login = ({ onSuccessfulLogin }: LoginProps) => {
         })
     }
 
-    return <>
+    return <div id='login-page'>
         { isFetching ? <LinearProgress /> : null}
-        <LoginForm onSubmit={login} disabled={isFetching}/>;
-    </>
+        <LoginForm onSubmit={login} disabled={isFetching}/>
+        <p>Não tem uma conta? <Link to ='"/choose-profile"'>Registro</Link></p>
+    </div>
 
 }
 

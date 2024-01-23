@@ -94,6 +94,9 @@ const AddressForm = ( props : AddressFormProps ) => {
     useEffect(() => {
         if(defaultData.cep != "") queryCepData()
     }, [])
+    useEffect(() => {
+        if(endereco.cep.replace('_','').length === 8) queryCepData()
+    }, [endereco.cep])
 
     return (
         <Container id="address-form-container" maxWidth="sm" > 

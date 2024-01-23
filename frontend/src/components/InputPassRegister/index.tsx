@@ -21,7 +21,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
   const [helperText, setHelperText] = useState('');
 
   useEffect(()=>{
-    if(error)
+    if(error || value.length >= 8)
       validate(value);
   },[value])
 

@@ -40,7 +40,7 @@ const Login = ({ onSuccessfulLogin }: LoginProps) => {
     return <div id='login-page'>
         { isFetching ? <LinearProgress /> : null}
         <LoginForm onSubmit={login} disabled={isFetching}/>
-        <p>Não tem uma conta? <Link to ='"/choose-profile"'>Registro</Link></p>
+        <p>Não tem uma conta? <Link to ='/choose-profile'>Registro</Link></p>
     </div>
 
 }

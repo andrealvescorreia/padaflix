@@ -15,6 +15,15 @@ const EmailInput = (props: EmailInputProps) => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [helperText, setHelperText] = useState('');
 
+  useEffect( () => {
+    init();
+    onChange(email, emailIsValid);
+  }, [])
+
+  async function init() {
+    setEmailIsValid(await validateEmail(email) );
+  }
+
   useEffect(() => {
     onChange(email, emailIsValid);
   }, [email, emailIsValid])

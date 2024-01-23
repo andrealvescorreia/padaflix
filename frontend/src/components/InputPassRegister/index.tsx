@@ -45,7 +45,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
     }
     else {
       setError(true);
-      setHelperText('Senha deve conter ao menos uma letra maiúscula e um número');
+      setHelperText('A senha deve conter ao menos uma letra minúscula, uma maiúscula e um número');
     }
   };
 

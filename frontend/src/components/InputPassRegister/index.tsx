@@ -75,7 +75,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
               >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
+                {showPassword ? <Visibility /> : <VisibilityOff /> }
               </IconButton>
             </InputAdornment>
           }

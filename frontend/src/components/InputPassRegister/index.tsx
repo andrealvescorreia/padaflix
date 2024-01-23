@@ -8,7 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
 import validator from 'validator';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
@@ -19,6 +19,11 @@ export default function InputPassRegister({ onChange, value }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState('');
+
+  useEffect(()=>{
+    if(error)
+      validate(value);
+  },[value])
 
   const minPasswordRequirements = {
     minLength: 8,
@@ -64,6 +69,7 @@ export default function InputPassRegister({ onChange, value }: Props) {
           required
           value={value}
           onChange={onChange}
+          onFocus={() => validate(value)}
           onBlur={() => validate(value)}
           error={error}
           endAdornment={

@@ -38,7 +38,6 @@ const AddressForm = ( props : AddressFormProps ) => {
     const [cepIsValid, setCepIsValid] = useState(true)
     const [ruaWasAutoFilled, setRuaWasAutoFilled] = useState(false)
     const [bairroWasAutoFilled, setBairroWasAutoFilled] = useState(false)
-    const [viaCepIsOnline, setViaCepIsOnline] = useState(false);
 
     const handleSubmit = (e : SyntheticEvent) => {
         e.preventDefault()
@@ -83,19 +82,13 @@ const AddressForm = ( props : AddressFormProps ) => {
     function queryCepData(){
         axios.get("https://viacep.com.br/ws/"+ endereco.cep +"/json/")
         .then((response) => {
-            setViaCepIsOnline(true);
             if (response.data.erro) badCepRequest()
             else {
                 setCepIsValid(true)
                 updateEnderecoAfterViaCepQuery(response.data)
             }
         })
-        .catch((e) => {
-            console.log(e)
-            if(e.code === 'ERR_NETWORK'){
-                setViaCepIsOnline(false);
-            }
-        })
+        .catch(() => badCepRequest())
     }
 
     useEffect(() => {
@@ -197,7 +190,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                     )}
                 />
                 <TextField 
-                    disabled = {viaCepIsOnline}
+                    disabled
                     label = "Cidade" 
                     required
                     value = {endereco.cidade}
@@ -207,7 +200,7 @@ const AddressForm = ( props : AddressFormProps ) => {
                 />
 
                 <TextField 
-                    disabled = {viaCepIsOnline}
+                    disabled 
                     label = "UF" 
                     required
                     value = {endereco.uf}

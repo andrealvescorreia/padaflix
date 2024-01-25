@@ -182,7 +182,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                     <h2 className='padaria-name'> {padaria?.nome_fantasia} </h2>
                     <div className="rating">
                         <FaStar />
-                        <p className="number">0</p>
+                        <p className="number">5</p>
                     </div>
                     {
                         isSubscribedToPadaria &&
@@ -197,7 +197,16 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
 
                 <div className='tabs'>
                     <TabContext value={currentTab}>
-                        <TabList onChange={handleTabChange}>
+                        <TabList className='tablist'
+                        onChange={handleTabChange} 
+                        textColor="inherit"
+                        TabIndicatorProps={{
+                            style: {
+                              backgroundColor: "#B4764D",
+                              height: "0.3rem"
+                            }
+                        }}
+                        >
                             <Tab label="Planos" value="1" className='tab' />
                             <Tab label="Sobre" value="2" className='tab' />
                         </TabList>

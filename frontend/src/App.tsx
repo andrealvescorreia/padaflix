@@ -20,8 +20,7 @@ import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
 import PadariaProfile from './routes/PadariaProfile';
 import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
-
-
+import Loading from './components/Loading';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -99,10 +98,15 @@ function App() {
 
   return (
     <div>
+      { 
+        !doneFetchingUser && <Loading/>
+      }
       {
-        isPadariaUser(user) 
-        ? <SideBarPadaria padaria={user} logout={logout}/>  
-        : <NavBar         user={user}    logout={logout} />
+        doneFetchingUser && (
+          isPadariaUser(user) 
+          ? <SideBarPadaria padaria={user} logout={logout}/>  
+          : <NavBar         user={user}    logout={logout} />
+        )
       }
       <Routes>
         <Route path="/" element={<DefaultRoute/>}/>

@@ -4,6 +4,7 @@ import axiosInstance from "../../axios";
 import { AssinaturaUser } from "../../types/Assinatura";
 import { enqueueSnackbar } from "notistack";
 import PadariaCard from "../../components/PadariaCard";
+import { LinearProgress } from "@mui/material";
 import './styles.scss'
 
 interface UserDashboardProps {
@@ -52,6 +53,10 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 	}, [assinaturasUser])
 
 	return <div id="user-dashboard">
+		{ 
+      !doneFetchingAssinaturas &&
+      <LinearProgress className="circular-progress" /> 
+    }
 		{ padariasAssinadas.length == 0 && doneFetchingAssinaturas && 
 		<h4 style={{margin: '2rem', marginRight: 'auto'}}>
 			Pareçe que você ainda não é assinante. Acesse o nosso catálogo de padarias para começar.

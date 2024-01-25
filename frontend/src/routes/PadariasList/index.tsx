@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { LinearProgress, TextField } from "@mui/material";
 import InputMask from 'react-input-mask';
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
     user: User | PadariaUser | undefined
@@ -16,6 +17,7 @@ interface Padaria {
 }
 
 const PadariasList = ({user} : Props) => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [padarias, setPadarias] = useState<Padaria[]> ([]);
     const [isFetching, setIsFetching] = useState<boolean>(false)
     const [isDoneFetching, setIsDoneFetching] = useState<boolean>(false)
@@ -76,6 +78,7 @@ const PadariasList = ({user} : Props) => {
     }   
 
     async function onSubmitInputCep(){
+        setSearchParams({cep: inputCep})
         setSubmitedCep(true)
         setIsValidatingInputCep(true)
         setIsDoneValidatingInputCep(false)
@@ -98,6 +101,10 @@ const PadariasList = ({user} : Props) => {
             if(isUser(user)) {
                 setCidadeAndUf(await queryCidadeAndUfFromCep(user.endereco.cep))
                 fetchPadarias(user.endereco.cep)
+            }
+            else {
+                const cep = searchParams.get("cep") || "";
+                setInputCep(cep);
             }
         }
         ifUserThenFetchUsingHisCep()

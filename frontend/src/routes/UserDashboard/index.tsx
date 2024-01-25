@@ -63,7 +63,7 @@ const UserDashboard = ({user} : UserDashboardProps) => {
 			<div className="subscriptions-grid">
 				{
 					padariasAssinadas.map(padaria => {
-						return <PadariaCard padaria={padaria} isSubscribedToPadaria={true}/>
+						return <PadariaCard padaria={padaria} isSubscribedToPadaria={true} key={padaria.id}/>
 					})
 				}	
 			</div>

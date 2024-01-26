@@ -34,9 +34,9 @@ const NavBar = ({ user, logout }: NavBarProps) => {
 
   const userRightOptions = (
     <>
-      <Link to="/login" id={styles.login_btn} className={styles.btn} onClick={logout} >
+      <a id={styles.login_btn} className={styles.btn} onClick={logout} >
         <Logout /> Sair
-      </Link>
+      </a>
     </>
   )
 

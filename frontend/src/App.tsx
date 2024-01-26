@@ -58,7 +58,13 @@ function App() {
   const logout = async () => {
     axiosInstance.post('/logout')
     .then(() => {
-      setUser(undefined)
+      navigate('/login')
+      setDoneFetchingUser(false);
+      setUser(() => {
+        setDoneFetchingUser(true);
+        return undefined;
+      });
+      
     })
     .catch((err) => {
       enqueueSnackbar('Ocorreu um erro', { variant: 'error'})

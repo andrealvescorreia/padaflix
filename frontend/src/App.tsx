@@ -21,7 +21,7 @@ import PadariaProfile from './routes/PadariaProfile';
 import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
 import Loading from './components/Loading';
-
+import EmptyMessage from './components/EmptyMessage';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -154,7 +154,10 @@ function DefaultRoute() {
 }
 
 function PageNotFound() {
-  return <h2>404 Página não encontrada</h2>
+  return <EmptyMessage>
+    <h2>Erro 404 </h2>
+    <h4>Página não encontrada</h4>
+  </EmptyMessage>
 }
 
 export default App

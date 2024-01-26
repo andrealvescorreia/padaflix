@@ -78,7 +78,7 @@ const UserDashboard = ({ user }: UserDashboardProps) => {
 		
 		{ padariasAssinadas.length > 0 && 
 		<>
-			<h2>Assinaturas</h2>
+			<h2 className="subscriptions-title">Assinaturas</h2>
 			<div className="subscriptions-grid">
 				{
 					padariasAssinadas.map(padaria => {

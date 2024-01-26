@@ -170,7 +170,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
 
     useEffect(() => {
         fetchCidade()
-    }, [padaria])
+    }, [padaria.endereco.cep])
 
 
     return (

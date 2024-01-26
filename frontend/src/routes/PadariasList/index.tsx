@@ -1,20 +1,23 @@
-import axiosInstance from "../../axios";
-import PadariaCard from "../../components/PadariaCard";
-import { PadariaUser, User, isUser } from "../../types/User";
-import "./styles.scss"
-import { useEffect, useState } from "react";
-import { LinearProgress, TextField } from "@mui/material";
+import axiosInstance from '../../axios';
+import PadariaCard from '../../components/PadariaCard';
+import { PadariaUser, User, isUser } from '../../types/User';
+import './styles.scss';
+import { useEffect, useState } from 'react';
+import { LinearProgress, TextField } from '@mui/material';
 import InputMask from 'react-input-mask';
+
+import EmptyMessage from '../../components/EmptyMessage';
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-    user: User | PadariaUser | undefined
+	user: User | PadariaUser | undefined;
 }
 interface Padaria {
-    id: number,
-    nome_fantasia: string
+	id: number;
+	nome_fantasia: string;
 }
+
 
 const PadariasList = ({user} : Props) => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -169,10 +172,15 @@ const PadariasList = ({user} : Props) => {
             
         </div>
         {
+        
             padarias.length == 0 && isDoneFetching && !inputCepIsInvalid &&
-            <h2> Sem padarias na sua cidade :( </h2>
+            <EmptyMessage>
+				    	<h2>Sem padarias</h2>
+					    <p>Infelizmente nossa rede de padarias não está em {cidadeAndUf}.</p>
+				    </EmptyMessage>
         }
     </div>;
 }
  
+
 export default PadariasList;

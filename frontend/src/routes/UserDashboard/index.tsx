@@ -5,62 +5,75 @@ import { AssinaturaUser } from "../../types/Assinatura";
 import { enqueueSnackbar } from "notistack";
 import PadariaCard from "../../components/PadariaCard";
 import { LinearProgress } from "@mui/material";
-import './styles.scss'
+import './styles.scss';
+import EmptyMessage from '../../components/EmptyMessage';
+
 
 interface UserDashboardProps {
-	user: User
+	user: User;
 }
 
-interface Padaria{
-	id: number,
-  nome_fantasia: string,
+interface Padaria {
+	id: number;
+	nome_fantasia: string;
 }
 
-const UserDashboard = ({user} : UserDashboardProps) => {
+const UserDashboard = ({ user }: UserDashboardProps) => {
 	const [assinaturasUser, setAssinaturasUser] = useState<AssinaturaUser[]>([]);
-	const [doneFetchingAssinaturas, setDoneFetchingAssinaturas] = useState(false)
-	const [padariasAssinadas, setPadariasAssinadas] = useState<Padaria[]>([])
+	const [doneFetchingAssinaturas, setDoneFetchingAssinaturas] = useState(false);
+	const [padariasAssinadas, setPadariasAssinadas] = useState<Padaria[]>([]);
 
 	const fetchAssinaturasUser = async () => {
-		setDoneFetchingAssinaturas(false)
-		axiosInstance.get('/assinaturas/usuario/'+user.id)
-		.then((response) => {
-			setAssinaturasUser(response.data);
-		})
-		.catch((err) => {
-			enqueueSnackbar('Ocorreu um erro', { variant: 'error'})
-			console.log(err.response.data)
-		})
-		.finally(()=> setDoneFetchingAssinaturas(true))
-	}
-	
-	function updatePadariasAssinadas(){
-		let auxPadarias : Padaria[] = []
-		assinaturasUser.forEach(assinatura => {
-			const padaria:Padaria = {id: assinatura.id_padaria, nome_fantasia: assinatura.nome_padaria}
-			const index = auxPadarias.findIndex(obj => obj.id === padaria.id);
-			if (index === -1) auxPadarias.push(padaria)// evita repetir a mesma padaria caso assinado mais de um plano dela
-		})
-		setPadariasAssinadas(auxPadarias)
+		setDoneFetchingAssinaturas(false);
+		axiosInstance
+			.get('/assinaturas/usuario/' + user.id)
+			.then((response) => {
+				setAssinaturasUser(response.data);
+			})
+			.catch((err) => {
+				enqueueSnackbar('Ocorreu um erro', { variant: 'error' });
+				console.log(err.response.data);
+			})
+			.finally(() => setDoneFetchingAssinaturas(true));
+	};
+
+	function updatePadariasAssinadas() {
+		let auxPadarias: Padaria[] = [];
+		assinaturasUser.forEach((assinatura) => {
+			const padaria: Padaria = {
+				id: assinatura.id_padaria,
+				nome_fantasia: assinatura.nome_padaria,
+			};
+			const index = auxPadarias.findIndex((obj) => obj.id === padaria.id);
+			if (index === -1) auxPadarias.push(padaria); // evita repetir a mesma padaria caso assinado mais de um plano dela
+		});
+		setPadariasAssinadas(auxPadarias);
 	}
 
 	useEffect(() => {
-		fetchAssinaturasUser()
-	}, [])
+		fetchAssinaturasUser();
+	}, []);
 
 	useEffect(() => {
-		updatePadariasAssinadas()
-	}, [assinaturasUser])
+		updatePadariasAssinadas();
+	}, [assinaturasUser]);
 
 	return <div id="user-dashboard">
 		{ 
       !doneFetchingAssinaturas &&
       <LinearProgress className="circular-progress" /> 
     }
-		{ padariasAssinadas.length == 0 && doneFetchingAssinaturas && 
-		<h4 style={{margin: '2rem', marginRight: 'auto'}}>
-			Pareçe que você ainda não é assinante. Acesse o nosso catálogo de padarias para começar.
-		</h4>}
+    {padariasAssinadas.length == 0 && doneFetchingAssinaturas && (
+      <EmptyMessage>
+        <h2>Sem assinaturas</h2>
+        <p>
+          O que está esperando?
+          <br /> Acesse o catalogo de padarias na sua região,
+          <br /> escolha um plano e aproveite entregas diárias!
+        </p>
+        <Link to='/padarias'> Padarias </Link>
+      </EmptyMessage>
+    )}
 		
 		{ padariasAssinadas.length > 0 && 
 		<>

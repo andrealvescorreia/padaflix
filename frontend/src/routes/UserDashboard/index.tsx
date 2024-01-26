@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import { User } from '../../types/User';
-import axiosInstance from '../../axios';
-import { AssinaturaUser } from '../../types/Assinatura';
-import { enqueueSnackbar } from 'notistack';
-import PadariaCard from '../../components/PadariaCard';
+import { useEffect, useState } from "react";
+import { User } from "../../types/User";
+import axiosInstance from "../../axios";
+import { AssinaturaUser } from "../../types/Assinatura";
+import { enqueueSnackbar } from "notistack";
+import PadariaCard from "../../components/PadariaCard";
+import { LinearProgress } from "@mui/material";
 import './styles.scss';
 import EmptyMessage from '../../components/EmptyMessage';
-import { Link } from 'react-router-dom';
+
 
 interface UserDashboardProps {
 	user: User;
@@ -57,34 +58,35 @@ const UserDashboard = ({ user }: UserDashboardProps) => {
 		updatePadariasAssinadas();
 	}, [assinaturasUser]);
 
-	return (
-		<div id='user-dashboard'>
-			{padariasAssinadas.length == 0 && doneFetchingAssinaturas && (
-				<EmptyMessage>
-					<h2>Sem assinaturas</h2>
-					<p>
-						O que está esperando?
-						<br /> Acesse o catalogo de padarias na sua região,
-						<br /> escolha um plano e aproveite entregas diárias!
-					</p>
-					<Link to='/padarias'> Padarias </Link>
-				</EmptyMessage>
-			)}
-
-			{padariasAssinadas.length > 0 && (
-				<>
-					<h2 className='subscriptions-title'>Assinaturas</h2>
-					<div className='subscriptions-grid'>
-						{padariasAssinadas.map((padaria) => {
-							return (
-								<PadariaCard padaria={padaria} isSubscribedToPadaria={true} />
-							);
-						})}
-					</div>
-				</>
-			)}
-		</div>
-	);
-};
-
+	return <div id="user-dashboard">
+		{ 
+      !doneFetchingAssinaturas &&
+      <LinearProgress className="circular-progress" /> 
+    }
+    {padariasAssinadas.length == 0 && doneFetchingAssinaturas && (
+      <EmptyMessage>
+        <h2>Sem assinaturas</h2>
+        <p>
+          O que está esperando?
+          <br /> Acesse o catalogo de padarias na sua região,
+          <br /> escolha um plano e aproveite entregas diárias!
+        </p>
+        <Link to='/padarias'> Padarias </Link>
+      </EmptyMessage>
+    )}
+		
+		{ padariasAssinadas.length > 0 && 
+		<>
+			<h2>Assinaturas</h2>
+			<div className="subscriptions-grid">
+				{
+					padariasAssinadas.map(padaria => {
+						return <PadariaCard padaria={padaria} isSubscribedToPadaria={true} key={padaria.id}/>
+					})
+				}	
+			</div>
+		</>}
+	</div>
+}
+ 
 export default UserDashboard;

@@ -48,7 +48,8 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
     const [isTheModalAskingForLoginOpen, setIsTheModalAskingForLoginOpen] = useState(false);
 
     const [currentTab, setCurrentTab] = useState('1');
-    const [isFetchingPadaria, setIsFetchingPadaria] = useState(false);
+    const [isDoneFetchingPadaria, setIsDoneFetchingPadaria] = useState(false);
+
 
     const navigate = useNavigate()
 
@@ -99,7 +100,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
     }
 
     const fetchPadaria = async () => {
-        setIsFetchingPadaria(true)
+        setIsDoneFetchingPadaria(false)
         axiosInstance.get('/padarias/' + id)
             .then((response) => {
                 setPadaria(response.data)
@@ -107,7 +108,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
             .catch((err) => {
                 console.log(err.response.data)
             })
-            .finally(() => setIsFetchingPadaria(false))
+            .finally(() => setIsDoneFetchingPadaria(true))
     }
 
 
@@ -131,7 +132,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
     function renderCurrentTabContent() {
         switch (currentTab) {
             case '1':
-                if (padaria?.plano_assinatura.length == 0 && !isFetchingPadaria) {
+                if (padaria?.plano_assinatura.length == 0 && isDoneFetchingPadaria) {
                     return <h2>Sem planos :(</h2>
                 }
                 return (
@@ -182,7 +183,7 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
                     <h2 className='padaria-name'> {padaria?.nome_fantasia} </h2>
                     <div className="rating">
                         <FaStar />
-                        <p className="number">0</p>
+                        <p className="number">5</p>
                     </div>
                     {
                         isSubscribedToPadaria &&
@@ -197,7 +198,16 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
 
                 <div className='tabs'>
                     <TabContext value={currentTab}>
-                        <TabList onChange={handleTabChange}>
+                        <TabList className='tablist'
+                        onChange={handleTabChange} 
+                        textColor="inherit"
+                        TabIndicatorProps={{
+                            style: {
+                              backgroundColor: "#B4764D",
+                              height: "0.3rem"
+                            }
+                        }}
+                        >
                             <Tab label="Planos" value="1" className='tab' />
                             <Tab label="Sobre" value="2" className='tab' />
                         </TabList>

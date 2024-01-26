@@ -74,7 +74,7 @@ const SideBarPadaria = ({logout, padaria} : SideBarPadariaProps) => {
                 */}
 
 
-                <MenuItem component={<Link to="/login" onClick={logout} />}  className='last-child' 
+                <MenuItem component={<a onClick={logout} />}  className='last-child' 
                     icon={<LogoutIcon/>}> 
                     Sair
                 </MenuItem>

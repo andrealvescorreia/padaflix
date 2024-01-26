@@ -16,6 +16,7 @@ import axios from 'axios';
 import axiosInstance from "../../axios";
 import { enqueueSnackbar } from "notistack";
 import ModalAskingForLogin from "../../components/ModalAskingForLogin";
+import EmptyMessage from "../../components/EmptyMessage";
 
 const modalStyle = {
     position: 'absolute' as 'absolute',
@@ -133,7 +134,11 @@ const PadariaProfile = ({ user, afterSuccessfulSubscription }: PadariaProfilePro
         switch (currentTab) {
             case '1':
                 if (padaria?.plano_assinatura.length == 0 && isDoneFetchingPadaria) {
-                    return <h2>Sem planos :(</h2>
+                    return(
+                        <EmptyMessage>
+                            <h2>Sem planos :(</h2>
+                        </EmptyMessage>  
+                    )
                 }
                 return (
                     <div className="plans-grid">

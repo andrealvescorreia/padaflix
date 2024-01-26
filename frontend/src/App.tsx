@@ -22,6 +22,7 @@ import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
 import Loading from './components/Loading';
 
+
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
   const [doneFetchingUser, setDoneFetchingUser] = useState(false)
@@ -36,7 +37,11 @@ function App() {
     .catch((err) => {
       setUser(undefined)
       if(!err.response) {
-        enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+        enqueueSnackbar('Servidor do padaflix fora do ar', { 
+          variant: 'error', 
+          persist: true, 
+          preventDuplicate: true
+        })
       }
       else {
         console.log(err.response.data)
@@ -130,7 +135,7 @@ function App() {
           doneFetchingUser && isPadariaUser(user) &&
           padariaRoutes()
         }
-        {/*<Route path="*" element={<PageNotFound />} />*/}
+        {doneFetchingUser && <Route path="*" element={<PageNotFound />} />}
       </Routes>
     </div>
   )

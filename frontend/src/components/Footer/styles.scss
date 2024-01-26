@@ -1,0 +1,30 @@
+@use '../../styles/mixins';
+
+#padaflix-footer {
+  @include mixins.flex-center;
+  flex-direction: column;
+  background-color: #381d0b;
+  color: white;
+  height: 12rem;
+  text-align: center;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    &:hover {
+      color: white;
+    }
+  }
+
+  .github-links {
+    color: #D7D7D7;
+    @include mixins.flex-center;
+    gap: 0.1rem;
+
+    img {
+      opacity: 0.7;
+      margin: 0.2rem;
+      width: 1rem;
+    }
+  }
+}

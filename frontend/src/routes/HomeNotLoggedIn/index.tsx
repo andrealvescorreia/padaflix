@@ -5,6 +5,7 @@ import Bakery from './img/bakery.png'
 import Rating from './img/rating-render.png'
 import {MdOutlineKeyboardArrowRight} from 'react-icons/md'
 import { Link } from "react-router-dom";
+import Footer from '../../components/Footer'
 
 const StartNowBtn = () => {
   return <Link to="/choose-profile" className={styles.startNowBtn}>Comece Agora {<MdOutlineKeyboardArrowRight/>}</Link>
@@ -70,6 +71,7 @@ const HomeNotLoggedIn = () => {
       <StartNowBtn/>
     </div>
 
+    <Footer/>
 
   </div>;
 }

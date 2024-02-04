@@ -34,7 +34,7 @@ const HomeNotLoggedIn = () => {
           <p>
             O Padaflix é uma plataforma de assinatura que conecta facilmente clientes a padarias, oferecendo entregas diárias de itens de panificadora para aqueles que valorizam a conveniência de receber em casa, evitando deslocar-se até o estabelecimento e esperar em filas.
           </p>
-          <ActionBttn linkTo='/register-user'>Registrar-me</ActionBttn>
+          <ActionBttn linkTo='/register/user'>Registrar-me</ActionBttn>
         </div>
         <img src={SecondaryImg} alt='Mulher entregadora com pacote na mão' />
       </div>

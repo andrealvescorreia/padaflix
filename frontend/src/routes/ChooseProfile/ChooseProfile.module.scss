@@ -4,9 +4,10 @@
 #choose_profile {
     @include mixins.flex-center;
     flex-direction: column;
+
     h1 {
         font-size: 2.5rem;
-        margin: 2.6rem;
+        margin: 2.4rem;
     }
 }
 
@@ -22,10 +23,10 @@
 }
 
 #baker_profile {
-  .profile_card {
-    margin-left: 2rem;
-    margin-right: auto;
-  }
+    .profile_card {
+        margin-left: 2rem;
+        margin-right: auto;
+    }
 }
 
 .profile_container {
@@ -40,45 +41,55 @@
     max-width: 50%;
     max-height: 100%;
     object-fit: contain;
+    opacity: 55%;
 }
 
-img, svg {
-    transition: .4s;
+
+
+img,
+svg {
+    transition: .6s;
 }
 
 .profile_card {
     text-decoration: none;
-    width: 24rem;
-    height: 13rem;
-    background: rgba(white, 0.7);  
+    width: 26rem;
+    min-height: 14rem;
+    background: rgba(white, 0.8);
     border-radius: 1rem;
 
     display: flex;
     align-items: center;
     justify-content: space-evenly;
     transition: .4s;
-    
+    border: 0.2rem solid rgb(37, 37, 37);
 
-    svg {
-        margin: 2rem;
-        transform: scale(7);
-        fill: #D8B299;
+    img {
+        width: 7rem;
     }
+
     h2 {
-        font-size: 2.3rem;
-        margin-bottom: 1rem;
-        margin-top: -2rem;
+        font-size: 2rem;
+        padding-bottom: 1rem;
         color: black;
+        font-weight: bold;
     }
+
     p {
         color: variables.$text-color-secondary;
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
-    &:hover { 
-        svg {
-            fill: #C78A61;
+
+    &:hover {
+        img {
+            width: 8rem;
         }
-        background: rgba(white, 1);  
+
+        background: rgba(white, 1);
+
+        ~.bgImage {
+            opacity: 100%;
+        }
     }
 }
 

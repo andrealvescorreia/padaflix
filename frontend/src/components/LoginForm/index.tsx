@@ -35,12 +35,6 @@ const LoginForm = (props: LoginFormProps) => {
                 </label>
                 <div id="buttonsOfLogin">
                     <Button variant="contained" className="buttonFull" type="submit"  disabled={disabled} >Login</Button>
-                    
-                    <Link to="/choose-profile" className='link'>
-                        <Button variant="outlined" className="buttonEmpty" disabled={disabled} >
-                            Criar conta
-                        </Button>
-                    </Link>
                 </div>
 
             </form>

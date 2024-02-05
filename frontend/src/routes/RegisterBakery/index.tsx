@@ -6,7 +6,8 @@ import { useState } from "react";
 import AddressForm from "../../components/AddressForm";
 import LinearProgress from '@mui/material/LinearProgress';
 import { useSnackbar } from 'notistack';
-
+import { Link } from "react-router-dom";
+import './styles.scss';
 
 const RegisterBakery = () => {
     interface PadariaRegisterData {
@@ -17,7 +18,7 @@ const RegisterBakery = () => {
         telefone: string,
         endereco: Endereco
     }
-      
+
     interface PadariaRegisterStepOne {
         nome_fantasia: string,
         email: string,
@@ -27,15 +28,15 @@ const RegisterBakery = () => {
     }
 
 
-    const defaultPadaria : PadariaRegisterData = {
+    const defaultPadaria: PadariaRegisterData = {
         nome_fantasia: '',
         endereco: {
-            cep: '', 
-            rua: '', 
-            numero: undefined, 
-            complemento: '', 
-            bairro: '', 
-            cidade: '', 
+            cep: '',
+            rua: '',
+            numero: undefined,
+            complemento: '',
+            bairro: '',
+            cidade: '',
             uf: ''
         },
         email: '',
@@ -49,7 +50,7 @@ const RegisterBakery = () => {
     const [isFetching, setIsFetching] = useState(false)
 
     const navigate = useNavigate()
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const registerPadaria = async (padaria: PadariaRegisterData) => {
         padaria.cnpj = padaria.cnpj.replaceAll('.', '').replaceAll('/', '').replaceAll('-', '')
@@ -57,62 +58,60 @@ const RegisterBakery = () => {
         setIsFetching(true)
 
         axiosInstance.post('/register_padaria', padaria)
-        .then(() => {
-            enqueueSnackbar("Registrado com sucesso! Realize o login", { variant: 'success'})
-            navigate('/login')
-        })
-        .catch((err) => {
-            if(!err.response) {
-                enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
-            }
-            else{
-                enqueueSnackbar("Ocorreu um erro no registro: "+JSON.stringify(err.response.data), { variant: 'error'})
-                console.log(err.response.data)
-            }
-        })
-        .finally(()=>{
-            setIsFetching(false)
-        })
+            .then(() => {
+                enqueueSnackbar("Registrado com sucesso! Realize o login", { variant: 'success' })
+                navigate('/login')
+            })
+            .catch((err) => {
+                if (!err.response) {
+                    enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error' })
+                }
+                else {
+                    enqueueSnackbar("Ocorreu um erro no registro: " + JSON.stringify(err.response.data), { variant: 'error' })
+                    console.log(err.response.data)
+                }
+            })
+            .finally(() => {
+                setIsFetching(false)
+            })
     }
-    
-    function goToNextRegisterStep(newUserData : PadariaRegisterStepOne){
-        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, ...newUserData} ));
+
+    function goToNextRegisterStep(newUserData: PadariaRegisterStepOne) {
+        setPadariaRegisterData(prevUserRegisterData => ({ ...prevUserRegisterData, ...newUserData }));
         setCurrentRegisterStep(2)
     }
 
-    function goToPreviousRegisterStep(padariaEndereco: Endereco){
-        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
+    function goToPreviousRegisterStep(padariaEndereco: Endereco) {
+        setPadariaRegisterData(prevUserRegisterData => ({ ...prevUserRegisterData, endereco: padariaEndereco }));
         setCurrentRegisterStep(1)
     }
-    
-    function finishRegister(padariaEndereco: Endereco){
-        setPadariaRegisterData(prevUserRegisterData => ( {...prevUserRegisterData, endereco: padariaEndereco} ));
-        registerPadaria( {...padariaRegisterData, endereco: padariaEndereco} as PadariaRegisterData )
+
+    function finishRegister(padariaEndereco: Endereco) {
+        setPadariaRegisterData(prevUserRegisterData => ({ ...prevUserRegisterData, endereco: padariaEndereco }));
+        registerPadaria({ ...padariaRegisterData, endereco: padariaEndereco } as PadariaRegisterData)
     }
 
-    switch(currentRegisterStep) {
-        case 1:
-            return(
-                <RegisterBakeryForm 
-                    onSubmit={goToNextRegisterStep} 
-                    defaultData={padariaRegisterData}
+    return <div id='bakery-register-screen'>
+        {isFetching ? <LinearProgress className='linear-progress'/> : null}
+        {
+            currentRegisterStep === 1 &&
+            <RegisterBakeryForm
+                onSubmit={goToNextRegisterStep}
+                defaultData={padariaRegisterData}
+            />
+            ||
+            currentRegisterStep === 2 &&
+            <>
+                <AddressForm
+                    onSubmit={finishRegister}
+                    onGoBack={goToPreviousRegisterStep}
+                    defaultData={padariaRegisterData.endereco}
+                    disabled={isFetching}
                 />
-            )
-        case 2:
-            return(
-                <>
-                    { isFetching ? <LinearProgress /> : null}
-                    <AddressForm 
-                        onSubmit={finishRegister} 
-                        onGoBack={goToPreviousRegisterStep} 
-                        defaultData={padariaRegisterData.endereco}
-                        disabled={isFetching}
-                    />
-                </>
-            )
-        default:
-            return(<></>)
-    }
+            </>  
+        }
+        <p>Já possui uma conta? <Link to ='/login'>Login</Link></p>
+    </div>
 }
- 
+
 export default RegisterBakery;

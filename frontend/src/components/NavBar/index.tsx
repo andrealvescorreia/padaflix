@@ -16,14 +16,14 @@ const NavBar = ({ user, logout }: NavBarProps) => {
   }
 
   const notLoggedInRightOptions = (
-    <>
+    <span className={styles.rightOptions}>
       <Link to="/login" id={styles.login_btn} className={styles.btn} >
         Login
       </Link>
       <Link to="/choose-profile" id={styles.start_now_btn} className={styles.btn} >
         Comece Agora
       </Link>
-    </>
+    </span>
   )
 
   const defaultCenterOptions = (
@@ -33,11 +33,11 @@ const NavBar = ({ user, logout }: NavBarProps) => {
   )
 
   const userRightOptions = (
-    <>
+    <span className={styles.rightOptions} >
       <a id={styles.login_btn} className={styles.btn} onClick={logout} >
         <Logout /> Sair
       </a>
-    </>
+    </span>
   )
 
   const userCenterOptions = (
@@ -80,10 +80,7 @@ const NavBar = ({ user, logout }: NavBarProps) => {
           <div className={styles.centerNavOptions}>
             {centerSideNavOptions}
           </div>
-
-          <div className={styles.navOptions}>
-            {rigthSideNavOptions}
-          </div>
+          {rigthSideNavOptions}
         </>
     }
 

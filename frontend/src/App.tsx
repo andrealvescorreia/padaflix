@@ -20,8 +20,8 @@ import EnderecoPadaria from './routes/routesPadaria/EnderecoPadaria';
 import PadariaProfile from './routes/PadariaProfile';
 import { enqueueSnackbar } from 'notistack';
 import PadariasList from './routes/PadariasList';
-
-
+import Loading from './components/Loading';
+import EmptyMessage from './components/EmptyMessage';
 
 function App() {
   const [user, setUser] = useState<User | PadariaUser | undefined>()
@@ -37,7 +37,11 @@ function App() {
     .catch((err) => {
       setUser(undefined)
       if(!err.response) {
-        enqueueSnackbar('Servidor do padaflix fora do ar', { variant: 'error'})
+        enqueueSnackbar('Servidor do padaflix fora do ar', { 
+          variant: 'error', 
+          persist: true, 
+          preventDuplicate: true
+        })
       }
       else {
         console.log(err.response.data)
@@ -54,7 +58,13 @@ function App() {
   const logout = async () => {
     axiosInstance.post('/logout')
     .then(() => {
-      setUser(undefined)
+      navigate('/login')
+      setDoneFetchingUser(false);
+      setUser(() => {
+        setDoneFetchingUser(true);
+        return undefined;
+      });
+      
     })
     .catch((err) => {
       enqueueSnackbar('Ocorreu um erro', { variant: 'error'})
@@ -99,10 +109,15 @@ function App() {
 
   return (
     <div>
+      { 
+        !doneFetchingUser && <Loading/>
+      }
       {
-        isPadariaUser(user) 
-        ? <SideBarPadaria padaria={user} logout={logout}/>  
-        : <NavBar         user={user}    logout={logout} />
+        doneFetchingUser && (
+          isPadariaUser(user) 
+          ? <SideBarPadaria padaria={user} logout={logout}/>  
+          : <NavBar         user={user}    logout={logout} />
+        )
       }
       <Routes>
         <Route path="/" element={<DefaultRoute/>}/>
@@ -126,7 +141,7 @@ function App() {
           doneFetchingUser && isPadariaUser(user) &&
           padariaRoutes()
         }
-        {/*<Route path="*" element={<PageNotFound />} />*/}
+        {doneFetchingUser && <Route path="*" element={<PageNotFound />} />}
       </Routes>
     </div>
   )
@@ -139,7 +154,10 @@ function DefaultRoute() {
 }
 
 function PageNotFound() {
-  return <h2>404 Página não encontrada</h2>
+  return <EmptyMessage>
+    <h2>Erro 404 </h2>
+    <h4>Página não encontrada</h4>
+  </EmptyMessage>
 }
 
 export default App

@@ -20,7 +20,7 @@ const PadariaCard = ( {padaria, isSubscribedToPadaria=false} : PadariaCardProps 
             <h3 className="padaria-name">{padaria.nome_fantasia}</h3>
             <div className="rating">
                 <FaStar className="star"/>
-                <p className="number">{padaria.rating? padaria.rating : 0}</p>
+                <p className="number">{padaria.rating? padaria.rating : 5}</p>
                 {
                     isSubscribedToPadaria && 
                     <div className='subscription-status'>

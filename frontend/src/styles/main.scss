@@ -12,6 +12,9 @@
   @media (min-width: 1600px) {
     font-size: clamp(1rem, 2vw + 0.75rem, 1.3rem);
   }
+  a {
+    cursor: pointer;
+  }
 }
 
 body {

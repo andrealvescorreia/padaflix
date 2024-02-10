@@ -4,7 +4,7 @@ import InputPassRegister from "../InputPassRegister";
 import InputMask from 'react-input-mask';
 import { useSnackbar } from "notistack";
 import EmailInput from "../EmailInput";
-
+import './styles.scss'
 
 interface PadariaRegister {
     nome_fantasia: string,
@@ -72,8 +72,7 @@ const RegisterBekery = (props: RegisterProps) => {
     return (
         <main id="mainContainer">
             <form onSubmit={handleSubmit} id="secondaryContainer">
-
-                <label htmlFor="">Nome fantasia
+                <label>Nome fantasia
                     <TextField
                         value={nome_fantasia}
                         required
@@ -84,12 +83,12 @@ const RegisterBekery = (props: RegisterProps) => {
                     mask="99.999.999/9999-99"
                     onChange={e => setCnpj(e.target.value)}
                 >
-                    <label htmlFor="">CNPJ
+                    <label>CNPJ
                         <TextField value={cnpj} required />
                     </label>
                 </InputMask>
 
-                <label htmlFor="">E-mail
+                <label>E-mail
                     <EmailInput onChange={handleEmailChange} value={email}  />
 
                 </label>
@@ -98,19 +97,19 @@ const RegisterBekery = (props: RegisterProps) => {
                     mask="(99) 9 9999-9999"
                     onChange={e => setTelefone(e.target.value)}
                 >
-                    <label htmlFor="">Telefone
+                    <label>Telefone
                         <TextField value={telefone} required />
                     </label>
                 </InputMask>
 
-                <label htmlFor="">Senha
+                <label>Senha
                     <InputPassRegister
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
                 </label>
-                <div id="buttonsOfLogin">
-                    <Button variant="contained" className="buttonFull" type="submit">Continuar</Button>
+                <div className="submit-btn">
+                    <Button variant="contained" className="buttonFull" type="submit">Próxima</Button>
                 </div>
             </form>
         </main>

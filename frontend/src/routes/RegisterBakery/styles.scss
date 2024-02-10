@@ -1,0 +1,11 @@
+#bakery-register-screen{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  
+  .linear-progress {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+  }
+}

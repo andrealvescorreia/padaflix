@@ -1,0 +1,16 @@
+#loading-screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+
+  img {
+    width: 18rem;
+  }
+
+  .circular-progress{
+    color: #CA7E43;
+  }
+}

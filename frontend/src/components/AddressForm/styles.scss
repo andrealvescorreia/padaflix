@@ -4,17 +4,19 @@
 #address-form-container{
     margin-top: .4rem;
     background-color:  #FFF8E4;
-    border-radius: 15px;
-    padding-bottom: 1rem;
+    border-radius: 0.9rem;
+    padding-bottom: 2rem;
+    margin-bottom: 1.3rem;
 
     .form{
-
         gap:1.2rem;
     }
 
     .form-header{
         padding-top: 0.6rem;
         padding-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
         
         svg{
             margin-left: -1.2rem;
@@ -22,8 +24,6 @@
             height: 1.7rem;
             fill: #C78A61;
         }
-        display: flex;
-        align-items: center;
         
         h1{
             font-size: 1.6rem;
@@ -35,16 +35,13 @@
 
     .bttn{
         margin-top: .6rem;
+        width: 10rem;
     }
 
     .submit{
-        width: 10rem;
-        border-radius: 20px;
         background-color: #C78A61;
     }
     .back{
-        width: 10rem;
-        border-radius: 20px;
         background-color: #cccccc;
         color: black;
     }

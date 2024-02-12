@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "create-venv",
+      "type": "shell",
+      "command": "python -m venv venv ; venv/Scripts/activate ; pip install -r requirements.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "create-node_modules",
+      "type": "shell",
+      "command": "cd frontend ; npm install",
+      "problemMatcher": []
+    },
+    {
+      "label": "frontend-dev",
+      "type": "shell",
+      "command": "cd frontend ; npm run dev",
+      "problemMatcher": [],
+      "dependsOn": ["create-node_modules"]
+    },
+    {
+      "label": "backend-dev",
+      "type": "shell",
+      "command": "venv/Scripts/activate ; cd backend ; python manage.py migrate ; python manage.py runserver",
+      "problemMatcher": [],
+      "dependsOn": ["create-venv"]
+    },
+    {
+      "label": "backend-test",
+      "type": "shell",
+      "command": "venv/Scripts/activate ; cd backend ; python manage.py migrate ; python manage.py test",
+      "problemMatcher": [],
+      "dependsOn": ["create-venv"]
+    },
+    {
+      // makes the full dev environment ready and running.
+      // might take a while first time executing it (downloading dependencies).
+      "label": "dev",
+      "problemMatcher": [],
+      "dependsOn": ["backend-dev", "frontend-dev"]
+    }
+  ]
+}

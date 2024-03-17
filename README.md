@@ -4,7 +4,7 @@ Visite o [Padaflix](https://andrealvescorreia.github.io/padaflix) e saiba mais!
 ***
 ## Rodar Backend (API) <br>
 Pré-requisito:
-- Python instalado E atualizado <br>
+- Python 3.10 <br>
 
 Abra a pasta raíz do `padaflix` no terminal e execute os seguintes comandos:
 ```
